@@ -12,7 +12,7 @@ The dataset includes:
 - `models`: 60 synthetic views of each object and corresponding binary masks.
 - `labels`: Ground truth annotations for object positions in the images.
 
-Dataset link: [Google Drive](https://drive.google.com/drive/folders/theXAbX4WKXf3-z2sI68Qg-cvbcVwosxO?usp=sharing)
+Dataset link: [Google Drive](https://drive.google.com/drive/folders/1heXAbX4WKXf3-z2sl68Qg-cvbcVwosxO?usp=sharing)
 
 ## Outputs
 - Bounding box coordinates saved in a text file.
