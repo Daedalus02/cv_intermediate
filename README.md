@@ -46,3 +46,26 @@ project/
 3. Run the executable:
       ```bash
    ./object_detector <path_to_input_image> <path_to_models> <output_directory>
+
+Contributors
+
+    Contributor 1:[Link text](https://github.com/luca037)
+
+    Contributor 2:[Link text](https://github.com/Ale10chine)
+
+    Contributor 3:[Link text](https://github.com/Daedalus02)
+
+Report
+
+The final report includes:
+
+    Methodology and approach
+
+    Performance metrics (mIoU and detection accuracy)
+
+    Output images for all test cases
+
+    Contributions and working hours per member
+
+Notes
+
