@@ -49,11 +49,11 @@ project/
 
 Contributors
 
-    Contributor 1:[Link text](https://github.com/luca037)
+    Contributor 1:[Github](https://github.com/luca037)
 
-    Contributor 2:[Link text](https://github.com/Ale10chine)
+    Contributor 2:[Github](https://github.com/Ale10chine)
 
-    Contributor 3:[Link text](https://github.com/Daedalus02)
+    Contributor 3:[Github](https://github.com/Daedalus02)
 
 Report
 
