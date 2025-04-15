@@ -49,7 +49,7 @@ project/
 
 Contributors
 
-    Contributor 1:[Link](https://github.com/luca037)
+    Contributor 1:[Link text](https://github.com/luca037)
 
     Contributor 2:[Link text](https://github.com/Ale10chine)
 
