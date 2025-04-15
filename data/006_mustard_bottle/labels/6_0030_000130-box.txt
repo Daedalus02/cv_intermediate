@@ -1,0 +1,2 @@
+006_mustard_bottle 337 163 440 383
+035_power_drill 248 199 468 444
