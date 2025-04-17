@@ -24,15 +24,15 @@ Dataset link: [Google Drive](https://drive.google.com/drive/folders/1heXAbX4WKXf
 
 ## Project Structure
 project/
-├
+|
 ├── src/ # Source code (C++ files)
-├
+|
 ├── data/ # Dataset (test_images, models, labels)
-├
+|
 ├── output/ # Generated outputs (bounding box images and text files)
-├
+|
 ├── report/ # Project report (PDF)
-├
+|
 └── README.md # This file
 
 ## Requirements
