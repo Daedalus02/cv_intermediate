@@ -30,7 +30,6 @@ int main(int argc, char * argv[]){
     siftPtr->detectAndCompute(scene, noArray(), keypoints_scene, descriptors_scene);
     siftPtr->detectAndCompute(model, noArray(), keypoints_model, descriptors_model);
 
-
     matcher->match(descriptors_scene, descriptors_model, matches);
 
     // Sort matches by distance (best matches first)
