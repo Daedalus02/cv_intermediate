@@ -141,9 +141,9 @@ int main() {
         cv::Mat templGrayOriginal = cv::imread(models_paths[i], cv::IMREAD_GRAYSCALE);
         //cv::Mat templMask = cv::imread(mask_paths[i], cv::IMREAD_GRAYSCALE);
         // Ensure mask is binary (0 or 255)
-        //cv::threshold(templMask, templMask, 127, 255, cv::THRESH_BINARY);
+        cv::threshold(templMask, templMask, 127, 255, cv::THRESH_BINARY);
 
-        //cv::bitwise_and(templGrayOriginal, templMask, templGrayOriginal);
+        cv::bitwise_and(templGrayOriginal, templMask, templGrayOriginal);
         //cv::imshow(models_paths[i], templGrayOriginal);
 
         // Checking if the loaded model image is valid.
@@ -166,7 +166,7 @@ int main() {
                         // Storing the result if the template sliding process in "result" variable.
                         cv::Mat result;
                         // Using the TM_CCOEFF_NORMED method.
-                        cv::matchTemplate(imgTestGray, templGrayRotated.getImage(), result, cv::TM_SQDIFF_NORMED);
+                        cv::matchTemplate(imgTestGray, templGrayRotated.getImage(), result, cv::TM_CCOEFF_NORMED);
                         // Storing the mininmum and maximum values and location among all the possible positions.
                         double minVal; double maxVal;
                         cv::Point minLoc; cv::Point maxLoc;
@@ -177,7 +177,8 @@ int main() {
                             // Fixing the new global maximum value amd position.
                             maxValGlobal = maxVal;
                             maxLocGlobal = cv::Point(cvRound(maxLoc.x), cvRound(maxLoc.y));
-                            // Storing the size of the current template.
+                            // Storin git merge dev-mattia 
+g the size of the current template.
                             templateSizeGlobal = cv::Size(templGrayRotated.cols(), templGrayRotated.rows());
                             best_scale = scale;
                             best_angle = angle;
