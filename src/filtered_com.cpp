@@ -1,5 +1,15 @@
+/*
+ * Approach used:
+ *      1) Compute feature matching between all the 30 rgb models and the scene image.
+ *      2) Filter the matches found in step (1) with Lowes ratio test.
+ *      3) Compute the center of mass (COM) of the matches located in the scene image (green circles).
+ *      4) Neglect all the matches that are far away from the COM.
+ *      5) Update the position of the COM of the matches, then draw it in red.
+ */
+
 #include <iostream>
 #include "opencv2/core.hpp"
+#include "opencv2/core/types.hpp"
 #include "opencv2/imgcodecs.hpp"
 #ifdef HAVE_OPENCV_XFEATURES2D
 #include "opencv2/highgui.hpp"
@@ -12,9 +22,9 @@ using namespace cv::xfeatures2d;
 using std::cout;
 using std::endl;
 
-
 int main(int argc, char* argv[]) {
 
+    // Models images.
     std::string models_paths[] = {
         "../data/004_sugar_box/models/view_0_001_color.png",
         "../data/004_sugar_box/models/view_0_002_color.png",
@@ -48,44 +58,60 @@ int main(int argc, char* argv[]) {
         "../data/004_sugar_box/models/view_60_008_color.png",
         "../data/004_sugar_box/models/view_60_009_color.png",
     };
+
+    // Scene image path.
     std::string scene_path = "../data/004_sugar_box/test_images/4_0014_001409-color.jpg";
 
+    // Define the models images.
     std::vector<Mat> models;
     for (const auto& p : models_paths) {
         models.push_back(imread(p, IMREAD_GRAYSCALE));
     }
+
+    // Define the scene image.
     Mat scene = imread(scene_path, IMREAD_GRAYSCALE);
 
+    //-- Step 1: Detect the keypoints using SIFT Detector, compute the descriptors.
 
-    //-- Step 1: Detect the keypoints using SURF Detector, compute the descriptors
+    // Define the SIFT detector.
     Ptr<SIFT> detector = SIFT::create();
 
+    // Keypoints and descriptor of each model.
     std::vector<std::vector<KeyPoint>> keypoints_models(models.size());
-    std::vector<KeyPoint> keypoints_scene;
-
     std::vector<Mat> descriptors_models(models.size());
+
+    // Keypoints and descriptor of the scene.
+    std::vector<KeyPoint> keypoints_scene;
     Mat descriptors_scene;
+
+    // Compute keypoints and descriptors.
     for (int i = 0; i < models.size(); i++) {
         detector->detectAndCompute(models[i], noArray(), keypoints_models[i], descriptors_models[i]);
     }
     detector->detectAndCompute(scene, noArray(), keypoints_scene, descriptors_scene);
 
-    //-- Step 2: Matching descriptor vectors with a FLANN based matcher
-    // Since SURF is a floating-point descriptor NORM_L2 is used
+    //-- Step 2: Matching descriptor vectors with a BRUTEFORCE matcher
+
+    // Define the Brute force matcher.
     Ptr<DescriptorMatcher> matcher = DescriptorMatcher::create(DescriptorMatcher::BRUTEFORCE);
-    std::vector<std::vector< std::vector<DMatch> >> knn_matches(models.size());
+
+    // Vector that stores the good matches.
+    //std::vector<std::vector< std::vector<DMatch> >> knn_matches(models.size());
+    std::vector<std::vector<DMatch>> knn_matches;
+
+    // Compute the matches between the scene and each model.
     for (int i = 0; i < models.size(); i++) {
-        matcher->knnMatch(descriptors_models[i], descriptors_scene, knn_matches[i], 2);
+        std::vector<std::vector<DMatch>> tmp;
+        matcher->knnMatch(descriptors_models[i], descriptors_scene, tmp, 2);
+        knn_matches.insert(knn_matches.end(), tmp.begin(), tmp.end());
     }
 
-    //-- Filter matches using the Lowe's ratio test
+    // Filter matches using the Lowe's ratio test.
     const float ratio_thresh = 0.7;
-    std::vector<std::vector<DMatch>> good_matches(models.size());
-    for (int j = 0; j < knn_matches.size(); j++) {
-        for (size_t i = 0; i < knn_matches[j].size(); i++) {
-            if (knn_matches[j][i][0].distance < ratio_thresh * knn_matches[j][i][1].distance) {
-                good_matches[j].push_back(knn_matches[j][i][0]);
-            }
+    std::vector<DMatch> good_matches;
+    for (size_t i = 0; i < knn_matches.size(); i++) {
+        if (knn_matches[i][0].distance < ratio_thresh * knn_matches[i][1].distance) {
+            good_matches.push_back(knn_matches[i][0]);
         }
     }
 
@@ -93,69 +119,63 @@ int main(int argc, char* argv[]) {
     double total_sum_x = 0;
     double total_sum_y = 0;
     int total_num_points = 0;
-    for (int i = 0; i < good_matches.size(); i++) {
-        for (const auto& match : good_matches[i]) {
-            Point2f pt = keypoints_scene[match.trainIdx].pt;
+    for (const auto& match : good_matches) {
+        Point2f pt = keypoints_scene[match.trainIdx].pt;
+        total_sum_x += pt.x;
+        total_sum_y += pt.y;
+        total_num_points++;
+    }
+
+    Point2f com;
+    if (total_num_points > 0) {
+        com.x = total_sum_x / total_num_points;
+        com.y = total_sum_y / total_num_points;
+        cout << "Total Center of Mass: (" << com.x << ", " << com.y << ")" << endl;
+    }
+    else {
+        cout << "No good matches found at all." << endl;
+        com.x = -1;
+        com.y = -1;
+    }
+
+    //-- Step 3: Filter matches based on distance to the center of mass
+    float max_distance_threshold = 100; // Adjust this threshold as needed
+    std::vector<DMatch> filtered_matches;;
+
+    total_sum_x = 0;
+    total_sum_y = 0;
+    total_num_points = 0;
+    for (const auto& match : good_matches) {
+        Point2f pt = keypoints_scene[match.trainIdx].pt;
+        float distance = sqrt(pow(pt.x - com.x, 2) + pow(pt.y - com.y, 2));
+        if (distance <= max_distance_threshold) {
+            filtered_matches.push_back(match);
             total_sum_x += pt.x;
             total_sum_y += pt.y;
             total_num_points++;
         }
     }
 
-    Point2f total_center_of_mass;
-    if (total_num_points > 0) {
-        total_center_of_mass.x = total_sum_x / total_num_points;
-        total_center_of_mass.y = total_sum_y / total_num_points;
-        cout << "Total Center of Mass: (" << total_center_of_mass.x << ", " << total_center_of_mass.y << ")" << endl;
-    }
-    else {
-        cout << "No good matches found at all." << endl;
-        total_center_of_mass.x = -1;
-        total_center_of_mass.y = -1;
-    }
-
-    //-- Step 3: Filter matches based on distance to the center of mass
-    float max_distance_threshold = 70; // Adjust this threshold as needed
-    std::vector<std::vector<DMatch>> filtered_matches(models.size());
-    std::vector<Point2f> filtered_points; // Store the points used to calculate the new center of mass
-
-    total_sum_x = 0;
-    total_sum_y = 0;
-    total_num_points = 0;
-    for (int i = 0; i < good_matches.size(); i++) {
-        for (const auto& match : good_matches[i]) {
-            Point2f pt = keypoints_scene[match.trainIdx].pt;
-            float distance = sqrt(pow(pt.x - total_center_of_mass.x, 2) + pow(pt.y - total_center_of_mass.y, 2));
-            if (distance <= max_distance_threshold) {
-                filtered_matches[i].push_back(match);
-                filtered_points.push_back(pt); // Store the point for re-calculating COM
-                total_sum_x += pt.x;
-                total_sum_y += pt.y;
-                total_num_points++;
-            }
-        }
-    }
-
     // Recalculate the center of mass with the filtered matches
-    Point2f filtered_center_of_mass;
+    Point2f new_com;
     if (total_num_points > 0) {
-        filtered_center_of_mass.x = total_sum_x / total_num_points;
-        filtered_center_of_mass.y = total_sum_y / total_num_points;
-        cout << "Filtered Center of Mass: (" << filtered_center_of_mass.x << ", " << filtered_center_of_mass.y << ")" << endl;
+        new_com.x = total_sum_x / total_num_points;
+        new_com.y = total_sum_y / total_num_points;
+        cout << "Filtered Center of Mass: (" << new_com.x << ", " << new_com.y << ")" << endl;
     }
     else {
         cout << "No matches survived the filtering." << endl;
-        filtered_center_of_mass = total_center_of_mass; // Keep the old COM or set to a default value
+        new_com = com; // Keep the old COM or set to a default value
     }
 
-    // Visualize the total center of mass
+    // Visualize the center of mass.
     Mat scene_with_centers;
     cvtColor(scene, scene_with_centers, COLOR_GRAY2BGR);
     Scalar color_center = Scalar(0, 0, 255);
     int radius_center = 5;
     int thickness_center = 2;
     if (total_num_points > 0)
-        circle(scene_with_centers, filtered_center_of_mass, radius_center, color_center, thickness_center);
+        circle(scene_with_centers, new_com, radius_center, color_center, thickness_center);
     imshow("Scene with Filtered Center of Mass", scene_with_centers);
 
 
@@ -165,15 +185,28 @@ int main(int argc, char* argv[]) {
     Scalar color = Scalar(0, 255, 0);
     int radius = 3;
     int thickness = 2;
-    for (int i = 0; i < filtered_matches.size(); i++) {
-        for (const auto& match : filtered_matches[i]) {
-            Point2f pt2 = keypoints_scene[match.trainIdx].pt;
-            circle(scene_matches, pt2, radius, color, thickness);
-        }
+    for (const auto& match : filtered_matches) {
+        Point2f pt2 = keypoints_scene[match.trainIdx].pt;
+        circle(scene_matches, pt2, radius, color, thickness);
     }
+
+    // Last step draw the rectangle.
+    Point2f topLeft(scene.rows, scene.cols);
+    Point2f bottomRight(0, 0);
+    for (const auto& match : filtered_matches) {
+        Point2f pt = keypoints_scene[match.trainIdx].pt;
+        if (pt.y < topLeft.y)
+            topLeft.y = pt.y;
+        if (pt.x < topLeft.x)
+            topLeft.x = pt.x;
+        if (pt.y > bottomRight.y)
+            bottomRight.y = pt.y;
+        if (pt.x > bottomRight.x)
+            bottomRight.x = pt.x;
+    }
+    rectangle(scene_matches, topLeft, bottomRight, Scalar(255, 0, 0), 2, LINE_8); 
+
     imshow("Filtered Matches on Scene", scene_matches);
-
-
     waitKey();
     return 0;
 }
@@ -184,3 +217,5 @@ int main()
     return 0;
 }
 #endif
+
+//004_sugar_box 366 172 504 446
