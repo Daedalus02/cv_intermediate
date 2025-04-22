@@ -24,10 +24,15 @@ Dataset link: [Google Drive](https://drive.google.com/drive/folders/1heXAbX4WKXf
 
 ## Project Structure
 project/
+
 ├── src/ # Source code (C++ files)
+
 ├── data/ # Dataset (test_images, models, labels)
+
 ├── output/ # Generated outputs (bounding box images and text files)
+
 ├── report/ # Project report (PDF)
+
 └── README.md # This file
 
 ## Requirements
@@ -47,13 +52,11 @@ project/
       ```bash
    ./object_detector <path_to_input_image> <path_to_models> <output_directory>
 
-Contributors
+## Authors
 
-    Contributor 1:[Github](https://github.com/luca037)
-
-    Contributor 2:[Github](https://github.com/Ale10chine)
-
-    Contributor 3:[Github](https://github.com/Daedalus02)
+- **Student 1** - [GitHub](https://github.com/Ale10chine)  
+- **Student 2** - [GitHub](https://github.com/luca037)  
+- **Student 3** - [GitHub](https://github.com/Daedalus02)  
 
 Report
 
