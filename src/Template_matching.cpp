@@ -135,16 +135,16 @@ int main() {
 
 
     // Iterating through all the possible models images in the directory.
-    for (int i = 0; i < sizeof(models_paths); i ++ ) {
+    for (int i = 0; i < 10; i++) {
 
         // Creating a variable of type Mat with the loaded model image in grayscale.
         cv::Mat templGrayOriginal = cv::imread(models_paths[i], cv::IMREAD_GRAYSCALE);
-        cv::Mat templMask = cv::imread(mask_paths[i], cv::IMREAD_GRAYSCALE);
+        //cv::Mat templMask = cv::imread(mask_paths[i], cv::IMREAD_GRAYSCALE);
         // Ensure mask is binary (0 or 255)
-        cv::threshold(templMask, templMask, 127, 255, cv::THRESH_BINARY);
+        //cv::threshold(templMask, templMask, 127, 255, cv::THRESH_BINARY);
 
-        cv::bitwise_and(templGrayOriginal, templMask, templGrayOriginal);
-
+        //cv::bitwise_and(templGrayOriginal, templMask, templGrayOriginal);
+        //cv::imshow(models_paths[i], templGrayOriginal);
 
         // Checking if the loaded model image is valid.
         if (!templGrayOriginal.empty()) {
