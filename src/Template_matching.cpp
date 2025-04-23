@@ -50,32 +50,108 @@ cv::Mat normalizeMinMax(const cv::Mat& input) {
     cv::merge(channels, normalized);
     return normalized;
 }
+cv::Mat equalizeRGB(const cv::Mat& input) {
+    cv::Mat result;
+    // Convert to YCrCb color space
+    cv::Mat ycrcb;
+    cv::cvtColor(input, ycrcb, cv::COLOR_BGR2YCrCb);
+    
+    // Split channels
+    std::vector<cv::Mat> channels;
+    cv::split(ycrcb, channels);
+    
+    // Equalize the Y channel only (luminance)
+    cv::equalizeHist(channels[0], channels[0]);
+    
+    // Merge back and convert to BGR
+    cv::merge(channels, ycrcb);
+    cv::cvtColor(ycrcb, result, cv::COLOR_YCrCb2BGR);
+    return result;
+}
 
 //view_0_003_color
-const   std::string models_paths[] = {
-    "../data/004_sugar_box/models/view_0_003_color.png"
+   
+const std::string models_paths[] = {
+    "../data/035_power_drill/models/view_0_001_color.png",
+    "../data/035_power_drill/models/view_0_002_color.png",
+    "../data/035_power_drill/models/view_0_003_color.png",
+    "../data/035_power_drill/models/view_0_004_color.png",
+    "../data/035_power_drill/models/view_0_005_color.png",
+    "../data/035_power_drill/models/view_0_006_color.png",
+    "../data/035_power_drill/models/view_0_007_color.png",
+    "../data/035_power_drill/models/view_0_008_color.png",
+    "../data/035_power_drill/models/view_0_009_color.png",
+
+    "../data/035_power_drill/models/view_30_000_color.png",
+    "../data/035_power_drill/models/view_30_001_color.png",
+    "../data/035_power_drill/models/view_30_002_color.png",
+    "../data/035_power_drill/models/view_30_003_color.png",
+    "../data/035_power_drill/models/view_30_004_color.png",
+    "../data/035_power_drill/models/view_30_005_color.png",
+    "../data/035_power_drill/models/view_30_006_color.png",
+    "../data/035_power_drill/models/view_30_007_color.png",
+    "../data/035_power_drill/models/view_30_008_color.png",
+    "../data/035_power_drill/models/view_30_009_color.png",
+
+    "../data/035_power_drill/models/view_60_000_color.png",
+    "../data/035_power_drill/models/view_60_001_color.png",
+    "../data/035_power_drill/models/view_60_002_color.png",
+    "../data/035_power_drill/models/view_60_003_color.png",
+    "../data/035_power_drill/models/view_60_004_color.png",
+    "../data/035_power_drill/models/view_60_005_color.png",
+    "../data/035_power_drill/models/view_60_006_color.png",
+    "../data/035_power_drill/models/view_60_007_color.png",
+    "../data/035_power_drill/models/view_60_008_color.png",
+    "../data/035_power_drill/models/view_60_009_color.png",
 };
 
-
 const std::string mask_paths[] = {
+    "../data/035_power_drill/models/view_0_001_mask.png",
+    "../data/035_power_drill/models/view_0_002_mask.png",
+    "../data/035_power_drill/models/view_0_003_mask.png",
+    "../data/035_power_drill/models/view_0_004_mask.png",
+    "../data/035_power_drill/models/view_0_005_mask.png",
+    "../data/035_power_drill/models/view_0_006_mask.png",
+    "../data/035_power_drill/models/view_0_007_mask.png",
+    "../data/035_power_drill/models/view_0_008_mask.png",
+    "../data/035_power_drill/models/view_0_009_mask.png",
 
-    "../data/004_sugar_box/models/view_0_003_mask.png"
+    "../data/035_power_drill/models/view_30_000_mask.png",
+    "../data/035_power_drill/models/view_30_001_mask.png",
+    "../data/035_power_drill/models/view_30_002_mask.png",
+    "../data/035_power_drill/models/view_30_003_mask.png",
+    "../data/035_power_drill/models/view_30_004_mask.png",
+    "../data/035_power_drill/models/view_30_005_mask.png",
+    "../data/035_power_drill/models/view_30_006_mask.png",
+    "../data/035_power_drill/models/view_30_007_mask.png",
+    "../data/035_power_drill/models/view_30_008_mask.png",
+    "../data/035_power_drill/models/view_30_009_mask.png",
 
+    "../data/035_power_drill/models/view_60_000_mask.png",
+    "../data/035_power_drill/models/view_60_001_mask.png",
+    "../data/035_power_drill/models/view_60_002_mask.png",
+    "../data/035_power_drill/models/view_60_003_mask.png",
+    "../data/035_power_drill/models/view_60_004_mask.png",
+    "../data/035_power_drill/models/view_60_005_mask.png",
+    "../data/035_power_drill/models/view_60_006_mask.png",
+    "../data/035_power_drill/models/view_60_007_mask.png",
+    "../data/035_power_drill/models/view_60_008_mask.png",
+    "../data/035_power_drill/models/view_60_009_mask.png",
 };
 
 int main() {
 
     // Defining the path of the image to test the algorithm on.
-    std::string immagineTestPath = "../data/004_sugar_box/test_images/4_0001_000956-color.jpg";
+    std::string immagineTestPath = "../data/035_power_drill/test_images/35_0054_001329-color.jpg";
     // Defining the path of the folder with all the models images.
-    std::string modelsFolderPath = "../data/004_sugar_box/models/";
+    std::string modelsFolderPath = "../data/035_power_drill/models/";
 
     // Defining the confidence threshold for the test.
     double confidenceThreshold = 0.3;
     // Defining a vector of double values for all the scales to test the template on.
     std::vector<double> scales = generateScales(0.75, 1.5, 0.25);
     // Defining a vector of double values for all the inclinations to test the template on.
-    std::vector<double> angles = generateAngles(-60, 60, 15); 
+    std::vector<double> angles = generateAngles(-30, 30, 5); 
 
     // Loading the image in both color scale and grey scale to test both.
     cv::Mat imgTestColor = cv::imread(immagineTestPath, cv::IMREAD_COLOR);
@@ -90,7 +166,7 @@ int main() {
 
 
     cv::blur(imgTestColor, imgTestColor, cv::Size(4,4));
-    imgTestColor = normalizeMinMax(imgTestColor);
+    imgTestColor = equalizeRGB(imgTestColor);
     cv::namedWindow("Normalize");
     cv::imshow("Normalize", imgTestColor);
 
@@ -125,7 +201,7 @@ int main() {
         cv::Mat mask3ch;
         cv::cvtColor(maskCropped, mask3ch, cv::COLOR_GRAY2BGR);
         cv::bitwise_and(templCropped, mask3ch, templCropped);
-        templCropped = normalizeMinMax(templCropped);
+        templCropped = equalizeRGB(templCropped);
 
         //cv::imshow(models_paths[i], templGrayOriginal);
 
