@@ -4,12 +4,10 @@
 #include <filesystem>
 #include <opencv2/opencv.hpp>
 #include <cmath> 
-# include "../include/graphic.h"
+#include "../include/graphic.h"
 
-// Declaring the namespace with the filesystem of the current OS.
 namespace fs = std::filesystem;
 
-// Generate scales between minScale and maxScale with step equal to step.
 std::vector<double> generateScales(double minScale, double maxScale, double step) {
     std::vector<double> scales;
     for (double s = minScale; s <= maxScale; s += step) {
@@ -18,7 +16,6 @@ std::vector<double> generateScales(double minScale, double maxScale, double step
     return scales;
 }
 
-// Generate angles between minAngle and maxAngle with step equal to step.
 std::vector<double> generateAngles(double minAngle, double maxAngle, double step) {
     std::vector<double> angles;
     for (double a = minAngle; a <= maxAngle; a += step) {
@@ -27,16 +24,12 @@ std::vector<double> generateAngles(double minAngle, double maxAngle, double step
     return angles;
 }
 
-// Function to crop image to non-black region using mask
 cv::Mat cropToMask(const cv::Mat& image, const cv::Mat& mask) {
-    // Find bounding box of non-zero pixels in mask
     cv::Rect bbox = cv::boundingRect(mask);
-    // Crop both image and mask to this region
     return image(bbox).clone();
 }
-
-
-const   std::string models_paths[] = {
+   
+const std::string models_paths[] = {
     "../data/004_sugar_box/models/view_0_001_color.png",
     "../data/004_sugar_box/models/view_0_002_color.png",
     "../data/004_sugar_box/models/view_0_003_color.png",
@@ -69,7 +62,6 @@ const   std::string models_paths[] = {
     "../data/004_sugar_box/models/view_60_008_color.png",
     "../data/004_sugar_box/models/view_60_009_color.png",
 };
-
 
 const std::string mask_paths[] = {
     "../data/004_sugar_box/models/view_0_001_mask.png",
@@ -106,122 +98,106 @@ const std::string mask_paths[] = {
 };
 
 int main() {
-
-    // Defining the path of the image to test the algorithm on.
     std::string immagineTestPath = "../data/004_sugar_box/test_images/4_0001_000956-color.jpg";
-    // Defining the path of the folder with all the models images.
-    std::string modelsFolderPath = "../data/004_sugar_box/models/";
-
-    // Defining the confidence threshold for the test.
     double confidenceThreshold = 0.4;
-    // Defining a vector of double values for all the scales to test the template on.
     std::vector<double> scales = generateScales(0.75, 1.5, 0.25);
-    // Defining a vector of double values for all the inclinations to test the template on.
     std::vector<double> angles = generateAngles(-30, 30, 5); 
 
-    // Loading the image in both color scale and grey scale to test both.
     cv::Mat imgTestColor = cv::imread(immagineTestPath, cv::IMREAD_COLOR);
-    cv::Mat imgTestGray = cv::imread(immagineTestPath, cv::IMREAD_GRAYSCALE);
-
-    // Testing the validity of both the Mat objects.
-    if (imgTestColor.empty() || imgTestGray.empty()) {
-        // If one of the images was not present in the path, print error message and quit.
-        std::cerr << "Errore nel caricamento dell'immagine di test." << std::endl;
+    if (imgTestColor.empty()) {
+        std::cerr << "Error loading test image." << std::endl;
         return -1;
     }
 
-
     double maxValGlobal = -1;
-    // Point object to store the point of higher probability for a match. 
     cv::Point maxLocGlobal;
-    // Size object for storing the size of the maxLocGlobal point. 
     cv::Size templateSizeGlobal;
-
     double best_angle = 90;
     double best_scale = 2;
     cv::Mat best_model = cv::imread(immagineTestPath);
 
+    for (int i = 0; i < 30; i++) {
+        cv::Mat templColorOriginal = cv::imread(models_paths[i], cv::IMREAD_COLOR);
+        cv::Mat templMask = cv::imread(mask_paths[i], cv::IMREAD_GRAYSCALE);
+        
+        if (templColorOriginal.empty() || templMask.empty()) {
+            std::cerr << "Error loading template or mask: " << models_paths[i] << std::endl;
+            continue;
+        }
 
-    // Iterating through all the possible models images in the directory.
-    for (int i = 0; i < 10; i++) {
-
-        // Creating a variable of type Mat with the loaded model image in grayscale.
-        cv::Mat templGrayOriginal = cv::imread(models_paths[i], cv::IMREAD_GRAYSCALE);
-        //cv::Mat templMask = cv::imread(mask_paths[i], cv::IMREAD_GRAYSCALE);
-        // Ensure mask is binary (0 or 255)
         cv::threshold(templMask, templMask, 127, 255, cv::THRESH_BINARY);
-
-
-        // Crop template to mask region
-        cv::Mat templCropped = cropToMask(templGrayOriginal, templMask);
+        cv::Mat templCropped = cropToMask(templColorOriginal, templMask);
         cv::Mat maskCropped = cropToMask(templMask, templMask);
+        templColorOriginal = templCropped.clone();
         templMask = maskCropped.clone();
-        templGrayOriginal = templCropped.clone();
 
-        cv::bitwise_and(templGrayOriginal, templMask, templGrayOriginal);
-        //cv::imshow(models_paths[i], templGrayOriginal);
+        for (double scale : scales) {
+            cv::Mat templColorResized;
+            cv::Mat maskResized;
+            cv::resize(templColorOriginal, templColorResized, cv::Size(), scale, scale);
+            cv::resize(templMask, maskResized, cv::Size(), scale, scale, cv::INTER_NEAREST); // Use nearest neighbor for mask
+            
+            // Ensure mask is still binary after resizing
+            cv::threshold(maskResized, maskResized, 127, 255, cv::THRESH_BINARY);
 
-        // Checking if the loaded model image is valid.
-        if (!templGrayOriginal.empty()) {
-            // Iterating over all the possible scales.
-            for (double scale : scales) {
-                // Resizing the template image with current scale configuration.
-                cv::Mat templGrayResized;
-                cv::resize(templGrayOriginal, templGrayResized, cv::Size(), scale, scale);
+            for (double angle : angles) {
+                // Rotate both template and mask
+                graphic templRotated(templColorResized);
+                graphic maskRotated(maskResized);
+                
+                templRotated.rotateImage(angle);
+                maskRotated.rotateImage(angle);
+                
+                cv::Mat rotatedTemplate = templRotated.getImage();
+                cv::Mat rotatedMask = maskRotated.getImage();
+                
+                // Ensure mask is still binary after rotation
+                cv::threshold(rotatedMask, rotatedMask, 127, 255, cv::THRESH_BINARY);
 
-                // Combining all the possible angles for the rotation of the template.
-                for (double angle : angles) {
-                    // Rotating the current scale image.
-                    graphic templGrayRotated = graphic(templGrayResized);
-                    templGrayRotated.rotateImage(angle);
+                // Verify sizes match
+                if (rotatedTemplate.size() != rotatedMask.size()) {
+                    std::cerr << "Size mismatch after rotation!" << std::endl;
+                    continue;
+                }
 
-                    // Checking if the current test image is bigger in width and height than the template.
-                    if (imgTestGray.cols >= templGrayRotated.cols() && imgTestGray.rows >= templGrayRotated.rows()) {
-
-                        // Storing the result if the template sliding process in "result" variable.
-                        cv::Mat result;
-                        // Using the TM_CCOEFF_NORMED method.
-                        cv::matchTemplate(imgTestGray, templGrayRotated.getImage(), result, cv::TM_CCOEFF_NORMED);
-                        // Storing the mininmum and maximum values and location among all the possible positions.
-                        double minVal; double maxVal;
-                        cv::Point minLoc; cv::Point maxLoc;
+                if (imgTestColor.cols >= rotatedTemplate.cols && imgTestColor.rows >= rotatedTemplate.rows) {
+                    cv::Mat result;
+                    try {
+                        cv::matchTemplate(imgTestColor, rotatedTemplate, result, cv::TM_CCOEFF_NORMED, rotatedMask);
+                        
+                        double minVal, maxVal;
+                        cv::Point minLoc, maxLoc;
                         cv::minMaxLoc(result, &minVal, &maxVal, &minLoc, &maxLoc);
 
-                        // Checking if the maximum value found in the current configuration is better than the global one.
                         if (maxVal > maxValGlobal) {
-                            // Fixing the new global maximum value amd position.
                             maxValGlobal = maxVal;
-                            maxLocGlobal = cv::Point(cvRound(maxLoc.x), cvRound(maxLoc.y));
-                            // Storin git merge dev-mattia 
-g the size of the current template.
-                            templateSizeGlobal = cv::Size(templGrayRotated.cols(), templGrayRotated.rows());
+                            maxLocGlobal = maxLoc;
+                            templateSizeGlobal = rotatedTemplate.size();
                             best_scale = scale;
                             best_angle = angle;
-                            best_model = templGrayOriginal.clone();
+                            best_model = templColorOriginal.clone();
                         }
+                    } catch (cv::Exception& e) {
+                        std::cerr << "Error in matchTemplate: " << e.what() << std::endl;
                     }
                 }
             }
         }
-    
     }
 
-    // Checking whether the maximum value found among all the configuration is good enough.
     if (maxValGlobal > confidenceThreshold) {
-        // Painting the rectangle around the position of higher matching value. 
         cv::Point topLeft = maxLocGlobal;
         cv::Point bottomRight(topLeft.x + templateSizeGlobal.width, topLeft.y + templateSizeGlobal.height);
         cv::rectangle(imgTestColor, topLeft, bottomRight, cv::Scalar(0, 255, 0), 2);
         std::cout << "Object detected with confidence score: " << maxValGlobal << std::endl;
     } else {
-        std::cout << "No suffuciently good corrispondence found among all templates (threshold: " << confidenceThreshold << "). Max confidence: " << maxValGlobal << std::endl;
+        std::cout << "No good match found (threshold: " << confidenceThreshold 
+                  << "). Max confidence: " << maxValGlobal << std::endl;
     }
 
-    std::cout<<"Best angle is: "<<best_angle<<std::endl;
-    std::cout<<"Best scale is: "<<best_scale<<std::endl;
-    cv::namedWindow("Best template");
+    std::cout << "Best angle: " << best_angle << ", Best scale: " << best_scale << std::endl;
     cv::imshow("Best template", best_model);
-    cv::imshow("Image with detected object", imgTestColor);
+    cv::imshow("Detection Result", imgTestColor);
     cv::waitKey(0);
 
     return 0;

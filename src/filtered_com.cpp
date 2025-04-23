@@ -11,16 +11,89 @@
 #include "opencv2/core.hpp"
 #include "opencv2/core/types.hpp"
 #include "opencv2/imgcodecs.hpp"
-#ifdef HAVE_OPENCV_XFEATURES2D
 #include "opencv2/highgui.hpp"
 #include "opencv2/features2d.hpp"
 #include "opencv2/imgproc.hpp"
 #include "opencv2/xfeatures2d.hpp"
+#include <unordered_set>
 
 using namespace cv;
 using namespace cv::xfeatures2d;
 using std::cout;
 using std::endl;
+
+
+
+void segmKMeans(cv::Mat& image, const std::vector<cv::Point>& activationPoints) {
+    cv::Mat samples = cv::Mat(image.rows * image.cols, 3, CV_32F);
+    
+    // Prepare data for k-means
+    for (int y = 0; y < image.rows; y++) {
+        for (int x = 0; x < image.cols; x++) {
+            for (int z = 0; z < 3; z++) {
+                samples.at<float>(y + x * image.rows, z) = image.at<cv::Vec3b>(y, x)[z];
+            }
+        }
+    }
+    
+    // Number of clusters
+    int clusterCount = 15;
+    Mat labels;
+    int attempts = 5;
+    Mat centers;
+    
+    // Using k-means
+    kmeans(samples, clusterCount, labels, TermCriteria(TermCriteria::MAX_ITER | TermCriteria::EPS, 10000, 0.0001), 
+           attempts, KMEANS_PP_CENTERS, centers);
+    
+    // Find which clusters to activate based on input points
+    unordered_set<int> activeClusters;
+    for (const Point& pt : activationPoints) {
+        if (pt.x >= 0 && pt.x < image.cols && pt.y >= 0 && pt.y < image.rows) {
+            int idx = pt.y + pt.x * image.rows;
+            activeClusters.insert(labels.at<int>(idx, 0));
+        }
+    }
+    
+    // Create segmented image showing only active clusters
+    Mat segmented = Mat::zeros(image.size(), image.type());
+    for (int y = 0; y < image.rows; y++) {
+        for (int x = 0; x < image.cols; x++) {
+            int cluster_idx = labels.at<int>(y + x * image.rows, 0);
+            if (activeClusters.find(cluster_idx) != activeClusters.end()) {
+                segmented.at<Vec3b>(y, x)[0] = centers.at<float>(cluster_idx, 0);
+                segmented.at<Vec3b>(y, x)[1] = centers.at<float>(cluster_idx, 1);
+                segmented.at<Vec3b>(y, x)[2] = centers.at<float>(cluster_idx, 2);
+            }
+        }
+    }
+    
+    // Create visualization with original image and segmented parts
+    Mat display;
+    image.copyTo(display);
+    for (int y = 0; y < image.rows; y++) {
+        for (int x = 0; x < image.cols; x++) {
+            int cluster_idx = labels.at<int>(y + x * image.rows, 0);
+            if (activeClusters.find(cluster_idx) != activeClusters.end()) {
+                // Blend original with segmented color
+                display.at<Vec3b>(y, x) = 0.7 * image.at<Vec3b>(y, x) + 0.3 * segmented.at<Vec3b>(y, x);
+            }
+        }
+    }
+    
+    // Mark activation points on the image
+    for (const Point& pt : activationPoints) {
+        if (pt.x >= 0 && pt.x < image.cols && pt.y >= 0 && pt.y < image.rows) {
+            circle(display, pt, 5, Scalar(0, 0, 255), FILLED);
+        }
+    }
+    
+    // Display results
+    imshow("Original Image", image);
+    imshow("Selected Segments", segmented);
+    imshow("Highlighted Segments", display);
+    waitKey(0);
+}
 
 int main(int argc, char* argv[]) {
 
@@ -107,7 +180,7 @@ int main(int argc, char* argv[]) {
     }
 
     // Filter matches using the Lowe's ratio test.
-    const float ratio_thresh = 0.7;
+    const float ratio_thresh = 0.8;
     std::vector<DMatch> good_matches;
     for (size_t i = 0; i < knn_matches.size(); i++) {
         if (knn_matches[i][0].distance < ratio_thresh * knn_matches[i][1].distance) {
@@ -139,7 +212,7 @@ int main(int argc, char* argv[]) {
     }
 
     //-- Step 3: Filter matches based on distance to the center of mass
-    float max_distance_threshold = 100; // Adjust this threshold as needed
+    float max_distance_threshold = 200; // Adjust this threshold as needed
     std::vector<DMatch> filtered_matches;;
 
     total_sum_x = 0;
@@ -178,6 +251,9 @@ int main(int argc, char* argv[]) {
         circle(scene_with_centers, new_com, radius_center, color_center, thickness_center);
     imshow("Scene with Filtered Center of Mass", scene_with_centers);
 
+    // Activate segment in center if mass:
+
+
 
     // -- Draw the filtered matches
     Mat scene_matches;
@@ -210,12 +286,5 @@ int main(int argc, char* argv[]) {
     waitKey();
     return 0;
 }
-#else
-int main()
-{
-    std::cout << "This tutorial code needs the xfeatures2d contrib module to be run." << std::endl;
-    return 0;
-}
-#endif
 
 //004_sugar_box 366 172 504 446
