@@ -60,7 +60,7 @@ void segmentaOggetti(Mat& image) {
 
 int main(int argc, char** argv) {
     // Carica l'immagine
-    Mat image = imread("../../data/004_sugar_box/test_images/4_0001_000121-color.jpg");
+    Mat image = imread("../data/004_sugar_box/test_images/4_0001_000121-color.jpg");
 
     if (image.empty()) {
         cout << "Impossibile caricare l'immagine" << endl;
