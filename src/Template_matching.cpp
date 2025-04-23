@@ -35,74 +35,32 @@ cv::Mat cropToMask(const cv::Mat& image, const cv::Mat& mask) {
     return image(bbox).clone();
 }
 
+cv::Mat normalizeMinMax(const cv::Mat& input) {
+    cv::Mat normalized;
+    // Split into channels
+    std::vector<cv::Mat> channels;
+    cv::split(input, channels);
 
+    // Normalize each channel separately
+    for (int i = 0; i < 3; i++) {
+        cv::normalize(channels[i], channels[i], 0, 255, cv::NORM_MINMAX);
+    }
+
+    // Merge back
+    cv::merge(channels, normalized);
+    return normalized;
+}
+
+//view_0_003_color
 const   std::string models_paths[] = {
-    "../data/004_sugar_box/models/view_0_001_color.png",
-    "../data/004_sugar_box/models/view_0_002_color.png",
-    "../data/004_sugar_box/models/view_0_003_color.png",
-    "../data/004_sugar_box/models/view_0_004_color.png",
-    "../data/004_sugar_box/models/view_0_005_color.png",
-    "../data/004_sugar_box/models/view_0_006_color.png",
-    "../data/004_sugar_box/models/view_0_007_color.png",
-    "../data/004_sugar_box/models/view_0_008_color.png",
-    "../data/004_sugar_box/models/view_0_009_color.png",
-
-    "../data/004_sugar_box/models/view_30_000_color.png",
-    "../data/004_sugar_box/models/view_30_001_color.png",
-    "../data/004_sugar_box/models/view_30_002_color.png",
-    "../data/004_sugar_box/models/view_30_003_color.png",
-    "../data/004_sugar_box/models/view_30_004_color.png",
-    "../data/004_sugar_box/models/view_30_005_color.png",
-    "../data/004_sugar_box/models/view_30_006_color.png",
-    "../data/004_sugar_box/models/view_30_007_color.png",
-    "../data/004_sugar_box/models/view_30_008_color.png",
-    "../data/004_sugar_box/models/view_30_009_color.png",
-
-    "../data/004_sugar_box/models/view_60_000_color.png",
-    "../data/004_sugar_box/models/view_60_001_color.png",
-    "../data/004_sugar_box/models/view_60_002_color.png",
-    "../data/004_sugar_box/models/view_60_003_color.png",
-    "../data/004_sugar_box/models/view_60_004_color.png",
-    "../data/004_sugar_box/models/view_60_005_color.png",
-    "../data/004_sugar_box/models/view_60_006_color.png",
-    "../data/004_sugar_box/models/view_60_007_color.png",
-    "../data/004_sugar_box/models/view_60_008_color.png",
-    "../data/004_sugar_box/models/view_60_009_color.png",
+    "../data/004_sugar_box/models/view_0_003_color.png"
 };
 
 
 const std::string mask_paths[] = {
-    "../data/004_sugar_box/models/view_0_001_mask.png",
-    "../data/004_sugar_box/models/view_0_002_mask.png",
-    "../data/004_sugar_box/models/view_0_003_mask.png",
-    "../data/004_sugar_box/models/view_0_004_mask.png",
-    "../data/004_sugar_box/models/view_0_005_mask.png",
-    "../data/004_sugar_box/models/view_0_006_mask.png",
-    "../data/004_sugar_box/models/view_0_007_mask.png",
-    "../data/004_sugar_box/models/view_0_008_mask.png",
-    "../data/004_sugar_box/models/view_0_009_mask.png",
 
-    "../data/004_sugar_box/models/view_30_000_mask.png",
-    "../data/004_sugar_box/models/view_30_001_mask.png",
-    "../data/004_sugar_box/models/view_30_002_mask.png",
-    "../data/004_sugar_box/models/view_30_003_mask.png",
-    "../data/004_sugar_box/models/view_30_004_mask.png",
-    "../data/004_sugar_box/models/view_30_005_mask.png",
-    "../data/004_sugar_box/models/view_30_006_mask.png",
-    "../data/004_sugar_box/models/view_30_007_mask.png",
-    "../data/004_sugar_box/models/view_30_008_mask.png",
-    "../data/004_sugar_box/models/view_30_009_mask.png",
+    "../data/004_sugar_box/models/view_0_003_mask.png"
 
-    "../data/004_sugar_box/models/view_60_000_mask.png",
-    "../data/004_sugar_box/models/view_60_001_mask.png",
-    "../data/004_sugar_box/models/view_60_002_mask.png",
-    "../data/004_sugar_box/models/view_60_003_mask.png",
-    "../data/004_sugar_box/models/view_60_004_mask.png",
-    "../data/004_sugar_box/models/view_60_005_mask.png",
-    "../data/004_sugar_box/models/view_60_006_mask.png",
-    "../data/004_sugar_box/models/view_60_007_mask.png",
-    "../data/004_sugar_box/models/view_60_008_mask.png",
-    "../data/004_sugar_box/models/view_60_009_mask.png",
 };
 
 int main() {
@@ -113,11 +71,11 @@ int main() {
     std::string modelsFolderPath = "../data/004_sugar_box/models/";
 
     // Defining the confidence threshold for the test.
-    double confidenceThreshold = 0.4;
+    double confidenceThreshold = 0.3;
     // Defining a vector of double values for all the scales to test the template on.
     std::vector<double> scales = generateScales(0.75, 1.5, 0.25);
     // Defining a vector of double values for all the inclinations to test the template on.
-    std::vector<double> angles = generateAngles(-30, 30, 5); 
+    std::vector<double> angles = generateAngles(-60, 60, 15); 
 
     // Loading the image in both color scale and grey scale to test both.
     cv::Mat imgTestColor = cv::imread(immagineTestPath, cv::IMREAD_COLOR);
@@ -131,6 +89,11 @@ int main() {
     }
 
 
+    cv::blur(imgTestColor, imgTestColor, cv::Size(4,4));
+    imgTestColor = normalizeMinMax(imgTestColor);
+    cv::namedWindow("Normalize");
+    cv::imshow("Normalize", imgTestColor);
+
     double maxValGlobal = -1;
     // Point object to store the point of higher probability for a match. 
     cv::Point maxLocGlobal;
@@ -139,49 +102,73 @@ int main() {
 
     double best_angle = 90;
     double best_scale = 2;
+    int best_k = 1;
     cv::Mat best_model = cv::imread(immagineTestPath);
 
 
     // Iterating through all the possible models images in the directory.
-    for (int i = 0; i < 10; i++) {
+    for (int i = 0; i < size(models_paths); i++) {   //size(models_paths)
 
         // Creating a variable of type Mat with the loaded model image in grayscale.
-        cv::Mat templGrayOriginal = cv::imread(models_paths[i], cv::IMREAD_GRAYSCALE);
-        //cv::Mat templMask = cv::imread(mask_paths[i], cv::IMREAD_GRAYSCALE);
+        cv::Mat templColorOriginal = cv::imread(models_paths[i], cv::IMREAD_COLOR);
+        cv::Mat templMask = cv::imread(mask_paths[i], cv::IMREAD_GRAYSCALE);
         // Ensure mask is binary (0 or 255)
         cv::threshold(templMask, templMask, 127, 255, cv::THRESH_BINARY);
 
 
         // Crop template to mask region
-        cv::Mat templCropped = cropToMask(templGrayOriginal, templMask);
+        cv::Mat templCropped = cropToMask(templColorOriginal, templMask);
         cv::Mat maskCropped = cropToMask(templMask, templMask);
         templMask = maskCropped.clone();
-        templGrayOriginal = templCropped.clone();
+        templColorOriginal = templCropped.clone();
 
-        cv::bitwise_and(templGrayOriginal, templMask, templGrayOriginal);
+        cv::Mat mask3ch;
+        cv::cvtColor(maskCropped, mask3ch, cv::COLOR_GRAY2BGR);
+        cv::bitwise_and(templCropped, mask3ch, templCropped);
+        templCropped = normalizeMinMax(templCropped);
+
         //cv::imshow(models_paths[i], templGrayOriginal);
 
         // Checking if the loaded model image is valid.
-        if (!templGrayOriginal.empty()) {
+        if (!templCropped.empty()) {
+            for(int k = -4; k < 4; k++){
+                float scale = 1.0f - k * 0.1f;
+
+                for(int i = 0; i < templCropped.rows; i++){
+                        for(int j = 0; j < templCropped.cols; j++){
+                            cv::Vec3b color = templCropped.at<cv::Vec3b>(i,j);
+                            if(color[0]*scale < 255 && color[1]*scale < 255 && color[2]*scale < 255){
+                                templCropped.at<cv::Vec3b>(i,j)[0] = templCropped.at<cv::Vec3b>(i,j)[0]*scale;
+                                templCropped.at<cv::Vec3b>(i,j)[1] = templCropped.at<cv::Vec3b>(i,j)[1]*scale;
+                                templCropped.at<cv::Vec3b>(i,j)[2] = templCropped.at<cv::Vec3b>(i,j)[2]*scale;
+                            }
+                        }
+                    }
+            
+            cv::namedWindow("Cropped");
+            cv::imshow("Cropped", templCropped);
+
+            
             // Iterating over all the possible scales.
             for (double scale : scales) {
                 // Resizing the template image with current scale configuration.
-                cv::Mat templGrayResized;
-                cv::resize(templGrayOriginal, templGrayResized, cv::Size(), scale, scale);
+                cv::Mat templColorResized;
+                cv::resize(templCropped, templColorResized, cv::Size(), scale, scale);
 
                 // Combining all the possible angles for the rotation of the template.
                 for (double angle : angles) {
                     // Rotating the current scale image.
-                    graphic templGrayRotated = graphic(templGrayResized);
-                    templGrayRotated.rotateImage(angle);
+                    graphic templColorRotated = graphic(templColorResized);
+                    templColorRotated.rotateImage(angle);
 
                     // Checking if the current test image is bigger in width and height than the template.
-                    if (imgTestGray.cols >= templGrayRotated.cols() && imgTestGray.rows >= templGrayRotated.rows()) {
+                    if (imgTestColor.cols >= templColorRotated.cols() && imgTestColor.rows >= templColorRotated.rows()) {
 
+                        
                         // Storing the result if the template sliding process in "result" variable.
                         cv::Mat result;
                         // Using the TM_CCOEFF_NORMED method.
-                        cv::matchTemplate(imgTestGray, templGrayRotated.getImage(), result, cv::TM_CCOEFF_NORMED);
+                        cv::matchTemplate(imgTestColor, templColorRotated.getImage(), result, cv::TM_CCOEFF_NORMED);
                         // Storing the mininmum and maximum values and location among all the possible positions.
                         double minVal; double maxVal;
                         cv::Point minLoc; cv::Point maxLoc;
@@ -192,18 +179,18 @@ int main() {
                             // Fixing the new global maximum value amd position.
                             maxValGlobal = maxVal;
                             maxLocGlobal = cv::Point(cvRound(maxLoc.x), cvRound(maxLoc.y));
-                            // Storin git merge dev-mattia 
-g the size of the current template.
-                            templateSizeGlobal = cv::Size(templGrayRotated.cols(), templGrayRotated.rows());
+                            // Storin git merge dev-mattia g the size of the current template.
+                            templateSizeGlobal = cv::Size(templColorRotated.cols(), templColorRotated.rows());
                             best_scale = scale;
                             best_angle = angle;
-                            best_model = templGrayOriginal.clone();
+                            best_model = templCropped.clone();
+                            best_k = k;
                         }
                     }
                 }
             }
         }
-    
+      }
     }
 
     // Checking whether the maximum value found among all the configuration is good enough.
@@ -219,6 +206,7 @@ g the size of the current template.
 
     std::cout<<"Best angle is: "<<best_angle<<std::endl;
     std::cout<<"Best scale is: "<<best_scale<<std::endl;
+    std::cout<<"Best k is: "<<best_k<<std::endl;
     cv::namedWindow("Best template");
     cv::imshow("Best template", best_model);
     cv::imshow("Image with detected object", imgTestColor);
