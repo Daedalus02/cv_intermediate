@@ -27,6 +27,14 @@ std::vector<double> generateAngles(double minAngle, double maxAngle, double step
     return angles;
 }
 
+// Function to crop image to non-black region using mask
+cv::Mat cropToMask(const cv::Mat& image, const cv::Mat& mask) {
+    // Find bounding box of non-zero pixels in mask
+    cv::Rect bbox = cv::boundingRect(mask);
+    // Crop both image and mask to this region
+    return image(bbox).clone();
+}
+
 
 const   std::string models_paths[] = {
     "../data/004_sugar_box/models/view_0_001_color.png",
@@ -100,7 +108,7 @@ const std::string mask_paths[] = {
 int main() {
 
     // Defining the path of the image to test the algorithm on.
-    std::string immagineTestPath = "../data/004_sugar_box/test_images/4_0049_000003-color.jpg";
+    std::string immagineTestPath = "../data/004_sugar_box/test_images/4_0001_000956-color.jpg";
     // Defining the path of the folder with all the models images.
     std::string modelsFolderPath = "../data/004_sugar_box/models/";
 
@@ -142,6 +150,13 @@ int main() {
         //cv::Mat templMask = cv::imread(mask_paths[i], cv::IMREAD_GRAYSCALE);
         // Ensure mask is binary (0 or 255)
         cv::threshold(templMask, templMask, 127, 255, cv::THRESH_BINARY);
+
+
+        // Crop template to mask region
+        cv::Mat templCropped = cropToMask(templGrayOriginal, templMask);
+        cv::Mat maskCropped = cropToMask(templMask, templMask);
+        templMask = maskCropped.clone();
+        templGrayOriginal = templCropped.clone();
 
         cv::bitwise_and(templGrayOriginal, templMask, templGrayOriginal);
         //cv::imshow(models_paths[i], templGrayOriginal);
