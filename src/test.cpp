@@ -37,18 +37,6 @@ struct Vec3bCompare {
     }
 };
 
-/**
- * @brief Finds all Mean Shift segments that contain at least one feature match.
- *
- * Iterates through the provided matches, identifies the segment color under each match
- * in the segmented image, and creates a mask for each unique segment color found.
- *
- * @param segmented_bgr The BGR image output by Mean Shift segmentation.
- * @param matches The vector of filtered DMatch objects.
- * @param sceneKeypoints The vector of keypoints detected in the scene image.
- * @return A vector of CV_8U binary masks. Each mask corresponds to a unique
- *         segment from the Mean Shift output that contained at least one match.
- */
 std::vector<Mat> findSegmentsWithMatches(const Mat& segmented_bgr,
                                         const std::vector<DMatch>& matches,
                                         const std::vector<KeyPoint>& sceneKeypoints)
@@ -320,6 +308,7 @@ int main(int argc, char* argv[]) {
         if (pt.x > bottomRight.x)
             bottomRight.x = pt.x;
     }
+
     rectangle(scene_matches, topLeft, bottomRight, Scalar(255, 0, 0), 2, LINE_8); 
     // After computing filtered_matches and new_com:
     if (total_num_points > 0) { // Check if filtered matches exist before drawing CoM
