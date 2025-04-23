@@ -1,156 +1,227 @@
 #include <iostream>
+#include <string>
 #include <vector>
+#include <filesystem>
 #include <opencv2/opencv.hpp>
-#include "../include/graphic.h"
+#include <cmath> 
+# include "../include/graphic.h"
 
-// Configuration constants
-constexpr double CONFIDENCE_THRESHOLD = 0.4;
-const std::string TEST_IMAGE_PATH = "../data/004_sugar_box/test_images/4_0001_000956-color.jpg";
+// Declaring the namespace with the filesystem of the current OS.
+namespace fs = std::filesystem;
 
-// Template and mask paths
-const std::vector<std::string> MODEL_PATHS = {
-    "../data/004_sugar_box/models/view_0_001_color.png",
-    // ... [all your other paths]
-};
-
-const std::vector<std::string> MASK_PATHS = {
-    "../data/004_sugar_box/models/view_0_001_mask.png",
-    // ... [all your other masks]
-};
-
-struct MatchResult {
-    double maxVal;
-    cv::Point maxLoc;
-    cv::Size size;
-    double scale;
-    double angle;
-    cv::Mat bestTemplate;
-};
-
-// Generate a range of values with given step
-std::vector<double> generateRange(double min, double max, double step) {
-    std::vector<double> values;
-    for (double v = min; v <= max; v += step) {
-        values.push_back(v);
+// Generate scales between minScale and maxScale with step equal to step.
+std::vector<double> generateScales(double minScale, double maxScale, double step) {
+    std::vector<double> scales;
+    for (double s = minScale; s <= maxScale; s += step) {
+        scales.push_back(s);
     }
-    return values;
+    return scales;
 }
 
-// Load and preprocess template with its mask
-cv::Mat loadAndProcessTemplate(const std::string& templatePath, 
-                              const std::string& maskPath) {
-    cv::Mat templateImg = cv::imread(templatePath, cv::IMREAD_COLOR);
-    cv::Mat mask = cv::imread(maskPath, cv::IMREAD_GRAYSCALE);
-
-    if (templateImg.empty() || mask.empty()) {
-        throw std::runtime_error("Failed to load template or mask: " + templatePath);
+// Generate angles between minAngle and maxAngle with step equal to step.
+std::vector<double> generateAngles(double minAngle, double maxAngle, double step) {
+    std::vector<double> angles;
+    for (double a = minAngle; a <= maxAngle; a += step) {
+        angles.push_back(a);
     }
+    return angles;
+}
 
-    // Binarize mask
-    cv::threshold(mask, mask, 127, 255, cv::THRESH_BINARY);
-
-    // Crop to mask region
+// Function to crop image to non-black region using mask
+cv::Mat cropToMask(const cv::Mat& image, const cv::Mat& mask) {
+    // Find bounding box of non-zero pixels in mask
     cv::Rect bbox = cv::boundingRect(mask);
-    cv::Mat cropped = templateImg(bbox).clone();
-    cv::Mat croppedMask = mask(bbox).clone();
-
-    // Apply mask
-    cv::Mat mask3ch;
-    cv::cvtColor(croppedMask, mask3ch, cv::COLOR_GRAY2BGR);
-    cv::bitwise_and(cropped, mask3ch, cropped);
-
-    return cropped;
+    // Crop both image and mask to this region
+    return image(bbox).clone();
 }
 
-// Perform template matching at different scales and angles
-MatchResult matchTemplates(const cv::Mat& testImage, 
-                          const std::vector<cv::Mat>& templates,
-                          const std::vector<double>& scales,
-                          const std::vector<double>& angles) {
-    MatchResult bestResult;
-    bestResult.maxVal = -1;
 
-    for (const auto& templ : templates) {
-        for (double scale : scales) {
-            cv::Mat resizedTempl;
-            cv::resize(templ, resizedTempl, cv::Size(), scale, scale);
+const   std::string models_paths[] = {
+    "../data/004_sugar_box/models/view_0_001_color.png",
+    "../data/004_sugar_box/models/view_0_002_color.png",
+    "../data/004_sugar_box/models/view_0_003_color.png",
+    "../data/004_sugar_box/models/view_0_004_color.png",
+    "../data/004_sugar_box/models/view_0_005_color.png",
+    "../data/004_sugar_box/models/view_0_006_color.png",
+    "../data/004_sugar_box/models/view_0_007_color.png",
+    "../data/004_sugar_box/models/view_0_008_color.png",
+    "../data/004_sugar_box/models/view_0_009_color.png",
 
-            for (double angle : angles) {
-                graphic rotatedTempl(resizedTempl);
-                rotatedTempl.rotateImage(angle);
-                cv::Mat finalTempl = rotatedTempl.getImage();
+    "../data/004_sugar_box/models/view_30_000_color.png",
+    "../data/004_sugar_box/models/view_30_001_color.png",
+    "../data/004_sugar_box/models/view_30_002_color.png",
+    "../data/004_sugar_box/models/view_30_003_color.png",
+    "../data/004_sugar_box/models/view_30_004_color.png",
+    "../data/004_sugar_box/models/view_30_005_color.png",
+    "../data/004_sugar_box/models/view_30_006_color.png",
+    "../data/004_sugar_box/models/view_30_007_color.png",
+    "../data/004_sugar_box/models/view_30_008_color.png",
+    "../data/004_sugar_box/models/view_30_009_color.png",
 
-                if (testImage.cols < finalTempl.cols || testImage.rows < finalTempl.rows) {
-                    continue;
-                }
+    "../data/004_sugar_box/models/view_60_000_color.png",
+    "../data/004_sugar_box/models/view_60_001_color.png",
+    "../data/004_sugar_box/models/view_60_002_color.png",
+    "../data/004_sugar_box/models/view_60_003_color.png",
+    "../data/004_sugar_box/models/view_60_004_color.png",
+    "../data/004_sugar_box/models/view_60_005_color.png",
+    "../data/004_sugar_box/models/view_60_006_color.png",
+    "../data/004_sugar_box/models/view_60_007_color.png",
+    "../data/004_sugar_box/models/view_60_008_color.png",
+    "../data/004_sugar_box/models/view_60_009_color.png",
+};
 
-                cv::Mat result;
-                cv::matchTemplate(testImage, finalTempl, result, cv::TM_CCOEFF_NORMED);
 
-                double maxVal;
-                cv::Point maxLoc;
-                cv::minMaxLoc(result, nullptr, &maxVal, nullptr, &maxLoc);
+const std::string mask_paths[] = {
+    "../data/004_sugar_box/models/view_0_001_mask.png",
+    "../data/004_sugar_box/models/view_0_002_mask.png",
+    "../data/004_sugar_box/models/view_0_003_mask.png",
+    "../data/004_sugar_box/models/view_0_004_mask.png",
+    "../data/004_sugar_box/models/view_0_005_mask.png",
+    "../data/004_sugar_box/models/view_0_006_mask.png",
+    "../data/004_sugar_box/models/view_0_007_mask.png",
+    "../data/004_sugar_box/models/view_0_008_mask.png",
+    "../data/004_sugar_box/models/view_0_009_mask.png",
 
-                if (maxVal > bestResult.maxVal) {
-                    bestResult.maxVal = maxVal;
-                    bestResult.maxLoc = maxLoc;
-                    bestResult.size = finalTempl.size();
-                    bestResult.scale = scale;
-                    bestResult.angle = angle;
-                    bestResult.bestTemplate = templ.clone();
+    "../data/004_sugar_box/models/view_30_000_mask.png",
+    "../data/004_sugar_box/models/view_30_001_mask.png",
+    "../data/004_sugar_box/models/view_30_002_mask.png",
+    "../data/004_sugar_box/models/view_30_003_mask.png",
+    "../data/004_sugar_box/models/view_30_004_mask.png",
+    "../data/004_sugar_box/models/view_30_005_mask.png",
+    "../data/004_sugar_box/models/view_30_006_mask.png",
+    "../data/004_sugar_box/models/view_30_007_mask.png",
+    "../data/004_sugar_box/models/view_30_008_mask.png",
+    "../data/004_sugar_box/models/view_30_009_mask.png",
+
+    "../data/004_sugar_box/models/view_60_000_mask.png",
+    "../data/004_sugar_box/models/view_60_001_mask.png",
+    "../data/004_sugar_box/models/view_60_002_mask.png",
+    "../data/004_sugar_box/models/view_60_003_mask.png",
+    "../data/004_sugar_box/models/view_60_004_mask.png",
+    "../data/004_sugar_box/models/view_60_005_mask.png",
+    "../data/004_sugar_box/models/view_60_006_mask.png",
+    "../data/004_sugar_box/models/view_60_007_mask.png",
+    "../data/004_sugar_box/models/view_60_008_mask.png",
+    "../data/004_sugar_box/models/view_60_009_mask.png",
+};
+
+int main() {
+
+    // Defining the path of the image to test the algorithm on.
+    std::string immagineTestPath = "../data/004_sugar_box/test_images/4_0001_000956-color.jpg";
+    // Defining the path of the folder with all the models images.
+    std::string modelsFolderPath = "../data/004_sugar_box/models/";
+
+    // Defining the confidence threshold for the test.
+    double confidenceThreshold = 0.4;
+    // Defining a vector of double values for all the scales to test the template on.
+    std::vector<double> scales = generateScales(0.75, 1.5, 0.25);
+    // Defining a vector of double values for all the inclinations to test the template on.
+    std::vector<double> angles = generateAngles(-30, 30, 5); 
+
+    // Loading the image in both color scale and grey scale to test both.
+    cv::Mat imgTestColor = cv::imread(immagineTestPath, cv::IMREAD_COLOR);
+    cv::Mat imgTestGray = cv::imread(immagineTestPath, cv::IMREAD_GRAYSCALE);
+
+    // Testing the validity of both the Mat objects.
+    if (imgTestColor.empty() || imgTestGray.empty()) {
+        // If one of the images was not present in the path, print error message and quit.
+        std::cerr << "Errore nel caricamento dell'immagine di test." << std::endl;
+        return -1;
+    }
+
+
+    double maxValGlobal = -1;
+    // Point object to store the point of higher probability for a match. 
+    cv::Point maxLocGlobal;
+    // Size object for storing the size of the maxLocGlobal point. 
+    cv::Size templateSizeGlobal;
+
+    double best_angle = 90;
+    double best_scale = 2;
+    cv::Mat best_model = cv::imread(immagineTestPath);
+
+
+    // Iterating through all the possible models images in the directory.
+    for (int i = 0; i < size(models_paths); i++) {
+
+        // Creating a variable of type Mat with the loaded model image in grayscale.
+        cv::Mat templGrayOriginal = cv::imread(models_paths[i], cv::IMREAD_GRAYSCALE);
+        cv::Mat templMask = cv::imread(mask_paths[i], cv::IMREAD_GRAYSCALE);
+        // Ensure mask is binary (0 or 255)
+        cv::threshold(templMask, templMask, 127, 255, cv::THRESH_BINARY);
+
+
+        // Crop template to mask region
+        cv::Mat templCropped = cropToMask(templGrayOriginal, templMask);
+        cv::Mat maskCropped = cropToMask(templMask, templMask);
+        templMask = maskCropped.clone();
+        templGrayOriginal = templCropped.clone();
+
+        cv::bitwise_and(templGrayOriginal, templMask, templGrayOriginal);
+        //cv::imshow(models_paths[i], templGrayOriginal);
+
+        // Checking if the loaded model image is valid.
+        if (!templGrayOriginal.empty()) {
+            // Iterating over all the possible scales.
+            for (double scale : scales) {
+                // Resizing the template image with current scale configuration.
+                cv::Mat templGrayResized;
+                cv::resize(templGrayOriginal, templGrayResized, cv::Size(), scale, scale);
+
+                // Combining all the possible angles for the rotation of the template.
+                for (double angle : angles) {
+                    // Rotating the current scale image.
+                    graphic templGrayRotated = graphic(templGrayResized);
+                    templGrayRotated.rotateImage(angle);
+
+                    // Checking if the current test image is bigger in width and height than the template.
+                    if (imgTestGray.cols >= templGrayRotated.cols() && imgTestGray.rows >= templGrayRotated.rows()) {
+
+                        // Storing the result if the template sliding process in "result" variable.
+                        cv::Mat result;
+                        // Using the TM_CCOEFF_NORMED method.
+                        cv::matchTemplate(imgTestGray, templGrayRotated.getImage(), result, cv::TM_CCOEFF_NORMED);
+                        // Storing the mininmum and maximum values and location among all the possible positions.
+                        double minVal; double maxVal;
+                        cv::Point minLoc; cv::Point maxLoc;
+                        cv::minMaxLoc(result, &minVal, &maxVal, &minLoc, &maxLoc);
+
+                        // Checking if the maximum value found in the current configuration is better than the global one.
+                        if (maxVal > maxValGlobal) {
+                            // Fixing the new global maximum value amd position.
+                            maxValGlobal = maxVal;
+                            maxLocGlobal = cv::Point(cvRound(maxLoc.x), cvRound(maxLoc.y));
+                            // Storing the size of the current template.
+                            templateSizeGlobal = cv::Size(templGrayRotated.cols(), templGrayRotated.rows());
+                            best_scale = scale;
+                            best_angle = angle;
+                            best_model = templGrayOriginal.clone();
+                        }
+                    }
                 }
             }
         }
+    
     }
 
-    return bestResult;
-}
-
-int main() {
-    try {
-        // Load test image
-        cv::Mat testImage = cv::imread(TEST_IMAGE_PATH, cv::IMREAD_COLOR);
-        if (testImage.empty()) {
-            throw std::runtime_error("Failed to load test image");
-        }
-
-        // Generate search parameters
-        std::vector<double> scales = generateRange(0.75, 1.5, 0.25);
-        std::vector<double> angles = generateRange(-30, 30, 5);
-
-        // Load and preprocess all templates
-        std::vector<cv::Mat> templates;
-        for (size_t i = 0; i < MODEL_PATHS.size(); i++) {
-            templates.push_back(loadAndProcessTemplate(MODEL_PATHS[i], MASK_PATHS[i]));
-        }
-
-        // Perform template matching
-        MatchResult result = matchTemplates(testImage, templates, scales, angles);
-
-        // Display results
-        if (result.maxVal > CONFIDENCE_THRESHOLD) {
-            cv::rectangle(testImage, result.maxLoc,
-                         cv::Point(result.maxLoc.x + result.size.width,
-                                  result.maxLoc.y + result.size.height),
-                         cv::Scalar(0, 255, 0), 2);
-            std::cout << "Object detected with confidence: " << result.maxVal << std::endl;
-        } else {
-            std::cout << "No match found (best confidence: " << result.maxVal << ")" << std::endl;
-        }
-
-        std::cout << "Best angle: " << result.angle << "°" << std::endl;
-        std::cout << "Best scale: " << result.scale << std::endl;
-
-        if (!result.bestTemplate.empty()) {
-            cv::imshow("Best Template", result.bestTemplate);
-        }
-        cv::imshow("Detection Result", testImage);
-        cv::waitKey(0);
-
-    } catch (const std::exception& e) {
-        std::cerr << "Error: " << e.what() << std::endl;
-        return -1;
+    // Checking whether the maximum value found among all the configuration is good enough.
+    if (maxValGlobal > confidenceThreshold) {
+        // Painting the rectangle around the position of higher matching value. 
+        cv::Point topLeft = maxLocGlobal;
+        cv::Point bottomRight(topLeft.x + templateSizeGlobal.width, topLeft.y + templateSizeGlobal.height);
+        cv::rectangle(imgTestColor, topLeft, bottomRight, cv::Scalar(0, 255, 0), 2);
+        std::cout << "Object detected with confidence score: " << maxValGlobal << std::endl;
+    } else {
+        std::cout << "No suffuciently good corrispondence found among all templates (threshold: " << confidenceThreshold << "). Max confidence: " << maxValGlobal << std::endl;
     }
+
+    std::cout<<"Best angle is: "<<best_angle<<std::endl;
+    std::cout<<"Best scale is: "<<best_scale<<std::endl;
+    cv::namedWindow("Best template");
+    cv::imshow("Best template", best_model);
+    cv::imshow("Image with detected object", imgTestColor);
+    cv::waitKey(0);
 
     return 0;
 }
