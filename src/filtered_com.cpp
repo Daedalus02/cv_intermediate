@@ -206,6 +206,4 @@
      imshow("Filtered Matches on Scene", scene_matches);
      waitKey();
      return 0;
- }
- 
- //004_sugar_box 366 172 504 446
+}
