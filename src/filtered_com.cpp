@@ -9,16 +9,14 @@
 
 #include <iostream>
 #include "opencv2/core.hpp"
+#include "opencv2/core/hal/interface.h"
 #include "opencv2/core/types.hpp"
 #include "opencv2/imgcodecs.hpp"
-#ifdef HAVE_OPENCV_XFEATURES2D
 #include "opencv2/highgui.hpp"
 #include "opencv2/features2d.hpp"
 #include "opencv2/imgproc.hpp"
-#include "opencv2/xfeatures2d.hpp"
 
 using namespace cv;
-using namespace cv::xfeatures2d;
 using std::cout;
 using std::endl;
 
@@ -26,41 +24,39 @@ int main(int argc, char* argv[]) {
 
     // Models images.
     std::string models_paths[] = {
-        "../data/004_sugar_box/models/view_0_001_color.png",
-        "../data/004_sugar_box/models/view_0_002_color.png",
-        "../data/004_sugar_box/models/view_0_003_color.png",
-        "../data/004_sugar_box/models/view_0_004_color.png",
-        "../data/004_sugar_box/models/view_0_005_color.png",
-        "../data/004_sugar_box/models/view_0_006_color.png",
-        "../data/004_sugar_box/models/view_0_007_color.png",
-        "../data/004_sugar_box/models/view_0_008_color.png",
-        "../data/004_sugar_box/models/view_0_009_color.png",
-
-        "../data/004_sugar_box/models/view_30_000_color.png",
-        "../data/004_sugar_box/models/view_30_001_color.png",
-        "../data/004_sugar_box/models/view_30_002_color.png",
-        "../data/004_sugar_box/models/view_30_003_color.png",
-        "../data/004_sugar_box/models/view_30_004_color.png",
-        "../data/004_sugar_box/models/view_30_005_color.png",
-        "../data/004_sugar_box/models/view_30_006_color.png",
-        "../data/004_sugar_box/models/view_30_007_color.png",
-        "../data/004_sugar_box/models/view_30_008_color.png",
-        "../data/004_sugar_box/models/view_30_009_color.png",
-
-        "../data/004_sugar_box/models/view_60_000_color.png",
-        "../data/004_sugar_box/models/view_60_001_color.png",
-        "../data/004_sugar_box/models/view_60_002_color.png",
-        "../data/004_sugar_box/models/view_60_003_color.png",
-        "../data/004_sugar_box/models/view_60_004_color.png",
-        "../data/004_sugar_box/models/view_60_005_color.png",
-        "../data/004_sugar_box/models/view_60_006_color.png",
-        "../data/004_sugar_box/models/view_60_007_color.png",
-        "../data/004_sugar_box/models/view_60_008_color.png",
-        "../data/004_sugar_box/models/view_60_009_color.png",
+        "../data/035_power_drill/models/view_0_001_color.png",
+        "../data/035_power_drill/models/view_0_002_color.png",
+        "../data/035_power_drill/models/view_0_003_color.png",
+        "../data/035_power_drill/models/view_0_004_color.png",
+        "../data/035_power_drill/models/view_0_005_color.png",
+        "../data/035_power_drill/models/view_0_006_color.png",
+        "../data/035_power_drill/models/view_0_007_color.png",
+        "../data/035_power_drill/models/view_0_008_color.png",
+        "../data/035_power_drill/models/view_0_009_color.png",
+        "../data/035_power_drill/models/view_30_000_color.png",
+        "../data/035_power_drill/models/view_30_001_color.png",
+        "../data/035_power_drill/models/view_30_002_color.png",
+        "../data/035_power_drill/models/view_30_003_color.png",
+        "../data/035_power_drill/models/view_30_004_color.png",
+        "../data/035_power_drill/models/view_30_005_color.png",
+        "../data/035_power_drill/models/view_30_006_color.png",
+        "../data/035_power_drill/models/view_30_007_color.png",
+        "../data/035_power_drill/models/view_30_008_color.png",
+        "../data/035_power_drill/models/view_30_009_color.png",
+        "../data/035_power_drill/models/view_60_000_color.png",
+        "../data/035_power_drill/models/view_60_001_color.png",
+        "../data/035_power_drill/models/view_60_002_color.png",
+        "../data/035_power_drill/models/view_60_003_color.png",
+        "../data/035_power_drill/models/view_60_004_color.png",
+        "../data/035_power_drill/models/view_60_005_color.png",
+        "../data/035_power_drill/models/view_60_006_color.png",
+        "../data/035_power_drill/models/view_60_007_color.png",
+        "../data/035_power_drill/models/view_60_008_color.png",
+        "../data/035_power_drill/models/view_60_009_color.png",
     };
 
     // Scene image path.
-    std::string scene_path = "../data/004_sugar_box/test_images/4_0014_001409-color.jpg";
+    std::string scene_path = "../data/035_power_drill/test_images/35_0077_000519-color.jpg";
 
     // Define the models images.
     std::vector<Mat> models;
@@ -70,6 +66,8 @@ int main(int argc, char* argv[]) {
 
     // Define the scene image.
     Mat scene = imread(scene_path, IMREAD_GRAYSCALE);
+
+    blur(scene, scene, Size(3, 3));
 
     //-- Step 1: Detect the keypoints using SIFT Detector, compute the descriptors.
 
@@ -107,7 +105,7 @@ int main(int argc, char* argv[]) {
     }
 
     // Filter matches using the Lowe's ratio test.
-    const float ratio_thresh = 0.7;
+    const float ratio_thresh = 0.75;
     std::vector<DMatch> good_matches;
     for (size_t i = 0; i < knn_matches.size(); i++) {
         if (knn_matches[i][0].distance < ratio_thresh * knn_matches[i][1].distance) {
@@ -139,7 +137,7 @@ int main(int argc, char* argv[]) {
     }
 
     //-- Step 3: Filter matches based on distance to the center of mass
-    float max_distance_threshold = 100; // Adjust this threshold as needed
+    float max_distance_threshold = 170; // Adjust this threshold as needed
     std::vector<DMatch> filtered_matches;;
 
     total_sum_x = 0;
@@ -169,19 +167,21 @@ int main(int argc, char* argv[]) {
     }
 
     // Visualize the center of mass.
-    Mat scene_with_centers;
-    cvtColor(scene, scene_with_centers, COLOR_GRAY2BGR);
+    //Mat scene_with_centers;
+    //cvtColor(scene, scene_with_centers, COLOR_GRAY2BGR);
+    Mat scene_matches;
+    cvtColor(scene, scene_matches, COLOR_GRAY2BGR);
     Scalar color_center = Scalar(0, 0, 255);
     int radius_center = 5;
     int thickness_center = 2;
-    if (total_num_points > 0)
-        circle(scene_with_centers, new_com, radius_center, color_center, thickness_center);
-    imshow("Scene with Filtered Center of Mass", scene_with_centers);
+    if (total_num_points > 0) {
+        circle(scene_matches, new_com, radius_center, color_center, thickness_center);
+    }
 
 
     // -- Draw the filtered matches
-    Mat scene_matches;
-    cvtColor(scene, scene_matches, COLOR_GRAY2BGR);
+    //Mat scene_matches;
+    //cvtColor(scene, scene_matches, COLOR_GRAY2BGR);
     Scalar color = Scalar(0, 255, 0);
     int radius = 3;
     int thickness = 2;
@@ -207,15 +207,8 @@ int main(int argc, char* argv[]) {
     rectangle(scene_matches, topLeft, bottomRight, Scalar(255, 0, 0), 2, LINE_8); 
 
     imshow("Filtered Matches on Scene", scene_matches);
+
     waitKey();
     return 0;
 }
-#else
-int main()
-{
-    std::cout << "This tutorial code needs the xfeatures2d contrib module to be run." << std::endl;
-    return 0;
-}
-#endif
-
 //004_sugar_box 366 172 504 446
