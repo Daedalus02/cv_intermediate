@@ -1,0 +1,16 @@
+**/.DS_Store
+**/.o
+
+# Ignora tutti i file eseguibili generati
+*.exe
+*.out
+*.bin
+*.a
+*.so
+*.dll
+*.o          # File oggetto (C/C++)
+*.dylib      # Librerie dinamiche (macOS)
+
+# Ignora eseguibili senza estensione (comuni su Linux/macOS)
+/[!.]*       # Esclude file senza estensione (ma non .file_hidden)
+/*.app       # Applicazioni macOS
