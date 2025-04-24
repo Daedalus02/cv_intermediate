@@ -14,3 +14,18 @@
 # Ignora eseguibili senza estensione (comuni su Linux/macOS)
 /[!.]*       # Esclude file senza estensione (ma non .file_hidden)
 /*.app       # Applicazioni macOS
+
+
+# Alcuni file da ignorare che servivano per test
+include/graphic.h
+lib/graphic.cpp
+src/Template_matching.cpp
+src/contours.cpp
+src/filtered_com_with_slider.cpp
+src/kmeans.cpp
+src/mean_shift.cpp
+src/out
+src/segm.cpp
+src/temp
+src/test.cpp
+src/tmp2.cpp
