@@ -29,19 +29,23 @@ class PerformanceMetrics{
         {}
 
         // FUNCTION MEMBERS:
-        double compute_detection_accuracy();
-        
+        // Function to write in a file and computing in terminal the metrix for the scenepath CAMBIARE IN VOID in modo cche cosi crei in automatico il file e scriva per loutput delle metriche
+        double print_metrics();
+
     private:
         // DATA MEMBER:
         // paths to file of predicted labels and true labels for which apply the metrics
         std::string path_pred_labels, path_true_labels; 
+        // IoU for sugar, mustard and power_drill computed comparing pred labels with true labels
+        double IoU[3];
+        // Initialize a 3vec of falses values to track if some object is missing in the SCENE
+        bool miss[3] = {false, false, false};
 
         std::vector<cv:: Point2f> sugar_p, mustard_p, power_drill_p;
         std::vector<cv:: Point2f> sugar_t, mustard_t, power_drill_t;
         // PRIVATE FUNCTION:
-        
-        // This function compute the mean intersection over union.
-        //double compute_mIoU();
+        // Function to store in the data members the IoU and the missing items
+        void compute_IoU();
 
 };
 
@@ -49,12 +53,10 @@ class PerformanceMetrics{
     // This function returns the two point <x_max, y_max>, <x_min, y_min> given a line.
     //std::vector<cv::Point>
     void parser(const std::string& path , std::vector<cv:: Point2f>& sugar, std::vector<cv:: Point2f>& mustard, std::vector<cv:: Point2f>& power_drill);
-
     // DEBUG:
-    void printValue(std::vector<cv:: Point2f> v1, std::vector<cv:: Point2f> v2, std::vector<cv:: Point2f> v3);
+    void print_value(std::vector<cv:: Point2f> v1, std::vector<cv:: Point2f> v2, std::vector<cv:: Point2f> v3);
 
-    // Possible helper function to write in a text file the perfomances.
-    // ...
+
     
 
 
