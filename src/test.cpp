@@ -338,24 +338,28 @@ int main(int argc, char* argv[]) {
     cv::Rect overallBoundingBox; // Single bounding box for all segments
 
     if (!segmentMasks.empty()) {
+
         // 1. Combine all individual masks into one <<<<<<<<<<<<< COMBINING MASKS
         cv::Mat combinedMask = cv::Mat::zeros(sceneColor.size(), CV_8U);
         for (const auto& mask : segmentMasks) {
             if (!mask.empty() && mask.size() == combinedMask.size()) { // Basic check
+                // Adding the mask to the combinedMask variable
                 cv::bitwise_or(combinedMask, mask, combinedMask);
             }
         }
         cv::imshow("Combined Segment Mask", combinedMask); // Visualize the combined mask
 
-        // 2. Paint the segments onto a result image using the combined mask <<<<<< PAINTING COMBINED
+        // 2. Paint the segments onto a result image using the combined mask 
         paintedSegments = cv::Mat::zeros(sceneColor.size(), sceneColor.type());
-        sceneColor.copyTo(paintedSegments, combinedMask); // Use COMBINED mask
+        // Use combinedMask to print in painted Segment the only part of the scene that are 1s in the mask
+        sceneColor.copyTo(paintedSegments, combinedMask); 
 
         // 3. Find contours on the combined mask to get the overall bounding box <<<<<<< OVERALL BOX
         std::vector<std::vector<cv::Point>> contours;
         cv::findContours(combinedMask.clone(), contours, cv::RETR_EXTERNAL, cv::CHAIN_APPROX_SIMPLE);
 
         if (!contours.empty()) {
+
             // Calculate a single bounding box encompassing all found contours
             overallBoundingBox = cv::boundingRect(contours[0]);
             for (size_t i = 1; i < contours.size(); ++i) {
@@ -367,13 +371,6 @@ int main(int argc, char* argv[]) {
             int bbox_thickness = 2;
             cv::rectangle(paintedSegments, overallBoundingBox, bbox_color, bbox_thickness); // Draw on painted image
             cv::rectangle(scene_with_centers, overallBoundingBox, bbox_color, bbox_thickness); // Draw on CoM image
-
-            // Optional: Count total matches within the final combined area
-            int totalMatchesInCombined = 0;
-            // ... (code to count matches in combinedMask) ...
-            //putText(scene_with_centers, std::to_string(totalMatchesInCombined) + " matches in segments",
-            //      overallBoundingBox.tl() + Point(0, -5), FONT_HERSHEY_SIMPLEX, 0.6, bbox_color, 1); // SINGLE text label
-
         } else {
             std::cout << "Warning: No contours found on the combined segment mask." << std::endl;
         }
@@ -383,11 +380,8 @@ int main(int argc, char* argv[]) {
         paintedSegments = cv::Mat::zeros(sceneColor.size(), sceneColor.type());
     }
 
-    // --- Final Display ---
-    // NO loop showing individual segments here.
-
-    cv::imshow("Painted Activated Segments", paintedSegments); // Shows the painted result + overall box
-    cv::imshow("Final Detection (CoM + Overall BBox)", scene_with_centers); // Shows CoM + overall box on grayscale
+    cv::imshow("Painted Activated Segments", paintedSegments); 
+    cv::imshow("Final Detection (CoM + Overall BBox)", scene_with_centers); 
 
     std::cout << "Press any key to exit..." << std::endl;
     cv::waitKey(0);
