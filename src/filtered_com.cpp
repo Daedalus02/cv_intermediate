@@ -175,6 +175,8 @@ const std::string models_paths[] = {
      Scalar color_center = Scalar(0, 0, 255);
      int radius_center = 5;
      int thickness_center = 2;
+
+     std::cout<<total_num_points<<std::endl;
      if (total_num_points > 0)
          circle(scene_with_centers, new_com, radius_center, color_center, thickness_center);
      imshow("Scene with Filtered Center of Mass", scene_with_centers);
