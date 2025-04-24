@@ -8,4 +8,13 @@
 #include <string.h>
 #include "../include/features_extractor.h"
 
-FeaturesExctractor::FeaturesExctractor(std::string detector_type);
+/*FeaturesExctractor::FeaturesExctractor(std::string detector_type){
+    swicth(detector_type){
+        case "SIFT":
+            detector = SIFT::create();
+        case "SURF":
+            detector = SURF::create();
+        default:
+            detector = SIFT::create();
+    }
+}*/
