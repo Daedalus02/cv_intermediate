@@ -6,6 +6,8 @@
 #include "opencv2/features2d.hpp"
 #include "opencv2/imgproc.hpp"
 #include <string.h>
+#include <unistd.h>
+#include <dirent.h>
 #include "../include/utils.h"
 
 
@@ -87,4 +89,64 @@
     //    <object_id>_<object_name> <xmin> <ymin> <xmax> <ymax>
     void store_label(std::string file_name, std::string object_name, cv::Point min, cv::Point max){
 
+    }
+
+
+    // Reades all the file names inside the dirctory specified by dir_path and
+    // stores all the names inside the vector filenames.
+    void get_all_filenames(const std::string& dir_path, std::vector<std::string>& filenames) {
+        DIR* dir;
+        struct dirent* ent;
+        if ((dir = opendir(dir_path.c_str())) != NULL) {
+            // process all the files insider the directory
+            while ((ent = readdir (dir)) != NULL) {
+                std::string file_name = ent->d_name;
+                // Don't consider the current directory '.' and the parent ".."
+                if (file_name == "." || file_name == "..") {
+                    continue;
+                }
+                if (*(dir_path.end() - 1) == '/') {
+                    filenames.push_back(dir_path + file_name);
+                } else {
+                    filenames.push_back(dir_path + "/" + file_name);
+                }
+            }
+            closedir(dir); // Close the directory.
+        }
+    }
+
+
+    // Take as input the command line arguments. The argument of the command line
+    // are stored in the strings
+    //      pd_dir (power drill models dir path)
+    //      mb_dir (mustard bottle models dir path)
+    //      sb_dir  (sugar box models dir path)
+    //  Function getopt is used to parse the command line.
+    void parse_command_line(int argc, char* argv[], std::string& pd_dir, 
+        std::string& mb_dir, std::string& sb_dir, std::string& scene) {
+    int opt;
+    while ((opt = getopt(argc, argv, "s:p:m:i:")) != -1) {
+        switch (opt) {
+            case 'p':
+                pd_dir = optarg;
+                break;
+            case 'm':
+                mb_dir = optarg;
+                break;
+            case 's':
+                sb_dir = optarg;
+                break;
+            case 'i':
+                scene = optarg;
+                break;
+            case '?':
+                std::cerr << "Usage: " << argv[0] << " -p <path> -m <path> -s <path> -i <path>" << std::endl
+                        << "  Where:" << std::endl
+                        << "    -p is the power drill models dir path" << std::endl
+                        << "    -m is the mustard bottle models dir path" << std::endl
+                        << "    -s is the sugar box models dir path" << std::endl
+                        << "    -i is the input scene image path" << std::endl;
+                break;
+        }
+    }
     }

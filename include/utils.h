@@ -36,4 +36,16 @@ const cv::Point2f fake_com (-1,-1);
     //    <object_id>_<object_name> <xmin> <ymin> <xmax> <ymax>
     void store_label(std::string file_name, std::string object_name, cv::Point min, cv::Point max);
 
+    // Reades all the file names inside the dirctory specified by dir_path and
+    // stores all the names inside the vector filenames.
+    void get_all_filenames(const std::string& dir_path, std::vector<std::string>& filenames);
+
+    // Take as input the command line arguments. The argument of the command line
+    // are stored in the strings
+    //      pd_dir (power drill models dir path)
+    //      mb_dir (mustard bottle models dir path)
+    //      sb_dir  (sugar box models dir path)
+    //  Function getopt is used to parse the command line.
+    void parse_command_line(int argc, char* argv[], std::string& pd_dir, 
+        std::string& mb_dir, std::string& sb_dir, std::string& scene);
 #endif
