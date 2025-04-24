@@ -1,0 +1,2 @@
+004_sugar_box 391 231 462 465
+006_mustard_bottle 426 42 556 333
