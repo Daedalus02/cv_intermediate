@@ -25,7 +25,7 @@ class features_matcher{
         // FUNCTION MEMBERS:
         // This function computes the matches and the fill the vector of DMatch based on the 
         // matches from the two descriptors received in arguments.
-        void compute_matches(std::vector<DMatch>& matches, const Mat& descriptors1, const Mat& descriptors2){
+        void compute_matches(std::vector<std::vector<DMatch>>& matches, const Mat& descriptors1, const Mat& descriptors2){
             matcher->knnMatch(descriptors1, descriptors2, matches, 2);
         }
         
