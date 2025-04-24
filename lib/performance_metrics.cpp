@@ -2,7 +2,7 @@
 
 
 // FUNCTION MEMBERS
-double PerfomanceMetrics:: compute_detection_accuracy(){
+double PerformanceMetrics:: compute_detection_accuracy(){
 
     // Parser for predicted labels
     parser(this->path_pred_labels, this->sugar_p, this->mustard_p, this->power_drill_p);
@@ -15,6 +15,7 @@ double PerfomanceMetrics:: compute_detection_accuracy(){
 
     std::cout<<"True labels:\n\n";
     printValue(this->sugar_t, this->mustard_t, this->power_drill_t);
+    
     // Calculus of the metrics
 
     return 0;
@@ -87,3 +88,4 @@ void printValue(std::vector<std::pair<int, int>> v1, std::vector<std::pair<int, 
     std::cout << "\n\n";
 
 }
+double PerformanceMetrics::compute_mIoU();

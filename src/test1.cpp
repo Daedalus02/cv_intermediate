@@ -17,7 +17,7 @@
 #include "../include/utils.h"
 #include "../include/features_extractor.h"
 #include "../include/features_matcher.h"
-#include "../include/perfomance_metrics.h"
+#include "../include/performance_metrics.h"
 
 using namespace cv;
 using std::cout;

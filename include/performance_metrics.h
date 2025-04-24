@@ -15,11 +15,11 @@
 #include <string>
 
 
-class PerfomanceMetrics{
+class PerformanceMetrics{
 
     public:
         // CONSTRUCTORS:
-        PerfomanceMetrics(const std::string &path_pred_labels, const std::string &path_true_labels) : path_pred_labels(path_pred_labels),
+        PerformanceMetrics(const std::string &path_pred_labels, const std::string &path_true_labels) : path_pred_labels(path_pred_labels),
                                                                                                       path_true_labels(path_true_labels),
                                                                                                       sugar_p(2),
                                                                                                       mustard_p(2),
@@ -42,7 +42,7 @@ class PerfomanceMetrics{
         // PRIVATE FUNCTION:
         
         // This function compute the mean intersection over union.
-        //double compute_mIoU();
+        double compute_mIoU();
 
 };
 
