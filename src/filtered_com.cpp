@@ -14,48 +14,52 @@
  #include "opencv2/highgui.hpp"
  #include "opencv2/features2d.hpp"
  #include "opencv2/imgproc.hpp"
- 
+ #include "../include/utils.h"
+ #include "../include/features_extractor.h"
+ #include "../include/features_matcher.h"
+ #include "../include/perfomance_metrics.h"
+
  using namespace cv;
  using std::cout;
  using std::endl;
  
- int main(int argc, char* argv[]) {
- 
-     // Models images.
-     std::string models_paths[] = {
-         "../data/004_sugar_box/models/view_0_001_color.png",
-         "../data/004_sugar_box/models/view_0_002_color.png",
-         "../data/004_sugar_box/models/view_0_003_color.png",
-         "../data/004_sugar_box/models/view_0_004_color.png",
-         "../data/004_sugar_box/models/view_0_005_color.png",
-         "../data/004_sugar_box/models/view_0_006_color.png",
-         "../data/004_sugar_box/models/view_0_007_color.png",
-         "../data/004_sugar_box/models/view_0_008_color.png",
-         "../data/004_sugar_box/models/view_0_009_color.png",
- 
-         "../data/004_sugar_box/models/view_30_000_color.png",
-         "../data/004_sugar_box/models/view_30_001_color.png",
-         "../data/004_sugar_box/models/view_30_002_color.png",
-         "../data/004_sugar_box/models/view_30_003_color.png",
-         "../data/004_sugar_box/models/view_30_004_color.png",
-         "../data/004_sugar_box/models/view_30_005_color.png",
-         "../data/004_sugar_box/models/view_30_006_color.png",
-         "../data/004_sugar_box/models/view_30_007_color.png",
-         "../data/004_sugar_box/models/view_30_008_color.png",
-         "../data/004_sugar_box/models/view_30_009_color.png",
- 
-         "../data/004_sugar_box/models/view_60_000_color.png",
-         "../data/004_sugar_box/models/view_60_001_color.png",
-         "../data/004_sugar_box/models/view_60_002_color.png",
-         "../data/004_sugar_box/models/view_60_003_color.png",
-         "../data/004_sugar_box/models/view_60_004_color.png",
-         "../data/004_sugar_box/models/view_60_005_color.png",
-         "../data/004_sugar_box/models/view_60_006_color.png",
-         "../data/004_sugar_box/models/view_60_007_color.png",
-         "../data/004_sugar_box/models/view_60_008_color.png",
-         "../data/004_sugar_box/models/view_60_009_color.png",
-     };
- 
+
+// Models images.
+const std::string models_paths[] = {
+    "../data/004_sugar_box/models/view_0_001_color.png",
+    "../data/004_sugar_box/models/view_0_002_color.png",
+    "../data/004_sugar_box/models/view_0_003_color.png",
+    "../data/004_sugar_box/models/view_0_004_color.png",
+    "../data/004_sugar_box/models/view_0_005_color.png",
+    "../data/004_sugar_box/models/view_0_006_color.png",
+    "../data/004_sugar_box/models/view_0_007_color.png",
+    "../data/004_sugar_box/models/view_0_008_color.png",
+    "../data/004_sugar_box/models/view_0_009_color.png",
+
+    "../data/004_sugar_box/models/view_30_000_color.png",
+    "../data/004_sugar_box/models/view_30_001_color.png",
+    "../data/004_sugar_box/models/view_30_002_color.png",
+    "../data/004_sugar_box/models/view_30_003_color.png",
+    "../data/004_sugar_box/models/view_30_004_color.png",
+    "../data/004_sugar_box/models/view_30_005_color.png",
+    "../data/004_sugar_box/models/view_30_006_color.png",
+    "../data/004_sugar_box/models/view_30_007_color.png",
+    "../data/004_sugar_box/models/view_30_008_color.png",
+    "../data/004_sugar_box/models/view_30_009_color.png",
+
+    "../data/004_sugar_box/models/view_60_000_color.png",
+    "../data/004_sugar_box/models/view_60_001_color.png",
+    "../data/004_sugar_box/models/view_60_002_color.png",
+    "../data/004_sugar_box/models/view_60_003_color.png",
+    "../data/004_sugar_box/models/view_60_004_color.png",
+    "../data/004_sugar_box/models/view_60_005_color.png",
+    "../data/004_sugar_box/models/view_60_006_color.png",
+    "../data/004_sugar_box/models/view_60_007_color.png",
+    "../data/004_sugar_box/models/view_60_008_color.png",
+    "../data/004_sugar_box/models/view_60_009_color.png",
+};
+
+ int main(int argc, char* argv[]) { 
      // Scene image path.
      std::string scene_path = "../data/004_sugar_box/test_images/4_0014_001409-color.jpg";
  
@@ -171,6 +175,8 @@
      Scalar color_center = Scalar(0, 0, 255);
      int radius_center = 5;
      int thickness_center = 2;
+
+     std::cout<<total_num_points<<std::endl;
      if (total_num_points > 0)
          circle(scene_with_centers, new_com, radius_center, color_center, thickness_center);
      imshow("Scene with Filtered Center of Mass", scene_with_centers);
