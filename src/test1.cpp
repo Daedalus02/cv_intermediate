@@ -130,15 +130,16 @@ int main(int argc, char* argv[]) {
 
 
     //-- STEP 3: Filter matches based on distance to the center of mass.
-    // Calculate the total center of mass from all good matches
+    // Calculate the total center of mass from all good matches.
     Point2f com = compute_com(good_matches, keypoints_scene);
 
-    float max_distance_threshold = 100; // Adjust this threshold as needed
+    // Adjust this threshold as needed.
+    float max_distance_threshold = 100; 
     std::vector<DMatch> filtered_matches;
 
     max_distance_filter(max_distance_threshold, good_matches, keypoints_scene, com, filtered_matches);
 
-    // Recalculate the center of mass with the filtered matches
+    // Recalculate the center of mass with the filtered matches.
     Point2f new_com = compute_com(filtered_matches, keypoints_scene);
     
     // If the new center of mass after computing the max_distance_filter is the fake one
@@ -161,7 +162,7 @@ int main(int argc, char* argv[]) {
     imshow("Scene with Filtered Center of Mass", scene_with_centers);
 
 
-    // -- Draw the filtered matches
+    // Draw the filtered matches.
     Mat scene_matches;
     cvtColor(scene, scene_matches, COLOR_GRAY2BGR);
     Scalar color = Scalar(0, 255, 0);
