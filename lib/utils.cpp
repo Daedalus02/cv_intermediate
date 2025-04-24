@@ -9,9 +9,6 @@
 #include "../include/utils.h"
 
 
-
-// GLOBAL CONSTANTS
-
 // HELPER FUNCTIONS:
     // This function print a rectangle in the given image based on the position 
     // of the keypoints of the matches.
@@ -35,18 +32,55 @@
     // Filtering with Lowe filter.
     void lowe_filter(std::vector<std::vector<cv::DMatch>>& matches,  float threshold, 
         std::vector<cv::DMatch>& good_matches){
-
+        for (size_t i = 0; i < matches.size(); i++) {
+            if (matches[i][0].distance < threshold * matches[i][1].distance) {
+                good_matches.push_back(matches[i][0]);
+            }
         }
+    }
 
     // Filtering using max distance from center of mass.
-    void max_distance_filter(int max_distance, std::vector<cv::DMatch>& matches, 
-        std::vector<cv::KeyPoint>& keypoints, cv::Point2f point){
-
+    void max_distance_filter(float max_distance, std::vector<cv::DMatch>& matches, 
+        std::vector<cv::KeyPoint>& keypoints, cv::Point2f point, std::vector<cv::DMatch>& filtered_matches){
+        double total_sum_x = 0;
+        double total_sum_y = 0;
+        int total_num_points = 0;
+        for (const auto& match : matches) {
+            cv::Point2f pt = keypoints[match.trainIdx].pt;
+            float distance = sqrt(pow(pt.x - point.x, 2) + pow(pt.y - point.y, 2));
+            if (distance <= max_distance) {
+                filtered_matches.push_back(match);
+                total_sum_x += pt.x;
+                total_sum_y += pt.y;
+                total_num_points++;
+            }
         }
+    }
 
     // Compute center of mass.
     cv::Point2f compute_com(std::vector<cv::DMatch>& matches, std::vector<cv::KeyPoint>& keypoints){
-
+        double total_sum_x = 0;
+        double total_sum_y = 0;
+        int total_num_points = 0;
+        for (const auto& match : matches) {
+            cv::Point2f pt = keypoints[match.trainIdx].pt;
+            total_sum_x += pt.x;
+            total_sum_y += pt.y;
+            total_num_points++;
+        }
+    
+        cv::Point2f com;
+        if (total_num_points > 0) {
+            com.x = total_sum_x / total_num_points;
+            com.y = total_sum_y / total_num_points;
+            //std::cout << "Total Center of Mass: (" << com.x << ", " << com.y << ")" << std::endl;
+        }
+        else {
+            //std::cout << "No good matches found at all." << std::endl;
+            com.x = fake_com.x;
+            com.y = fake_com.y;
+        }
+        return com;
     }
 
     // Store in a file names file_name data in format:

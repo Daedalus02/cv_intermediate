@@ -15,6 +15,7 @@
 
 
 // GLOBAL CONSTANTS
+const cv::Point2f fake_com (-1,-1);
 
 // HELPER FUNCTIONS:
     //
@@ -25,8 +26,8 @@
         std::vector<cv::DMatch>& good_matches); 
 
     // Filtering using max distance from center of mass.
-    void max_distance_filter(int max_distance, std::vector<cv::DMatch>& matches, 
-        std::vector<cv::KeyPoint>& keypoints, cv::Point2f point);
+    void max_distance_filter(float max_distance, std::vector<cv::DMatch>& matches, 
+        std::vector<cv::KeyPoint>& keypoints, cv::Point2f point, std::vector<cv::DMatch>& filtered_matches);
 
     // Compute center of mass.
     cv::Point2f compute_com(std::vector<cv::DMatch>& matches, std::vector<cv::KeyPoint>& keypoints);
