@@ -75,7 +75,7 @@ const std::string models_paths[] = {
      //-- Step 1: Detect the keypoints using SIFT Detector, compute the descriptors.
  
      // Define the SIFT detector.
-     Ptr<SIFT> detector = SIFT::create();
+     FeaturesExctractor extractor = FeaturesExctractor();
  
      // Keypoints and descriptor of each model.
      std::vector<std::vector<KeyPoint>> keypoints_models(models.size());
@@ -87,23 +87,22 @@ const std::string models_paths[] = {
  
      // Compute keypoints and descriptors.
      for (int i = 0; i < models.size(); i++) {
-         detector->detectAndCompute(models[i], noArray(), keypoints_models[i], descriptors_models[i]);
+        extractor.extract_features(models[i], keypoints_models[i], descriptors_models[i]);
      }
-     detector->detectAndCompute(scene, noArray(), keypoints_scene, descriptors_scene);
- 
+     extractor.extract_features(scene, keypoints_scene, descriptors_scene);
      //-- Step 2: Matching descriptor vectors with a BRUTEFORCE matcher
  
      // Define the Brute force matcher.
-     Ptr<DescriptorMatcher> matcher = DescriptorMatcher::create(DescriptorMatcher::BRUTEFORCE);
- 
+     FeaturesMatcher matcher = FeaturesMatcher();
+
      // Vector that stores the good matches.
-     //std::vector<std::vector< std::vector<DMatch> >> knn_matches(models.size());
      std::vector<std::vector<DMatch>> knn_matches;
  
      // Compute the matches between the scene and each model.
      for (int i = 0; i < models.size(); i++) {
          std::vector<std::vector<DMatch>> tmp;
-         matcher->knnMatch(descriptors_models[i], descriptors_scene, tmp, 2);
+         //matcher->knnMatch(descriptors_models[i], descriptors_scene, tmp, 2);
+         matcher.compute_matches(tmp, descriptors_models[i],descriptors_scene);
          knn_matches.insert(knn_matches.end(), tmp.begin(), tmp.end());
      }
  
@@ -141,7 +140,7 @@ const std::string models_paths[] = {
  
      //-- Step 3: Filter matches based on distance to the center of mass
      float max_distance_threshold = 100; // Adjust this threshold as needed
-     std::vector<DMatch> filtered_matches;;
+     std::vector<DMatch> filtered_matches;
  
      total_sum_x = 0;
      total_sum_y = 0;
@@ -192,22 +191,10 @@ const std::string models_paths[] = {
      }
  
      // Last step draw the rectangle.
-     Point2f topLeft(scene.rows, scene.cols);
-     Point2f bottomRight(0, 0);
-     for (const auto& match : filtered_matches) {
-         Point2f pt = keypoints_scene[match.trainIdx].pt;
-         if (pt.y < topLeft.y)
-             topLeft.y = pt.y;
-         if (pt.x < topLeft.x)
-             topLeft.x = pt.x;
-         if (pt.y > bottomRight.y)
-             bottomRight.y = pt.y;
-         if (pt.x > bottomRight.x)
-             bottomRight.x = pt.x;
-     }
-     rectangle(scene_matches, topLeft, bottomRight, Scalar(255, 0, 0), 2, LINE_8); 
- 
+     draw_box(scene_matches, filtered_matches, keypoints_scene);
+     
      imshow("Filtered Matches on Scene", scene_matches);
      waitKey();
      return 0;
 }
+    
