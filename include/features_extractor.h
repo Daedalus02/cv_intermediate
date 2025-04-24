@@ -20,7 +20,7 @@ class FeaturesExctractor{
         // This constructor builds the internal extractor.
         FeaturesExctractor() {detector = SIFT::create();}
 
-        FeaturesExctractor(std::string detector_type);
+        //FeaturesExctractor(std::string detector_type);
 
         // FUNCTION MEMBERS:
         // This function get the Mat image where the keypoints and descriptors will be detected, and the adress 

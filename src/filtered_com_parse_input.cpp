@@ -14,63 +14,139 @@
  #include "opencv2/highgui.hpp"
  #include "opencv2/features2d.hpp"
  #include "opencv2/imgproc.hpp"
- #include "../include/utils.h"
- #include "../include/features_extractor.h"
- #include "../include/features_matcher.h"
- #include "../include/perfomance_metrics.h"
 
- using namespace cv;
- using std::cout;
- using std::endl;
+#include <unistd.h>
+#include <string>
+#include <dirent.h>
  
+using namespace cv;
+using std::cout;
+using std::endl;
 
-// Models images.
-const std::string models_paths[] = {
-    "../data/004_sugar_box/models/view_0_001_color.png",
-    "../data/004_sugar_box/models/view_0_002_color.png",
-    "../data/004_sugar_box/models/view_0_003_color.png",
-    "../data/004_sugar_box/models/view_0_004_color.png",
-    "../data/004_sugar_box/models/view_0_005_color.png",
-    "../data/004_sugar_box/models/view_0_006_color.png",
-    "../data/004_sugar_box/models/view_0_007_color.png",
-    "../data/004_sugar_box/models/view_0_008_color.png",
-    "../data/004_sugar_box/models/view_0_009_color.png",
+// Reades all the file names inside the dirctory specified by dir_path and
+// stores all the names inside the vector filenames.
+void get_all_filenames(const std::string& dir_path, std::vector<std::string>& filenames) {
+    DIR* dir;
+    struct dirent* ent;
+    if ((dir = opendir(dir_path.c_str())) != NULL) {
+        // process all the files insider the directory
+        while ((ent = readdir (dir)) != NULL) {
+            std::string file_name = ent->d_name;
+            // Don't consider the current directory '.' and the parent ".."
+            if (file_name == "." || file_name == "..") {
+                continue;
+            }
+            if (*(dir_path.end() - 1) == '/') {
+                filenames.push_back(dir_path + file_name);
+            } else {
+                filenames.push_back(dir_path + "/" + file_name);
+            }
+        }
+        closedir(dir); // Close the directory.
+    }
+}
 
-    "../data/004_sugar_box/models/view_30_000_color.png",
-    "../data/004_sugar_box/models/view_30_001_color.png",
-    "../data/004_sugar_box/models/view_30_002_color.png",
-    "../data/004_sugar_box/models/view_30_003_color.png",
-    "../data/004_sugar_box/models/view_30_004_color.png",
-    "../data/004_sugar_box/models/view_30_005_color.png",
-    "../data/004_sugar_box/models/view_30_006_color.png",
-    "../data/004_sugar_box/models/view_30_007_color.png",
-    "../data/004_sugar_box/models/view_30_008_color.png",
-    "../data/004_sugar_box/models/view_30_009_color.png",
+// Take as input the command line arguments. The argument of the command line
+// are stored in the strings
+//      pd_dir (power drill models dir path)
+//      mb_dir (mustard bottle models dir path)
+//      sb_dir  (sugar box models dir path)
+//  Function getopt is used to parse the command line.
+void parse_command_line(int argc, char* argv[], std::string& pd_dir, 
+        std::string& mb_dir, std::string& sb_dir, std::string& scene) {
+    int opt;
+    while ((opt = getopt(argc, argv, "s:p:m:i:")) != -1) {
+        switch (opt) {
+            case 'p':
+                pd_dir = optarg;
+                break;
+            case 'm':
+                mb_dir = optarg;
+                break;
+            case 's':
+                sb_dir = optarg;
+                break;
+            case 'i':
+                scene = optarg;
+                break;
+            case '?':
+                std::cerr << "Usage: " << argv[0] << " -p <path> -m <path> -s <path> -i <path>" << endl
+                          << "  Where:" << endl
+                          << "    -p is the power drill models dir path" << endl
+                          << "    -m is the mustard bottle models dir path" << endl
+                          << "    -s is the sugar box models dir path" << endl
+                          << "    -i is the input scene image path" << endl;
+                break;
+        }
+    }
+}
+ 
+ int main(int argc, char* argv[]) {
 
-    "../data/004_sugar_box/models/view_60_000_color.png",
-    "../data/004_sugar_box/models/view_60_001_color.png",
-    "../data/004_sugar_box/models/view_60_002_color.png",
-    "../data/004_sugar_box/models/view_60_003_color.png",
-    "../data/004_sugar_box/models/view_60_004_color.png",
-    "../data/004_sugar_box/models/view_60_005_color.png",
-    "../data/004_sugar_box/models/view_60_006_color.png",
-    "../data/004_sugar_box/models/view_60_007_color.png",
-    "../data/004_sugar_box/models/view_60_008_color.png",
-    "../data/004_sugar_box/models/view_60_009_color.png",
-};
+     /// Inputs are:
+     ///    - scene
+     ///    - models dir for sugar box
+     ///    - models dir for power drill
+     ///    - models dir for mustard bottle
+     ///
 
- int main(int argc, char* argv[]) { 
-     // Scene image path.
-     std::string scene_path = "../data/004_sugar_box/test_images/4_0014_001409-color.jpg";
+     // Get the directories paths of the models.
+    std::string scene_image_path{};
+    std::string pd_models_dirpath{}; // Power drill models dir path
+    std::string mb_models_dirpath{}; // Mustar bottle models dir path
+    std::string sb_models_dirpath{}; // Sugar box models dir path
+    parse_command_line(argc, argv, pd_models_dirpath, mb_models_dirpath, sb_models_dirpath, scene_image_path);
+
+    if (pd_models_dirpath.empty() || mb_models_dirpath.empty() 
+            || sb_models_dirpath.empty() || scene_image_path.empty()) {
+        std::cerr << "Error in parsing the command line... aborting.\n";
+        return 1;
+    }
+
+    //cout << "Models directories:" << endl;
+    //cout << pd_models_dirpath << endl
+    //     << mb_models_dirpath << endl
+    //     << sb_models_dirpath << endl << endl;
+
+
+    // Get the path of each models inside the speficied directories.
+    std::vector<std::string> pd_models_images_paths; // Path of each power drill model.
+    std::vector<std::string> mb_models_images_paths; // Path of each mustard bottle model.
+    std::vector<std::string> sb_models_images_paths; // Path of each sugar box model.
+
+    get_all_filenames(pd_models_dirpath, pd_models_images_paths);
+    get_all_filenames(mb_models_dirpath, mb_models_images_paths);
+    get_all_filenames(sb_models_dirpath, sb_models_images_paths);
+
+    if (pd_models_images_paths.empty() || mb_models_images_paths.empty() || sb_models_images_paths.empty()) {
+        std::cerr << "Error: one of the models directory is empty... aborting\n";
+    }
+
+    //cout << "pd_models_images_paths:\n";
+    //for (auto const& s : pd_models_images_paths)
+    //    cout << s << endl;
+    //cout << pd_models_images_paths.size() << endl << endl;
+
+    //cout << "mb_models_images_paths\n";
+    //for (auto const& s : mb_models_images_paths)
+    //    cout << s << endl;
+    //cout << mb_models_images_paths.size() << endl << endl;
+
+    //cout << "sb_models_images_paths\n";
+    //for (auto const& s : sb_models_images_paths)
+    //    cout << s << endl;
+    //cout << sb_models_images_paths.size() << endl << endl;
+
  
      // Define the models images.
      std::vector<Mat> models;
-     for (const auto& p : models_paths) {
+     for (const auto& p : pd_models_images_paths) {
          models.push_back(imread(p, IMREAD_GRAYSCALE));
      }
  
      // Define the scene image.
-     Mat scene = imread(scene_path, IMREAD_GRAYSCALE);
+     Mat scene = imread(scene_image_path, IMREAD_GRAYSCALE);
+     //blur(scene, scene, Size(3, 3));
  
      //-- Step 1: Detect the keypoints using SIFT Detector, compute the descriptors.
  
@@ -94,7 +170,7 @@ const std::string models_paths[] = {
      //-- Step 2: Matching descriptor vectors with a BRUTEFORCE matcher
  
      // Define the Brute force matcher.
-     Ptr<DescriptorMatcher> matcher = DescriptorMatcher::create(DescriptorMatcher::BRUTEFORCE);
+     Ptr<DescriptorMatcher> matcher = DescriptorMatcher::create(DescriptorMatcher::FLANNBASED);
  
      // Vector that stores the good matches.
      //std::vector<std::vector< std::vector<DMatch> >> knn_matches(models.size());
@@ -108,7 +184,7 @@ const std::string models_paths[] = {
      }
  
      // Filter matches using the Lowe's ratio test.
-     const float ratio_thresh = 0.7;
+     const float ratio_thresh = 0.85;
      std::vector<DMatch> good_matches;
      for (size_t i = 0; i < knn_matches.size(); i++) {
          if (knn_matches[i][0].distance < ratio_thresh * knn_matches[i][1].distance) {
@@ -140,7 +216,7 @@ const std::string models_paths[] = {
      }
  
      //-- Step 3: Filter matches based on distance to the center of mass
-     float max_distance_threshold = 100; // Adjust this threshold as needed
+     float max_distance_threshold = 120; // Adjust this threshold as needed
      std::vector<DMatch> filtered_matches;;
  
      total_sum_x = 0;
@@ -175,8 +251,6 @@ const std::string models_paths[] = {
      Scalar color_center = Scalar(0, 0, 255);
      int radius_center = 5;
      int thickness_center = 2;
-
-     std::cout<<total_num_points<<std::endl;
      if (total_num_points > 0)
          circle(scene_with_centers, new_com, radius_center, color_center, thickness_center);
      imshow("Scene with Filtered Center of Mass", scene_with_centers);
@@ -209,6 +283,8 @@ const std::string models_paths[] = {
      }
      rectangle(scene_matches, topLeft, bottomRight, Scalar(255, 0, 0), 2, LINE_8); 
  
+     cout << "TOT FILTERED MATCHES: " << filtered_matches.size() << endl;
+
      imshow("Filtered Matches on Scene", scene_matches);
      waitKey();
      return 0;
