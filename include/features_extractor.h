@@ -13,14 +13,14 @@
 
 using namespace cv;
 
-class features_exctractor{
+class FeaturesExctractor{
 
     public:
         // CONSTRUCTORS:
         // This constructor builds the internal extractor.
-        features_exctractor() {detector = SIFT::create();}
+        FeaturesExctractor() {detector = SIFT::create();}
 
-        features_exctractor(std::string detector_type);
+        FeaturesExctractor(std::string detector_type);
 
         // FUNCTION MEMBERS:
         // This function get the Mat image where the keypoints and descriptors will be detected, and the adress 
