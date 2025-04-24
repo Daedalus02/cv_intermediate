@@ -5,18 +5,17 @@
 #include "opencv2/highgui.hpp"
 #include "opencv2/features2d.hpp"
 #include "opencv2/imgproc.hpp"
-#include <set> // Need std::set for unique colors
+#include <set> 
 #include <vector>
-#include <map> // Still needed for Vec3bCompare if used with set
+#include <map> 
 
-using namespace cv;
-using std::cout;
-using std::endl;
+
+// FUNCTION DEFINITIONS: 
 
 // Function to perform Mean Shift segmentation
-Mat performMeanShiftSegmentation(const Mat& input) {
+cv::Mat performMeanShiftSegmentation(const cv::Mat& input) {
     
-    Mat shifted;
+    cv::Mat shifted;
     
     // Parameters for Mean Shift
     int spatialWindowRadius = 30;
@@ -37,11 +36,11 @@ struct Vec3bCompare {
     }
 };
 
-std::vector<Mat> findSegmentsWithMatches(const Mat& segmented_bgr,
-                                        const std::vector<DMatch>& matches,
-                                        const std::vector<KeyPoint>& sceneKeypoints)
+std::vector<cv::Mat> findSegmentsWithMatches(const cv::Mat& segmented_bgr,
+                                        const std::vector<cv::DMatch>& matches,
+                                        const std::vector<cv::KeyPoint>& sceneKeypoints)
 {
-    std::vector<Mat> activatedSegmentMasks;
+    std::vector<cv::Mat> activatedSegmentMasks;
 
     // --- Input Validation ---
     if (segmented_bgr.empty() || segmented_bgr.type() != CV_8UC3) {
@@ -68,12 +67,12 @@ std::vector<Mat> findSegmentsWithMatches(const Mat& segmented_bgr,
         }
 
         // Get the integer coordinates of the keypoint for pixel access
-        Point pt = sceneKeypoints[match.trainIdx].pt;
+        cv::Point pt = sceneKeypoints[match.trainIdx].pt;
 
         // Check if point is within image bounds
         if (pt.x >= 0 && pt.y >= 0 && pt.x < segmented_bgr.cols && pt.y < segmented_bgr.rows) {
             // Get the color (segment identifier) from the Mean Shift output image
-            Vec3b segment_color = segmented_bgr.at<Vec3b>(pt);
+            cv::Vec3b segment_color = segmented_bgr.at<cv::Vec3b>(pt);
             // Add the color to the set. std::set automatically handles uniqueness.
             colors_with_matches.insert(segment_color);
         } else {
@@ -91,7 +90,7 @@ std::vector<Mat> findSegmentsWithMatches(const Mat& segmented_bgr,
 
     // --- 2. Create a mask for each unique activated segment color ---
     for (const auto& color : colors_with_matches) {
-        Mat segment_mask;
+        cv::Mat segment_mask;
         // Create a mask selecting all pixels in the segmented image with this exact color
         cv::inRange(segmented_bgr, color, color, segment_mask);
 
@@ -104,8 +103,8 @@ std::vector<Mat> findSegmentsWithMatches(const Mat& segmented_bgr,
         // --- Optional: Clean up the mask ---
         // You might still want to fill small holes or remove tiny noise specs
         // within the activated segment.
-        Mat kernel = getStructuringElement(MORPH_ELLIPSE, Size(15,15)); // Adjust kernel size as needed
-        morphologyEx(segment_mask, segment_mask, MORPH_CLOSE, kernel);
+        cv::Mat kernel = getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(15,15)); // Adjust kernel size as needed
+        morphologyEx(segment_mask, segment_mask, cv::MORPH_CLOSE, kernel);
         medianBlur(segment_mask,segment_mask, 5);
         // morphologyEx(segment_mask, segment_mask, MORPH_OPEN, kernel); // Be cautious with OPEN
 
@@ -167,52 +166,52 @@ int main(int argc, char* argv[]) {
     std::string scene_path = "../data/035_power_drill/test_images/35_0030_000046-color.jpg";
    
     // Define the models images.
-    std::vector<Mat> models;
+    std::vector<cv::Mat> models;
     for (const auto& p : models_paths) {
-        models.push_back(imread(p, IMREAD_GRAYSCALE));
+        models.push_back(cv::imread(p, cv::IMREAD_GRAYSCALE));
     }
 
     // Define the scene image.
-    Mat scene = imread(scene_path, IMREAD_GRAYSCALE);
+    cv::Mat scene = imread(scene_path, cv::IMREAD_GRAYSCALE);
 
     //-- Step 1: Detect the keypoints using SIFT Detector, compute the descriptors.
 
     // Define the SIFT detector.
-    Ptr<SIFT> detector = SIFT::create();
+    cv::Ptr<cv::SIFT> detector = cv::SIFT::create();
 
     // Keypoints and descriptor of each model.
-    std::vector<std::vector<KeyPoint>> keypoints_models(models.size());
-    std::vector<Mat> descriptors_models(models.size());
+    std::vector<std::vector<cv::KeyPoint>> keypoints_models(models.size());
+    std::vector<cv::Mat> descriptors_models(models.size());
 
     // Keypoints and descriptor of the scene.
-    std::vector<KeyPoint> keypoints_scene;
-    Mat descriptors_scene;
+    std::vector<cv::KeyPoint> keypoints_scene;
+    cv::Mat descriptors_scene;
 
     // Compute keypoints and descriptors.
     for (int i = 0; i < models.size(); i++) {
-        detector->detectAndCompute(models[i], noArray(), keypoints_models[i], descriptors_models[i]);
+        detector->detectAndCompute(models[i], cv::noArray(), keypoints_models[i], descriptors_models[i]);
     }
-    detector->detectAndCompute(scene, noArray(), keypoints_scene, descriptors_scene);
+    detector->detectAndCompute(scene, cv::noArray(), keypoints_scene, descriptors_scene);
 
     //-- Step 2: Matching descriptor vectors with a BRUTEFORCE matcher
 
     // Define the Brute force matcher.
-    Ptr<DescriptorMatcher> matcher = DescriptorMatcher::create(DescriptorMatcher::BRUTEFORCE);
+    cv::Ptr<cv::DescriptorMatcher> matcher = cv::DescriptorMatcher::create(cv::DescriptorMatcher::BRUTEFORCE);
 
     // Vector that stores the good matches.
     //std::vector<std::vector< std::vector<DMatch> >> knn_matches(models.size());
-    std::vector<std::vector<DMatch>> knn_matches;
+    std::vector<std::vector<cv::DMatch>> knn_matches;
 
     // Compute the matches between the scene and each model.
     for (int i = 0; i < models.size(); i++) {
-        std::vector<std::vector<DMatch>> tmp;
+        std::vector<std::vector<cv::DMatch>> tmp;
         matcher->knnMatch(descriptors_models[i], descriptors_scene, tmp, 2);
         knn_matches.insert(knn_matches.end(), tmp.begin(), tmp.end());
     }
 
     // Filter matches using the Lowe's ratio test.
     const float ratio_thresh = 0.8;
-    std::vector<DMatch> good_matches;
+    std::vector<cv::DMatch> good_matches;
     for (size_t i = 0; i < knn_matches.size(); i++) {
         if (knn_matches[i][0].distance < ratio_thresh * knn_matches[i][1].distance) {
             good_matches.push_back(knn_matches[i][0]);
@@ -224,33 +223,33 @@ int main(int argc, char* argv[]) {
     double total_sum_y = 0;
     int total_num_points = 0;
     for (const auto& match : good_matches) {
-        Point2f pt = keypoints_scene[match.trainIdx].pt;
+        cv::Point2f pt = keypoints_scene[match.trainIdx].pt;
         total_sum_x += pt.x;
         total_sum_y += pt.y;
         total_num_points++;
     }
 
-    Point2f com;
+    cv::Point2f com;
     if (total_num_points > 0) {
         com.x = total_sum_x / total_num_points;
         com.y = total_sum_y / total_num_points;
-        cout << "Total Center of Mass: (" << com.x << ", " << com.y << ")" << endl;
+        std::cout << "Total Center of Mass: (" << com.x << ", " << com.y << ")" << std::endl;
     }
     else {
-        cout << "No good matches found at all." << endl;
+        std::cout << "No good matches found at all." << std::endl;
         com.x = -1;
         com.y = -1;
     }
 
     //-- Step 3: Filter matches based on distance to the center of mass
     float max_distance_threshold = 100; // Adjust this threshold as needed
-    std::vector<DMatch> filtered_matches;;
+    std::vector<cv::DMatch> filtered_matches;;
 
     total_sum_x = 0;
     total_sum_y = 0;
     total_num_points = 0;
     for (const auto& match : good_matches) {
-        Point2f pt = keypoints_scene[match.trainIdx].pt;
+        cv::Point2f pt = keypoints_scene[match.trainIdx].pt;
         float distance = sqrt(pow(pt.x - com.x, 2) + pow(pt.y - com.y, 2));
         if (distance <= max_distance_threshold) {
             filtered_matches.push_back(match);
@@ -261,44 +260,44 @@ int main(int argc, char* argv[]) {
     }
 
     // Recalculate the center of mass with the filtered matches
-    Point2f new_com;
+    cv::Point2f new_com;
     if (total_num_points > 0) {
         new_com.x = total_sum_x / total_num_points;
         new_com.y = total_sum_y / total_num_points;
-        cout << "Filtered Center of Mass: (" << new_com.x << ", " << new_com.y << ")" << endl;
+        std::cout << "Filtered Center of Mass: (" << new_com.x << ", " << new_com.y << ")" << std::endl;
     }
     else {
-        cout << "No matches survived the filtering." << endl;
+        std::cout << "No matches survived the filtering." << std::endl;
         new_com = com; // Keep the old COM or set to a default value
     }
 
     // Visualize the center of mass.
-    Mat scene_with_centers;
-    cvtColor(scene, scene_with_centers, COLOR_GRAY2BGR);
-    Scalar color_center = Scalar(0, 0, 255);
+    cv::Mat scene_with_centers;
+    cvtColor(scene, scene_with_centers, cv::COLOR_GRAY2BGR);
+    cv::Scalar color_center = cv::Scalar(0, 0, 255);
     int radius_center = 5;
     int thickness_center = 2;
     if (total_num_points > 0)
-        circle(scene_with_centers, new_com, radius_center, color_center, thickness_center);
-    imshow("Scene with Filtered Center of Mass", scene_with_centers);
+        cv::circle(scene_with_centers, new_com, radius_center, color_center, thickness_center);
+        cv::imshow("Scene with Filtered Center of Mass", scene_with_centers);
 
 
     // -- Draw the filtered matches
-    Mat scene_matches;
-    cvtColor(scene, scene_matches, COLOR_GRAY2BGR);
-    Scalar color = Scalar(0, 255, 0);
+    cv::Mat scene_matches;
+    cv::cvtColor(scene, scene_matches, cv::COLOR_GRAY2BGR);
+    cv::Scalar color = cv::Scalar(0, 255, 0);
     int radius = 3;
     int thickness = 2;
     for (const auto& match : filtered_matches) {
-        Point2f pt2 = keypoints_scene[match.trainIdx].pt;
-        circle(scene_matches, pt2, radius, color, thickness);
+        cv::Point2f pt2 = keypoints_scene[match.trainIdx].pt;
+        cv::circle(scene_matches, pt2, radius, color, thickness);
     }
 
     // Last step draw the rectangle.
-    Point2f topLeft(scene.rows, scene.cols);
-    Point2f bottomRight(0, 0);
+    cv::Point2f topLeft(scene.rows, scene.cols);
+    cv::Point2f bottomRight(0, 0);
     for (const auto& match : filtered_matches) {
-        Point2f pt = keypoints_scene[match.trainIdx].pt;
+        cv::Point2f pt = keypoints_scene[match.trainIdx].pt;
         if (pt.y < topLeft.y)
             topLeft.y = pt.y;
         if (pt.x < topLeft.x)
@@ -309,65 +308,65 @@ int main(int argc, char* argv[]) {
             bottomRight.x = pt.x;
     }
 
-    rectangle(scene_matches, topLeft, bottomRight, Scalar(255, 0, 0), 2, LINE_8); 
+    cv::rectangle(scene_matches, topLeft, bottomRight, cv::Scalar(255, 0, 0), 2, cv::LINE_8); 
     // After computing filtered_matches and new_com:
     if (total_num_points > 0) { // Check if filtered matches exist before drawing CoM
-        circle(scene_with_centers, new_com, radius_center, color_center, thickness_center);
+        cv::circle(scene_with_centers, new_com, radius_center, color_center, thickness_center);
     }
     // imshow("Scene with Filtered Center of Mass", scene_with_centers); // Can show this intermediate step if needed
 
 
     // Load the scene image in color for segmentation
-    Mat sceneColor = imread(scene_path, IMREAD_COLOR);
+    cv::Mat sceneColor = cv::imread(scene_path, cv::IMREAD_COLOR);
      if(sceneColor.empty()){
-        cout << "Error: Could not load color scene image: " << scene_path << endl;
+        std::cout << "Error: Could not load color scene image: " << scene_path << std::endl;
         return -1;
     }
 
     // Perform Mean Shift segmentation
-    cout << "Performing Mean Shift..." << endl;
-    Mat segmented = performMeanShiftSegmentation(sceneColor); // Uses hardcoded params inside function now
-    imshow("Mean Shift Segmentation Output", segmented); // Show raw segmentation
+    std::cout << "Performing Mean Shift..." << std::endl;
+    cv::Mat segmented = performMeanShiftSegmentation(sceneColor); // Uses hardcoded params inside function now
+    cv::imshow("Mean Shift Segmentation Output", segmented); // Show raw segmentation
 
     // Find masks for all segments containing at least one filtered match
-    cout << "Finding segments containing matches..." << endl;
-    std::vector<Mat> segmentMasks = findSegmentsWithMatches(segmented, filtered_matches,
+    std::cout << "Finding segments containing matches..." << std::endl;
+    std::vector<cv::Mat> segmentMasks = findSegmentsWithMatches(segmented, filtered_matches,
         keypoints_scene);
 
     // --- Process the combined segments ---
-    Mat paintedSegments; // Image to show the painted segments
-    Rect overallBoundingBox; // Single bounding box for all segments
+    cv::Mat paintedSegments; // Image to show the painted segments
+    cv::Rect overallBoundingBox; // Single bounding box for all segments
 
     if (!segmentMasks.empty()) {
         // 1. Combine all individual masks into one <<<<<<<<<<<<< COMBINING MASKS
-        Mat combinedMask = Mat::zeros(sceneColor.size(), CV_8U);
+        cv::Mat combinedMask = cv::Mat::zeros(sceneColor.size(), CV_8U);
         for (const auto& mask : segmentMasks) {
             if (!mask.empty() && mask.size() == combinedMask.size()) { // Basic check
-                bitwise_or(combinedMask, mask, combinedMask);
+                cv::bitwise_or(combinedMask, mask, combinedMask);
             }
         }
-        imshow("Combined Segment Mask", combinedMask); // Visualize the combined mask
+        cv::imshow("Combined Segment Mask", combinedMask); // Visualize the combined mask
 
         // 2. Paint the segments onto a result image using the combined mask <<<<<< PAINTING COMBINED
-        paintedSegments = Mat::zeros(sceneColor.size(), sceneColor.type());
+        paintedSegments = cv::Mat::zeros(sceneColor.size(), sceneColor.type());
         sceneColor.copyTo(paintedSegments, combinedMask); // Use COMBINED mask
 
         // 3. Find contours on the combined mask to get the overall bounding box <<<<<<< OVERALL BOX
-        std::vector<std::vector<Point>> contours;
-        findContours(combinedMask.clone(), contours, RETR_EXTERNAL, CHAIN_APPROX_SIMPLE);
+        std::vector<std::vector<cv::Point>> contours;
+        cv::findContours(combinedMask.clone(), contours, cv::RETR_EXTERNAL, cv::CHAIN_APPROX_SIMPLE);
 
         if (!contours.empty()) {
             // Calculate a single bounding box encompassing all found contours
-            overallBoundingBox = boundingRect(contours[0]);
+            overallBoundingBox = cv::boundingRect(contours[0]);
             for (size_t i = 1; i < contours.size(); ++i) {
-                overallBoundingBox |= boundingRect(contours[i]); // Merge Rects
+                overallBoundingBox |= cv::boundingRect(contours[i]); // Merge Rects
             }
 
             // 4. Draw the single overall bounding box <<<<<<<<<<< DRAWING SINGLE BOX
-            Scalar bbox_color(0, 255, 0); // Green for the overall box
+            cv::Scalar bbox_color(0, 255, 0); // Green for the overall box
             int bbox_thickness = 2;
-            rectangle(paintedSegments, overallBoundingBox, bbox_color, bbox_thickness); // Draw on painted image
-            rectangle(scene_with_centers, overallBoundingBox, bbox_color, bbox_thickness); // Draw on CoM image
+            cv::rectangle(paintedSegments, overallBoundingBox, bbox_color, bbox_thickness); // Draw on painted image
+            cv::rectangle(scene_with_centers, overallBoundingBox, bbox_color, bbox_thickness); // Draw on CoM image
 
             // Optional: Count total matches within the final combined area
             int totalMatchesInCombined = 0;
@@ -376,22 +375,22 @@ int main(int argc, char* argv[]) {
             //      overallBoundingBox.tl() + Point(0, -5), FONT_HERSHEY_SIMPLEX, 0.6, bbox_color, 1); // SINGLE text label
 
         } else {
-            cout << "Warning: No contours found on the combined segment mask." << endl;
+            std::cout << "Warning: No contours found on the combined segment mask." << std::endl;
         }
 
     } else {
-        cout << "No segments containing matches were found." << endl;
-        paintedSegments = Mat::zeros(sceneColor.size(), sceneColor.type());
+        std::cout << "No segments containing matches were found." << std::endl;
+        paintedSegments = cv::Mat::zeros(sceneColor.size(), sceneColor.type());
     }
 
     // --- Final Display ---
     // NO loop showing individual segments here.
 
-    imshow("Painted Activated Segments", paintedSegments); // Shows the painted result + overall box
-    imshow("Final Detection (CoM + Overall BBox)", scene_with_centers); // Shows CoM + overall box on grayscale
+    cv::imshow("Painted Activated Segments", paintedSegments); // Shows the painted result + overall box
+    cv::imshow("Final Detection (CoM + Overall BBox)", scene_with_centers); // Shows CoM + overall box on grayscale
 
-    cout << "Press any key to exit..." << endl;
-    waitKey(0);
-    destroyAllWindows();
+    std::cout << "Press any key to exit..." << std::endl;
+    cv::waitKey(0);
+    cv::destroyAllWindows();
     return 0;
 }
