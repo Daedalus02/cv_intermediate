@@ -8,4 +8,4 @@
 #include <string.h>
 #include "../include/features_extractor.h"
 
-features_exctractor::features_exctractor(std::string detector_type);
+FeaturesExctractor::FeaturesExctractor(std::string detector_type);

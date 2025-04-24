@@ -14,12 +14,12 @@
 
 using namespace cv;
 
-class features_matcher{
+class FeaturesMatcher{
 
     public:
         // CONSTRUCTORS:
         // This constructor builds the internal matcher.
-        features_matcher() {matcher = DescriptorMatcher::create(DescriptorMatcher::BRUTEFORCE);}
+        FeaturesMatcher() {matcher = DescriptorMatcher::create(DescriptorMatcher::BRUTEFORCE);}
 
 
         // FUNCTION MEMBERS:

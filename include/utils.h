@@ -12,45 +12,25 @@
 #include "opencv2/imgproc.hpp"
 #include <string.h>
 
-using namespace cv;
+
 
 // GLOBAL CONSTANTS
-    // Models images.
-    const std::string models_paths[] = {
-        "../data/004_sugar_box/models/view_0_001_color.png",
-        "../data/004_sugar_box/models/view_0_002_color.png",
-        "../data/004_sugar_box/models/view_0_003_color.png",
-        "../data/004_sugar_box/models/view_0_004_color.png",
-        "../data/004_sugar_box/models/view_0_005_color.png",
-        "../data/004_sugar_box/models/view_0_006_color.png",
-        "../data/004_sugar_box/models/view_0_007_color.png",
-        "../data/004_sugar_box/models/view_0_008_color.png",
-        "../data/004_sugar_box/models/view_0_009_color.png",
-
-        "../data/004_sugar_box/models/view_30_000_color.png",
-        "../data/004_sugar_box/models/view_30_001_color.png",
-        "../data/004_sugar_box/models/view_30_002_color.png",
-        "../data/004_sugar_box/models/view_30_003_color.png",
-        "../data/004_sugar_box/models/view_30_004_color.png",
-        "../data/004_sugar_box/models/view_30_005_color.png",
-        "../data/004_sugar_box/models/view_30_006_color.png",
-        "../data/004_sugar_box/models/view_30_007_color.png",
-        "../data/004_sugar_box/models/view_30_008_color.png",
-        "../data/004_sugar_box/models/view_30_009_color.png",
-
-        "../data/004_sugar_box/models/view_60_000_color.png",
-        "../data/004_sugar_box/models/view_60_001_color.png",
-        "../data/004_sugar_box/models/view_60_002_color.png",
-        "../data/004_sugar_box/models/view_60_003_color.png",
-        "../data/004_sugar_box/models/view_60_004_color.png",
-        "../data/004_sugar_box/models/view_60_005_color.png",
-        "../data/004_sugar_box/models/view_60_006_color.png",
-        "../data/004_sugar_box/models/view_60_007_color.png",
-        "../data/004_sugar_box/models/view_60_008_color.png",
-        "../data/004_sugar_box/models/view_60_009_color.png",
-    };
 
 // HELPER FUNCTIONS:
-    void draw_box(Mat& image);
+    //
+    void draw_box(cv::Mat& image);
+
+    // Filtering with Lowe filter.
+    void lowe_filter(std::vector<std::vector<DMatch>>& matches,  float threshold, std::vector<DMatch>& good_matches); 
+
+    // Filtering using max distance from center of mass.
+    void max_distance_filter(int max_distance, std::vector<DMatch>& matches, std::vector<KeyPoint>& keypoints, Point2f point);
+
+    // Compute center of mass.
+    Point2f compute_com(std::vector<DMatch>& matches, std::vector<KeyPoint>& keypoints);
+
+    // Store in a file names file_name data in format:
+    //    <object_id>_<object_name> <xmin> <ymin> <xmax> <ymax>
+    void store_label(std::string file_name, std::string object_name, cv::Point min, cv::Point max);
 
 #endif
