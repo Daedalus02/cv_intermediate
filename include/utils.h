@@ -18,8 +18,7 @@ void lowe_filter(const std::vector<std::vector<cv::DMatch>>& matches,  float thr
 
 // Filtering using max distance from center of mass.
 
-void max_distance_filter(float max_distance, const std::vector<cv::Point2i>& points, 
-        const std::vector<cv::KeyPoint>& keypoints, cv::Point2f center, std::vector<cv::Point2i>& filtered_points);
+void max_distance_filter(float max_distance, const std::vector<cv::Point2i>& points, cv::Point2f center, std::vector<cv::Point2i>& filtered_points);
 // Compute center of mass.
 
 cv::Point2d compute_com(const std::vector<cv::Point2i>& points, const std::vector<cv::KeyPoint>& keypoints);

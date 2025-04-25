@@ -32,8 +32,7 @@ void lowe_filter(const std::vector<std::vector<cv::DMatch>>& matches,  float thr
     }
 }
 
-void max_distance_filter(float max_distance, const std::vector<cv::Point2i>& points, 
-        const std::vector<cv::KeyPoint>& keypoints, cv::Point2f center, std::vector<cv::Point2i>& filtered_points){
+void max_distance_filter(float max_distance, const std::vector<cv::Point2i>& points, cv::Point2f center, std::vector<cv::Point2i>& filtered_points){
     for (const cv::Point2i& pt : points) {
         float distance = sqrt(pow(pt.x - center.x, 2) + pow(pt.y - center.y, 2));
         if (distance <= max_distance) {
