@@ -2,40 +2,31 @@
 #ifndef FEATURES_EXTRACTOR_H
 #define FEATURES_EXTRACTOR_H
 
-#include <iostream>
-#include "opencv2/core.hpp"
-#include "opencv2/core/types.hpp"
-#include "opencv2/imgcodecs.hpp"
-#include "opencv2/highgui.hpp"
-#include "opencv2/features2d.hpp"
-#include "opencv2/imgproc.hpp"
-#include <string.h>
-
-using namespace cv;
+#include <vector>
+#include <opencv2/features2d.hpp>
 
 class FeaturesExctractor{
 
     public:
         // CONSTRUCTORS:
         // This constructor builds the internal extractor.
-        FeaturesExctractor() {detector = SIFT::create();}
+        FeaturesExctractor() {detector = cv::SIFT::create();}
 
         //FeaturesExctractor(std::string detector_type);
 
         // FUNCTION MEMBERS:
         // This function get the Mat image where the keypoints and descriptors will be detected, and the adress 
         // of the keypoint vector  and the adress of the descriptor.
-        void extract_features(const Mat& image,  std::vector<KeyPoint>& keypoints_models, Mat& descriptors_models){
-            detector->detectAndCompute(image, noArray(), keypoints_models, descriptors_models);
+        void extract_features(const cv::Mat& image,  std::vector<cv::KeyPoint>& keypoints_models, cv::Mat& descriptors_models){
+            detector->detectAndCompute(image, cv::noArray(), keypoints_models, descriptors_models);
         }
 
     private:
         // DATA MEMBER:
         // HERE WE CAN CHANGE THE TYPE OF THE DETECTOR.
-        Ptr<SIFT> detector;
+        cv::Ptr<cv::SIFT> detector;
 
 };
 
-// HELPER FUNCTIONS:
 
 #endif
