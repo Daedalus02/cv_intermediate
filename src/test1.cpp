@@ -79,6 +79,7 @@ int main(int argc, char* argv[]) {
             cv::Mat model = cv::imread(p, cv::IMREAD_GRAYSCALE);
             if(model.empty()){
                 std::cerr<<"Error: the image of the model was not loaded correctly!"<<std::endl;
+                std::cout<<p<<std::endl;
                 return -1;
             }
             models.push_back(model);
@@ -159,10 +160,13 @@ int main(int argc, char* argv[]) {
         cv::circle(out_scene, new_com, 5, cv::Scalar(0, 255, 255), 2);
 
         // Last step draw the rectangle around all the matches.
-        std::pair<cv::Point2i, cv::Point2i> label = draw_box(out_scene, final_matches, keypoints_scene, boxes_color[models_path.first]);
+        if(final_matches.size() > 130){
+            std::pair<cv::Point2i, cv::Point2i> label = draw_box(out_scene, final_matches, keypoints_scene, boxes_color[models_path.first]);
+            // Store the found label.
+            store_label("output_label.txt", models_path.first, label.first, label.second);
+        }
+        
 
-        // Store the found label.
-        store_label("output_label.txt", models_path.first, label.first, label.second);
     }
 
 
