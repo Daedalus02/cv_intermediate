@@ -14,23 +14,25 @@
 
 int main(int argc, char* argv[]) { 
     // Get the directories paths of the models.
-    std::string scene_image_path{};
+    std::string scene_image_path{};  // Scene image path.
+    std::string label_scene_path{};  // Label associated to the scene.
     std::string pd_models_dirpath{}; // Power drill models dir path
     std::string mb_models_dirpath{}; // Mustar bottle models dir path
     std::string sb_models_dirpath{}; // Sugar box models dir path
-    parse_command_line(argc, argv, pd_models_dirpath, mb_models_dirpath, sb_models_dirpath, scene_image_path);
+    parse_command_line(argc, argv, pd_models_dirpath, mb_models_dirpath, sb_models_dirpath, scene_image_path, label_scene_path);
 
     if (pd_models_dirpath.empty() || mb_models_dirpath.empty() 
-            || sb_models_dirpath.empty() || scene_image_path.empty()) {
+            || sb_models_dirpath.empty() || scene_image_path.empty()
+            || label_scene_path.empty()) {
         std::cerr << "Error in parsing the command line... aborting.\n";
         return 1;
     }
 
     // Get the path of each models inside the speficied directories.
     std::map<std::string, std::vector<std::string>> images_models_paths;
-    get_all_filenames(pd_models_dirpath, images_models_paths["powerdrill"]);
-    get_all_filenames(mb_models_dirpath, images_models_paths["mustardbottle"]);
-    get_all_filenames(sb_models_dirpath, images_models_paths["sugarbox"]);
+    get_all_filenames(pd_models_dirpath, images_models_paths["035_power_drill"]);
+    get_all_filenames(mb_models_dirpath, images_models_paths["006_mustard_bottle"]);
+    get_all_filenames(sb_models_dirpath, images_models_paths["004_sugar_box"]);
 
     // Check if one of the vector containing the paths of the models is empty.
     for (const auto& elem : images_models_paths) {
@@ -43,9 +45,9 @@ int main(int argc, char* argv[]) {
     // Define the box color associated to each object.
     cv::Scalar color = cv::Scalar(0, 255, 0);
     std::map<std::string, cv::Scalar> boxes_color;
-    boxes_color["powerdrill"] = cv::Scalar(255, 0, 0);
-    boxes_color["mustardbottle"] = cv::Scalar(0, 255, 0);
-    boxes_color["sugarbox"] = cv::Scalar(0, 0, 255);
+    boxes_color["035_power_drill"] = cv::Scalar(0, 0, 255);
+    boxes_color["006_mustard_bottle"] = cv::Scalar(255, 0, 0);
+    boxes_color["004_sugar_box"] = cv::Scalar(0, 255, 0);
 
     // Define the output scene image (the one with the boxes plotted).
     cv::Mat out_scene = cv::imread(scene_image_path, cv::IMREAD_GRAYSCALE);
@@ -72,12 +74,12 @@ int main(int argc, char* argv[]) {
         // Define a vector containing all the models images of the current object.
         std::vector<cv::Mat> models;
         for (const std::string& p : models_path.second) {
-            cv::Mat model =  cv::imread(p, cv::IMREAD_GRAYSCALE);
+            cv::Mat model = cv::imread(p, cv::IMREAD_GRAYSCALE);
             if(model.empty()){
                 std::cerr<<"Error: the image of the model was not loaded correctly!"<<std::endl;
                 return -1;
             }
-            models.push_back(cv::imread(p, cv::IMREAD_GRAYSCALE));
+            models.push_back(model);
         }
 
         // Keypoints and descriptor of each model.
@@ -98,10 +100,9 @@ int main(int argc, char* argv[]) {
         }
 
         // Filter matches using the Lowe's ratio test.
-        const float ratio_thresh = 0.7;
+        const float ratio_thresh = 0.85;
         std::vector<cv::DMatch> good_matches;
         lowe_filter(knn_matches, ratio_thresh, good_matches);
-
 
 
         //-- STEP 3: Filter matches based on distance to the center of mass.
@@ -109,7 +110,7 @@ int main(int argc, char* argv[]) {
         cv::Point2f com = compute_com(good_matches, keypoints_scene);
 
         // Adjust this threshold as needed.
-        float max_distance_threshold = 100; 
+        float max_distance_threshold = 120; 
         std::vector<cv::DMatch> filtered_matches;
         max_distance_filter(max_distance_threshold, good_matches, keypoints_scene, com, filtered_matches);
 
@@ -130,8 +131,15 @@ int main(int argc, char* argv[]) {
         cv::circle(out_scene, new_com, 5, cv::Scalar(0, 255, 255), 2);
 
         // Last step draw the rectangle around all the matches.
-        draw_box(out_scene, filtered_matches, keypoints_scene, boxes_color[models_path.first]);
+        std::pair<cv::Point2f, cv::Point2f> label = draw_box(out_scene, filtered_matches, keypoints_scene, boxes_color[models_path.first]);
+
+        // Store the found label.
+        store_label("output_label.txt", models_path.first, label.first, label.second);
     }
+
+    // Compute the metrics.
+    PerformanceMetrics metrics = PerformanceMetrics("output_label.txt", label_scene_path);
+    metrics.print_metrics();
 
     // Plot the final result.
     cv::imshow("Filtered Matches on Scene", out_scene);
