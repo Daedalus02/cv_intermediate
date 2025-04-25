@@ -101,7 +101,7 @@ void PerformanceMetrics:: print_metrics(){
     }
     else
     {
-        std::cerr << "Impossibile aprire il file ../out/metrics.txt per la scrittura.\n";
+        std::cerr << "Impossibile to open the file.\n";
     }
 }
 
