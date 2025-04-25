@@ -12,14 +12,9 @@
 #include "opencv2/imgproc.hpp"
 #include <string.h>
 
-
-
-// GLOBAL CONSTANTS
-const cv::Point2f fake_com (-1,-1);
-
 // HELPER FUNCTIONS:
     //
-    void draw_box(cv::Mat& image, const std::vector<cv::DMatch>& matches, const std::vector<cv::KeyPoint>& keypoints);
+    void draw_box(cv::Mat& image, const std::vector<cv::DMatch>& matches, const std::vector<cv::KeyPoint>& keypoints, const cv::Scalar& color);
 
     // Filtering with Lowe filter.
     void lowe_filter(std::vector<std::vector<cv::DMatch>>& matches,  float threshold, 
@@ -30,7 +25,7 @@ const cv::Point2f fake_com (-1,-1);
         std::vector<cv::KeyPoint>& keypoints, cv::Point2f point, std::vector<cv::DMatch>& filtered_matches);
 
     // Compute center of mass.
-    cv::Point2f compute_com(std::vector<cv::DMatch>& matches, std::vector<cv::KeyPoint>& keypoints);
+    cv::Point2f compute_com(const std::vector<cv::DMatch>& matches, std::vector<cv::KeyPoint>& keypoints);
 
     // Store in a file names file_name data in format:
     //    <object_id>_<object_name> <xmin> <ymin> <xmax> <ymax>
