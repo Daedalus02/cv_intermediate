@@ -8,22 +8,21 @@
 // Draw a box in the input image. The box is computed starting from the detected
 // keypoints. The drawn box contains all the detected keypoints.
 // Returns the top left corner and the bottom right corner of the box.
-std::pair<cv::Point2f, cv::Point2f> draw_box(
-        cv::Mat& image, 
-        const std::vector<cv::DMatch>& matches, 
-        const std::vector<cv::KeyPoint>& keypoints,
-        const cv::Scalar& color);
+std::pair<cv::Point2i, cv::Point2i> draw_box(cv::Mat& image, const std::vector<cv::Point2i>& points, 
+        const std::vector<cv::KeyPoint>& keypoints, const cv::Scalar& color);
+ 
 
 // Filtering with Lowe filter.
-void lowe_filter(std::vector<std::vector<cv::DMatch>>& matches,  float threshold, 
+void lowe_filter(const std::vector<std::vector<cv::DMatch>>& matches,  float threshold, 
         std::vector<cv::DMatch>& good_matches); 
 
 // Filtering using max distance from center of mass.
-void max_distance_filter(float max_distance, std::vector<cv::DMatch>& matches, 
-        std::vector<cv::KeyPoint>& keypoints, cv::Point2f point, std::vector<cv::DMatch>& filtered_matches);
 
+void max_distance_filter(float max_distance, const std::vector<cv::Point2i>& points, 
+        const std::vector<cv::KeyPoint>& keypoints, cv::Point2f center, std::vector<cv::Point2i>& filtered_points);
 // Compute center of mass.
-cv::Point2f compute_com(const std::vector<cv::DMatch>& matches, std::vector<cv::KeyPoint>& keypoints);
+
+cv::Point2d compute_com(const std::vector<cv::Point2i>& points, const std::vector<cv::KeyPoint>& keypoints);
 
 // Store in a file names file_name data in format:
 //    <object_id>_<object_name> <xmin> <ymin> <xmax> <ymax>

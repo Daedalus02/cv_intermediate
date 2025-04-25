@@ -6,11 +6,10 @@
 
 #include "../include/utils.h"
 
-std::pair<cv::Point2f, cv::Point2f> draw_box(cv::Mat& image, const std::vector<cv::DMatch>& matches, const std::vector<cv::KeyPoint>& keypoints, const cv::Scalar& color){
-    cv::Point2f top_left(image.rows, image.cols);
-    cv::Point2f bottom_right(0, 0);
-    for (const cv::DMatch& match : matches) {
-        cv::Point2f pt = keypoints[match.trainIdx].pt;
+std::pair<cv::Point2i, cv::Point2i> draw_box(cv::Mat& image, const std::vector<cv::Point2i>& points, const std::vector<cv::KeyPoint>& keypoints, const cv::Scalar& color){
+    cv::Point2i top_left(image.rows, image.cols);
+    cv::Point2i bottom_right(0, 0);
+    for (const cv::Point2i& pt : points) {
         if (pt.y < top_left.y)
             top_left.y = pt.y;
         if (pt.x < top_left.x)
@@ -24,7 +23,7 @@ std::pair<cv::Point2f, cv::Point2f> draw_box(cv::Mat& image, const std::vector<c
     return {top_left, bottom_right};
 }
 
-void lowe_filter(std::vector<std::vector<cv::DMatch>>& matches,  float threshold, 
+void lowe_filter(const std::vector<std::vector<cv::DMatch>>& matches,  float threshold, 
         std::vector<cv::DMatch>& good_matches){
     for (size_t i = 0; i < matches.size(); i++) {
         if (matches[i][0].distance < threshold * matches[i][1].distance) {
@@ -33,13 +32,12 @@ void lowe_filter(std::vector<std::vector<cv::DMatch>>& matches,  float threshold
     }
 }
 
-void max_distance_filter(float max_distance, std::vector<cv::DMatch>& matches, 
-        std::vector<cv::KeyPoint>& keypoints, cv::Point2f point, std::vector<cv::DMatch>& filtered_matches){
-    for (const cv::DMatch& match : matches) {
-        cv::Point2f pt = keypoints[match.trainIdx].pt;
-        float distance = sqrt(pow(pt.x - point.x, 2) + pow(pt.y - point.y, 2));
+void max_distance_filter(float max_distance, const std::vector<cv::Point2i>& points, 
+        const std::vector<cv::KeyPoint>& keypoints, cv::Point2f center, std::vector<cv::Point2i>& filtered_points){
+    for (const cv::Point2i& pt : points) {
+        float distance = sqrt(pow(pt.x - center.x, 2) + pow(pt.y - center.y, 2));
         if (distance <= max_distance) {
-            filtered_matches.push_back(match);
+            filtered_points.push_back(pt);
         }
     }
 }
@@ -48,29 +46,28 @@ void max_distance_filter(float max_distance, std::vector<cv::DMatch>& matches,
 
 
 
-cv::Point2f compute_com(const std::vector<cv::DMatch>& matches, std::vector<cv::KeyPoint>& keypoints){
-    if (matches.empty()) {
+cv::Point2d compute_com(const std::vector<cv::Point2i>& points, const std::vector<cv::KeyPoint>& keypoints){
+    if (points.empty()) {
         return {-1, -1};
     }
 
     double total_sum_x = 0;
     double total_sum_y = 0;
     int total_num_points = 0;
-    for (const cv::DMatch& match : matches) {
-        cv::Point2f pt = keypoints[match.trainIdx].pt;
+    for (const cv::Point2i& pt : points) {
         total_sum_x += pt.x;
         total_sum_y += pt.y;
         total_num_points++;
     }
 
-    cv::Point2f com;
+    cv::Point2d com;
     com.x = total_sum_x / total_num_points;
     com.y = total_sum_y / total_num_points;
 
     return com;
 }
 
-void store_label(const std::string& file_name, const std::string& object_name, const cv::Point& min, const cv::Point& max){
+void store_label(const std::string& file_name, const std::string& object_name, const cv::Point2i& min, const cv::Point2i& max){
     std::ofstream outfile;
     outfile.open(file_name, std::ios_base::app);
 
