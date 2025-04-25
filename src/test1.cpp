@@ -102,7 +102,7 @@ int main(int argc, char* argv[]) {
         }
 
         // Filter matches using the Lowe's ratio test.
-        const float ratio_thresh = 0.8;
+        const float ratio_thresh = 0.85;
         std::vector<cv::DMatch> good_matches;
         lowe_filter(knn_matches, ratio_thresh, good_matches);
 
@@ -121,12 +121,12 @@ int main(int argc, char* argv[]) {
         // Calculate the total center of mass from all good matches.
         cv::Point2i com = compute_com(good_points, keypoints_scene);
 
-        // Adjust this threshold as needed.
-        float max_distance_threshold = 140; 
-        std::vector<cv::Point2i> filtered_matches;
-        max_distance_filter(max_distance_threshold, good_points, keypoints_scene, com, filtered_matches);
+        // Adjust this threshold as needed. 
+        float max_distance_threshold = 160; 
+        std::vector<cv::Point2i> filtered_points;
+        max_distance_filter(max_distance_threshold, good_points, com, filtered_points);
 
-        if (filtered_matches.empty()) {
+        if (filtered_points.empty()) {
             std::cout << "No matches survived the max distance filter..." << std::endl;
             continue;
         }
@@ -134,29 +134,19 @@ int main(int argc, char* argv[]) {
 
 
         // Printing the dimensione of the matches.
-        //std::cout<<std::endl<<"Size of filtered BEFORE:  "<<filtered_matches.size()<<std::endl;
+        //std::cout<<std::endl<<"Size of filtered BEFORE:  "<<filtered_points.size()<<std::endl;
 
 
-        int max_kernel_size = 10;
+        int max_kernel_size = 50;
         std::vector<cv::Point2i> final_points;
-        for(const auto& pt : filtered_matches){
+        final_points = {};
+        for(const auto& pt : filtered_points){
             std::vector<cv::Point2i> kernel_points;
-            max_distance_filter(max_kernel_size, filtered_matches, keypoints_scene, pt, kernel_points);
-            if(kernel_points.size()> 1){
+            max_distance_filter(max_kernel_size, filtered_points, pt, kernel_points);
+            if(kernel_points.size()> 15){
                 final_points.push_back(pt);
             }
         }
-/*
-        filtered_matches = final_points;
-        max_kernel_size = 50;
-        final_points = {};
-        for(const auto& pt : filtered_matches){
-            std::vector<cv::Point2i> kernel_points;
-            max_distance_filter(max_kernel_size, filtered_matches, keypoints_scene, pt, kernel_points);
-            if(kernel_points.size()> 10){
-                final_points.push_back(pt);
-            }
-        }*/
 
         // Printing the dimensione of the matches.
         std::cout<<"Size of filtered AFTER: "<<final_points.size()<<std::endl<<std::endl;
