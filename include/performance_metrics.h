@@ -13,6 +13,7 @@
 #include <vector>
 #include <fstream>
 #include <string>
+#include <iomanip> // For std::fixed e std::setprecision
 
 class PerformanceMetrics{
 
@@ -30,19 +31,20 @@ class PerformanceMetrics{
 
         // FUNCTION MEMBERS:
         // Function to write in a file and computing in terminal the metrix for the scenepath CAMBIARE IN VOID in modo cche cosi crei in automatico il file e scriva per loutput delle metriche
-        double print_metrics();
+        void print_metrics();
 
     private:
         // DATA MEMBER:
         // paths to file of predicted labels and true labels for which apply the metrics
         std::string path_pred_labels, path_true_labels; 
-        // IoU for sugar, mustard and power_drill computed comparing pred labels with true labels
+        // Vectors in which memorize the coordinate of the read values from the label txt file
+        std::vector<cv:: Point2f> sugar_p, mustard_p, power_drill_p;
+        std::vector<cv:: Point2f> sugar_t, mustard_t, power_drill_t;
+        // IoU for sugar, mustard and power_drill computed comparing pred labels with true labels (with this specific sort/mapping)
         double IoU[3];
         // Initialize a 3vec of falses values to track if some object is missing in the SCENE
         bool miss[3] = {false, false, false};
 
-        std::vector<cv:: Point2f> sugar_p, mustard_p, power_drill_p;
-        std::vector<cv:: Point2f> sugar_t, mustard_t, power_drill_t;
         // PRIVATE FUNCTION:
         // Function to store in the data members the IoU and the missing items
         void compute_IoU();
@@ -50,16 +52,9 @@ class PerformanceMetrics{
 };
 
 // HELPER FUNCTIONS:
-    // This function returns the two point <x_max, y_max>, <x_min, y_min> given a line.
-    //std::vector<cv::Point>
+    // Function to parse the label txt file with the predicted label of our algorithm
     void parser(const std::string& path , std::vector<cv:: Point2f>& sugar, std::vector<cv:: Point2f>& mustard, std::vector<cv:: Point2f>& power_drill);
-    // DEBUG:
+    // Debugging function
     void print_value(std::vector<cv:: Point2f> v1, std::vector<cv:: Point2f> v2, std::vector<cv:: Point2f> v3);
-
-
-    
-
-
-
 
 #endif
