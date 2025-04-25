@@ -10,7 +10,7 @@ class FeaturesExctractor{
     public:
         // CONSTRUCTORS:
         // This constructor builds the internal extractor.
-        FeaturesExctractor() {detector = cv::SIFT::create(0, 3, 0.01, 20, 1.6, true);}
+        FeaturesExctractor() {detector = cv::SIFT::create(0, 3, 0.03, 10, 1.6, true);}
 
         //FeaturesExctractor(std::string detector_type);
 
