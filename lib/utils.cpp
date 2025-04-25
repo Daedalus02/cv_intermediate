@@ -44,6 +44,10 @@ void max_distance_filter(float max_distance, std::vector<cv::DMatch>& matches,
     }
 }
 
+
+
+
+
 cv::Point2f compute_com(const std::vector<cv::DMatch>& matches, std::vector<cv::KeyPoint>& keypoints){
     if (matches.empty()) {
         return {-1, -1};
