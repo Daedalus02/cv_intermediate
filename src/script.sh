@@ -1,22 +1,23 @@
 #!/bin/bash
 
-# Define the directory path
-directory_path="../data/035_power_drill/test_images/" # Replace with the actual path to your directory
+# Define the directory containing the input files
+INPUT_DIR="../data/004_sugar_box/test_images/"
+INPUT_DIR2="../data/004_sugar_box/labels/"
 
-# Check if the directory exists
-if [ ! -d "$directory_path" ]; then
-  echo "Error: Directory '$directory_path' not found."
-  exit 1
-fi
+# Loop through each matching file
+for filepath in "$INPUT_DIR"/*-color.jpg; do
+    # Extract the filename from the full path
+    filename=$(basename "$filepath")
+    #echo $filename
 
-# Loop through each file in the directory
-for file in "$directory_path"/*; do
-  # Check if it's a regular file (not a directory, etc.)
-  if [ -f "$file" ]; then
-    # Execute the command with the file path
-    ./a.out -s "../data/004_sugar_box/models" -p "../data/035_power_drill/models/" -m "../data/006_mustard_bottle/models" -i "$file"
-    # You can add more commands here if needed
-  fi
+    # Remove the '-color.jpg' suffix to get the base name
+    base="${filename%-color.jpg}"
+
+    # Construct the <modify path>
+    modify_path="${base}-box.txt"
+
+    #echo $modify_path
+
+    # Execute the command with constructed paths
+    ./a.out -p ../data/035_power_drill/models -m ../data/006_mustard_bottle/models -s ../data/004_sugar_box/models -i "$filepath" color.jpg -l "$INPUT_DIR2/$modify_path"
 done
-
-echo "Script finished."

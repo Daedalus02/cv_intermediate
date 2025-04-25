@@ -12,6 +12,7 @@
 #include "../include/performance_metrics.h"
 
 
+
 int main(int argc, char* argv[]) { 
     // Get the directories paths of the models.
     std::string scene_image_path{};  // Scene image path.
@@ -70,6 +71,7 @@ int main(int argc, char* argv[]) {
 
     // Define the models images.
     for(const auto& models_path : images_models_paths){
+
         std::cout << "Looking for " << models_path.first << " in the scene image..." << std::endl;
         // Define a vector containing all the models images of the current object.
         std::vector<cv::Mat> models;
@@ -100,17 +102,17 @@ int main(int argc, char* argv[]) {
         }
 
         // Filter matches using the Lowe's ratio test.
-        const float ratio_thresh = 0.85;
+        const float ratio_thresh = 0.8;
         std::vector<cv::DMatch> good_matches;
         lowe_filter(knn_matches, ratio_thresh, good_matches);
 
 
         //-- STEP 3: Filter matches based on distance to the center of mass.
         // Calculate the total center of mass from all good matches.
-        cv::Point2f com = compute_com(good_matches, keypoints_scene);
+        cv::Point2i com = compute_com(good_matches, keypoints_scene);
 
         // Adjust this threshold as needed.
-        float max_distance_threshold = 120; 
+        float max_distance_threshold = 140; 
         std::vector<cv::DMatch> filtered_matches;
         max_distance_filter(max_distance_threshold, good_matches, keypoints_scene, com, filtered_matches);
 
@@ -119,23 +121,50 @@ int main(int argc, char* argv[]) {
             continue;
         }
 
+
+
+        // Printing the dimensione of the matches.
+        //std::cout<<std::endl<<"Size of filtered BEFORE:  "<<filtered_matches.size()<<std::endl;
+
+
+        int max_kernel_size = 10;
+        std::vector<cv::DMatch> final_matches;
+        for(const auto& match : filtered_matches){
+            std::vector<cv::DMatch> kernel_matches;
+
+            std::vector<cv::DMatch> dup_matches;
+            cv::Point2i pt = keypoints_scene[match.trainIdx].pt;
+            max_distance_filter(max_kernel_size, filtered_matches, keypoints_scene, pt, kernel_matches);
+            max_distance_filter(1, filtered_matches, keypoints_scene, pt, dup_matches);
+            if(dup_matches.size() > 1){
+                //std::cout<<"Detected dupes."<<std::endl;
+            }
+            if(kernel_matches.size() - dup_matches.size() > 1){
+                final_matches.push_back(match);
+            }
+        }
+
+        // Printing the dimensione of the matches.
+        std::cout<<"Size of filtered AFTER: "<<final_matches.size()<<std::endl<<std::endl;
+
         // Draw the filtered matches.
-        for (const auto& match : filtered_matches) {
-            cv::Point2f pt2 = keypoints_scene[match.trainIdx].pt;
+        for (const auto& match : final_matches) {
+            cv::Point2i pt2 = keypoints_scene[match.trainIdx].pt;
             cv::circle(out_scene, pt2, 3, boxes_color[models_path.first], 2);
         }
 
         // Recalculate the center of mass with the filtered matches.
-        cv::Point2f new_com = compute_com(filtered_matches, keypoints_scene);
+        cv::Point2i new_com = compute_com(final_matches, keypoints_scene);
         // Draw the center of mass.
         cv::circle(out_scene, new_com, 5, cv::Scalar(0, 255, 255), 2);
 
         // Last step draw the rectangle around all the matches.
-        std::pair<cv::Point2f, cv::Point2f> label = draw_box(out_scene, filtered_matches, keypoints_scene, boxes_color[models_path.first]);
+        std::pair<cv::Point2i, cv::Point2i> label = draw_box(out_scene, final_matches, keypoints_scene, boxes_color[models_path.first]);
 
         // Store the found label.
         store_label("output_label.txt", models_path.first, label.first, label.second);
     }
+
 
     // Compute the metrics.
     PerformanceMetrics metrics = PerformanceMetrics("output_label.txt", label_scene_path);
