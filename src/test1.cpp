@@ -137,16 +137,8 @@ int main(int argc, char* argv[]) {
         //std::cout<<std::endl<<"Size of filtered BEFORE:  "<<filtered_points.size()<<std::endl;
 
 
-        int max_kernel_size = 50;
-        std::vector<cv::Point2i> final_points;
-        final_points = {};
-        for(const auto& pt : filtered_points){
-            std::vector<cv::Point2i> kernel_points;
-            max_distance_filter(max_kernel_size, filtered_points, pt, kernel_points);
-            if(kernel_points.size()> 15){
-                final_points.push_back(pt);
-            }
-        }
+        std::vector<cv::Point2i> final_points = {};
+        kernel_filter(50, 20, filtered_points, final_points);
 
         // Printing the dimensione of the matches.
         std::cout<<"Size of filtered AFTER: "<<final_points.size()<<std::endl<<std::endl;

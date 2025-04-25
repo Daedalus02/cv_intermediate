@@ -42,6 +42,19 @@ void max_distance_filter(float max_distance, const std::vector<cv::Point2i>& poi
 }
 
 
+void kernel_filter(int max_kernel_size, int min_match, 
+    const std::vector<cv::Point2i>&  points, 
+    std::vector<cv::Point2i>& final_points){
+    final_points = {};
+    for(const auto& pt : points){
+        std::vector<cv::Point2i> kernel_points;
+        max_distance_filter(max_kernel_size, points, pt, kernel_points);
+        if(kernel_points.size()> min_match){
+            final_points.push_back(pt);
+        }
+    }   
+}
+
 
 
 

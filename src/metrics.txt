@@ -2157,3 +2157,743 @@ MIoU = 0.0000
 Accuracy : 
 IoU of Mustard = 0.0000 is NOT a true positive
 
+../data/006_mustard_bottle/labels//6_0001_000121-box.txt Metrics : 
+
+MIoU = 0.2060
+
+Accuracy : 
+IoU of Sugar = 0.3913 is NOT a true positive
+IoU of Mustard = 0.0208 is NOT a true positive
+
+../data/006_mustard_bottle/labels//6_0001_000952-box.txt Metrics : 
+
+MIoU = 0.2635
+
+Accuracy : 
+IoU of Sugar = 0.4638 is NOT a true positive
+IoU of Mustard = 0.0632 is NOT a true positive
+
+../data/006_mustard_bottle/labels//6_0008_001625-box.txt Metrics : 
+
+MIoU = 0.4448
+
+Accuracy : 
+IoU of Mustard = 0.4448 is NOT a true positive
+
+../data/006_mustard_bottle/labels//6_0008_002747-box.txt Metrics : 
+
+MIoU = 0.0144
+
+Accuracy : 
+IoU of Mustard = 0.0144 is NOT a true positive
+
+../data/006_mustard_bottle/labels//6_0026_000077-box.txt Metrics : 
+
+MIoU = 0.0373
+
+Accuracy : 
+IoU of Mustard = 0.0373 is NOT a true positive
+
+../data/006_mustard_bottle/labels//6_0030_000130-box.txt Metrics : 
+
+MIoU = 0.1582
+
+Accuracy : 
+IoU of Mustard = 0.0738 is NOT a true positive
+IoU of Power Drill = 0.2427 is NOT a true positive
+
+../data/006_mustard_bottle/labels//6_0030_001027-box.txt Metrics : 
+
+MIoU = 0.1115
+
+Accuracy : 
+IoU of Mustard = 0.0849 is NOT a true positive
+IoU of Power Drill = 0.1382 is NOT a true positive
+
+../data/006_mustard_bottle/labels//6_0046_000002-box.txt Metrics : 
+
+MIoU = 0.1478
+
+Accuracy : 
+IoU of Mustard = 0.1478 is NOT a true positive
+
+../data/006_mustard_bottle/labels//6_0069_000681-box.txt Metrics : 
+
+MIoU = 0.3351
+
+Accuracy : 
+IoU of Mustard = 0.3351 is NOT a true positive
+
+../data/006_mustard_bottle/labels//6_0087_000029-box.txt Metrics : 
+
+MIoU = 0.0302
+
+Accuracy : 
+IoU of Mustard = 0.0302 is NOT a true positive
+
+../data/006_mustard_bottle/labels//6_0001_000121-box.txt Metrics : 
+
+MIoU = 0.2230
+
+Accuracy : 
+IoU of Sugar = 0.4252 is NOT a true positive
+IoU of Mustard = 0.0208 is NOT a true positive
+
+../data/006_mustard_bottle/labels//6_0001_000952-box.txt Metrics : 
+
+MIoU = 0.3168
+
+Accuracy : 
+IoU of Sugar = 0.5704 is true positive
+IoU of Mustard = 0.0632 is NOT a true positive
+
+../data/006_mustard_bottle/labels//6_0008_001625-box.txt Metrics : 
+
+MIoU = 0.6085
+
+Accuracy : 
+IoU of Mustard = 0.6085 is true positive
+
+../data/006_mustard_bottle/labels//6_0008_002747-box.txt Metrics : 
+
+MIoU = 0.2844
+
+Accuracy : 
+IoU of Mustard = 0.2844 is NOT a true positive
+
+../data/006_mustard_bottle/labels//6_0026_000077-box.txt Metrics : 
+
+MIoU = 0.0373
+
+Accuracy : 
+IoU of Mustard = 0.0373 is NOT a true positive
+
+../data/006_mustard_bottle/labels//6_0030_000130-box.txt Metrics : 
+
+MIoU = 0.3878
+
+Accuracy : 
+IoU of Mustard = 0.0738 is NOT a true positive
+IoU of Power Drill = 0.7017 is true positive
+
+../data/006_mustard_bottle/labels//6_0030_001027-box.txt Metrics : 
+
+MIoU = 0.0753
+
+Accuracy : 
+IoU of Mustard = 0.0124 is NOT a true positive
+IoU of Power Drill = 0.1382 is NOT a true positive
+
+../data/006_mustard_bottle/labels//6_0046_000002-box.txt Metrics : 
+
+MIoU = 0.1917
+
+Accuracy : 
+IoU of Mustard = 0.1917 is NOT a true positive
+
+../data/006_mustard_bottle/labels//6_0069_000681-box.txt Metrics : 
+
+MIoU = 0.3399
+
+Accuracy : 
+IoU of Mustard = 0.3399 is NOT a true positive
+
+../data/006_mustard_bottle/labels//6_0087_000029-box.txt Metrics : 
+
+MIoU = 0.0302
+
+Accuracy : 
+IoU of Mustard = 0.0302 is NOT a true positive
+
+../data/006_mustard_bottle/labels//6_0001_000121-box.txt Metrics : 
+
+MIoU = 0.0879
+
+Accuracy : 
+IoU of Sugar = 0.1758 is NOT a true positive
+IoU of Mustard = 0.0000 is NOT a true positive
+
+../data/006_mustard_bottle/labels//6_0001_000952-box.txt Metrics : 
+
+MIoU = 0.3668
+
+Accuracy : 
+IoU of Sugar = 0.4709 is NOT a true positive
+IoU of Mustard = 0.2627 is NOT a true positive
+
+../data/006_mustard_bottle/labels//6_0008_001625-box.txt Metrics : 
+
+MIoU = 0.7351
+
+Accuracy : 
+IoU of Mustard = 0.7351 is true positive
+
+../data/006_mustard_bottle/labels//6_0008_002747-box.txt Metrics : 
+
+MIoU = 0.2520
+
+Accuracy : 
+IoU of Mustard = 0.2520 is NOT a true positive
+
+../data/006_mustard_bottle/labels//6_0026_000077-box.txt Metrics : 
+
+MIoU = 0.1311
+
+Accuracy : 
+IoU of Mustard = 0.1311 is NOT a true positive
+
+../data/006_mustard_bottle/labels//6_0030_000130-box.txt Metrics : 
+
+MIoU = 0.5825
+
+Accuracy : 
+IoU of Mustard = 0.3852 is NOT a true positive
+IoU of Power Drill = 0.7798 is true positive
+
+../data/006_mustard_bottle/labels//6_0030_001027-box.txt Metrics : 
+
+MIoU = 0.2588
+
+Accuracy : 
+IoU of Mustard = 0.2999 is NOT a true positive
+IoU of Power Drill = 0.2176 is NOT a true positive
+
+../data/006_mustard_bottle/labels//6_0046_000002-box.txt Metrics : 
+
+MIoU = 0.2721
+
+Accuracy : 
+IoU of Mustard = 0.2721 is NOT a true positive
+
+../data/006_mustard_bottle/labels//6_0069_000681-box.txt Metrics : 
+
+MIoU = 0.5048
+
+Accuracy : 
+IoU of Mustard = 0.5048 is true positive
+
+../data/006_mustard_bottle/labels//6_0087_000029-box.txt Metrics : 
+
+MIoU = 0.0000
+
+Accuracy : 
+IoU of Mustard = 0.0000 is NOT a true positive
+
+../data/006_mustard_bottle/labels//6_0001_000121-box.txt Metrics : 
+
+MIoU = 0.1073
+
+Accuracy : 
+IoU of Sugar = 0.1938 is NOT a true positive
+IoU of Mustard = 0.0208 is NOT a true positive
+
+../data/006_mustard_bottle/labels//6_0001_000952-box.txt Metrics : 
+
+MIoU = 0.3643
+
+Accuracy : 
+IoU of Sugar = 0.6473 is true positive
+IoU of Mustard = 0.0813 is NOT a true positive
+
+../data/006_mustard_bottle/labels//6_0008_001625-box.txt Metrics : 
+
+MIoU = 0.5768
+
+Accuracy : 
+IoU of Mustard = 0.5768 is true positive
+
+../data/006_mustard_bottle/labels//6_0008_002747-box.txt Metrics : 
+
+MIoU = 0.3564
+
+Accuracy : 
+IoU of Mustard = 0.3564 is NOT a true positive
+
+../data/006_mustard_bottle/labels//6_0026_000077-box.txt Metrics : 
+
+MIoU = 0.0373
+
+Accuracy : 
+IoU of Mustard = 0.0373 is NOT a true positive
+
+../data/006_mustard_bottle/labels//6_0030_000130-box.txt Metrics : 
+
+MIoU = 0.3623
+
+Accuracy : 
+IoU of Mustard = 0.0071 is NOT a true positive
+IoU of Power Drill = 0.7174 is true positive
+
+../data/006_mustard_bottle/labels//6_0030_001027-box.txt Metrics : 
+
+MIoU = 0.0612
+
+Accuracy : 
+IoU of Mustard = 0.0849 is NOT a true positive
+IoU of Power Drill = 0.0375 is NOT a true positive
+
+../data/006_mustard_bottle/labels//6_0046_000002-box.txt Metrics : 
+
+MIoU = 0.2617
+
+Accuracy : 
+IoU of Mustard = 0.2617 is NOT a true positive
+
+../data/006_mustard_bottle/labels//6_0069_000681-box.txt Metrics : 
+
+MIoU = 0.3399
+
+Accuracy : 
+IoU of Mustard = 0.3399 is NOT a true positive
+
+../data/006_mustard_bottle/labels//6_0087_000029-box.txt Metrics : 
+
+MIoU = 0.0302
+
+Accuracy : 
+IoU of Mustard = 0.0302 is NOT a true positive
+
+../data/006_mustard_bottle/labels//6_0001_000121-box.txt Metrics : 
+
+MIoU = 0.0878
+
+Accuracy : 
+IoU of Sugar = 0.1755 is NOT a true positive
+IoU of Mustard = 0.0000 is NOT a true positive
+
+../data/006_mustard_bottle/labels//6_0001_000952-box.txt Metrics : 
+
+MIoU = 0.4011
+
+Accuracy : 
+IoU of Sugar = 0.5696 is true positive
+IoU of Mustard = 0.2325 is NOT a true positive
+
+../data/006_mustard_bottle/labels//6_0008_001625-box.txt Metrics : 
+
+MIoU = 0.4222
+
+Accuracy : 
+IoU of Mustard = 0.4222 is NOT a true positive
+
+../data/006_mustard_bottle/labels//6_0008_002747-box.txt Metrics : 
+
+MIoU = 0.3888
+
+Accuracy : 
+IoU of Mustard = 0.3888 is NOT a true positive
+
+../data/006_mustard_bottle/labels//6_0026_000077-box.txt Metrics : 
+
+MIoU = 0.0879
+
+Accuracy : 
+IoU of Mustard = 0.0879 is NOT a true positive
+
+../data/006_mustard_bottle/labels//6_0030_000130-box.txt Metrics : 
+
+MIoU = 0.5485
+
+Accuracy : 
+IoU of Mustard = 0.2683 is NOT a true positive
+IoU of Power Drill = 0.8287 is true positive
+
+../data/006_mustard_bottle/labels//6_0030_001027-box.txt Metrics : 
+
+MIoU = 0.3413
+
+Accuracy : 
+IoU of Mustard = 0.3493 is NOT a true positive
+IoU of Power Drill = 0.3333 is NOT a true positive
+
+../data/006_mustard_bottle/labels//6_0046_000002-box.txt Metrics : 
+
+MIoU = 0.2834
+
+Accuracy : 
+IoU of Mustard = 0.2834 is NOT a true positive
+
+../data/006_mustard_bottle/labels//6_0069_000681-box.txt Metrics : 
+
+MIoU = 0.3399
+
+Accuracy : 
+IoU of Mustard = 0.3399 is NOT a true positive
+
+../data/006_mustard_bottle/labels//6_0087_000029-box.txt Metrics : 
+
+MIoU = 0.0873
+
+Accuracy : 
+IoU of Mustard = 0.0873 is NOT a true positive
+
+../data/006_mustard_bottle/labels//6_0001_000121-box.txt Metrics : 
+
+MIoU = 0.0808
+
+Accuracy : 
+IoU of Sugar = 0.1616 is NOT a true positive
+IoU of Mustard = 0.0000 is NOT a true positive
+
+../data/006_mustard_bottle/labels//6_0001_000952-box.txt Metrics : 
+
+MIoU = 0.3694
+
+Accuracy : 
+IoU of Sugar = 0.5295 is true positive
+IoU of Mustard = 0.2093 is NOT a true positive
+
+../data/006_mustard_bottle/labels//6_0008_001625-box.txt Metrics : 
+
+MIoU = 0.2861
+
+Accuracy : 
+IoU of Mustard = 0.2861 is NOT a true positive
+
+../data/006_mustard_bottle/labels//6_0008_002747-box.txt Metrics : 
+
+MIoU = 0.0000
+
+Accuracy : 
+IoU of Mustard = 0.0000 is NOT a true positive
+
+../data/006_mustard_bottle/labels//6_0026_000077-box.txt Metrics : 
+
+MIoU = 0.1248
+
+Accuracy : 
+IoU of Mustard = 0.1248 is NOT a true positive
+
+../data/006_mustard_bottle/labels//6_0030_000130-box.txt Metrics : 
+
+MIoU = 0.5744
+
+Accuracy : 
+IoU of Mustard = 0.3216 is NOT a true positive
+IoU of Power Drill = 0.8272 is true positive
+
+../data/006_mustard_bottle/labels//6_0030_001027-box.txt Metrics : 
+
+MIoU = 0.3064
+
+Accuracy : 
+IoU of Mustard = 0.3471 is NOT a true positive
+IoU of Power Drill = 0.2657 is NOT a true positive
+
+../data/006_mustard_bottle/labels//6_0046_000002-box.txt Metrics : 
+
+MIoU = 0.3217
+
+Accuracy : 
+IoU of Mustard = 0.3217 is NOT a true positive
+
+../data/006_mustard_bottle/labels//6_0069_000681-box.txt Metrics : 
+
+MIoU = 0.4257
+
+Accuracy : 
+IoU of Mustard = 0.4257 is NOT a true positive
+
+../data/006_mustard_bottle/labels//6_0087_000029-box.txt Metrics : 
+
+MIoU = 0.0000
+
+Accuracy : 
+IoU of Mustard = 0.0000 is NOT a true positive
+
+../data/006_mustard_bottle/labels//6_0001_000121-box.txt Metrics : 
+
+MIoU = 0.0760
+
+Accuracy : 
+IoU of Sugar = 0.1520 is NOT a true positive
+IoU of Mustard = 0.0000 is NOT a true positive
+
+../data/006_mustard_bottle/labels//6_0001_000952-box.txt Metrics : 
+
+MIoU = 0.2098
+
+Accuracy : 
+IoU of Sugar = 0.4196 is NOT a true positive
+IoU of Mustard = 0.0000 is NOT a true positive
+
+../data/006_mustard_bottle/labels//6_0008_001625-box.txt Metrics : 
+
+MIoU = 0.3993
+
+Accuracy : 
+IoU of Mustard = 0.3993 is NOT a true positive
+
+../data/006_mustard_bottle/labels//6_0008_002747-box.txt Metrics : 
+
+MIoU = 0.0000
+
+Accuracy : 
+IoU of Mustard = 0.0000 is NOT a true positive
+
+../data/006_mustard_bottle/labels//6_0026_000077-box.txt Metrics : 
+
+MIoU = 0.1248
+
+Accuracy : 
+IoU of Mustard = 0.1248 is NOT a true positive
+
+../data/006_mustard_bottle/labels//6_0030_000130-box.txt Metrics : 
+
+MIoU = 0.5482
+
+Accuracy : 
+IoU of Mustard = 0.3659 is NOT a true positive
+IoU of Power Drill = 0.7304 is true positive
+
+../data/006_mustard_bottle/labels//6_0030_001027-box.txt Metrics : 
+
+MIoU = 0.2268
+
+Accuracy : 
+IoU of Mustard = 0.3768 is NOT a true positive
+IoU of Power Drill = 0.0768 is NOT a true positive
+
+../data/006_mustard_bottle/labels//6_0046_000002-box.txt Metrics : 
+
+MIoU = 0.2927
+
+Accuracy : 
+IoU of Mustard = 0.2927 is NOT a true positive
+
+../data/006_mustard_bottle/labels//6_0069_000681-box.txt Metrics : 
+
+MIoU = 0.4506
+
+Accuracy : 
+IoU of Mustard = 0.4506 is NOT a true positive
+
+../data/006_mustard_bottle/labels//6_0087_000029-box.txt Metrics : 
+
+MIoU = 0.0000
+
+Accuracy : 
+IoU of Mustard = 0.0000 is NOT a true positive
+
+../data/006_mustard_bottle/labels//6_0001_000121-box.txt Metrics : 
+
+MIoU = 0.0601
+
+Accuracy : 
+IoU of Sugar = 0.1202 is NOT a true positive
+IoU of Mustard = 0.0000 is NOT a true positive
+
+../data/006_mustard_bottle/labels//6_0001_000952-box.txt Metrics : 
+
+MIoU = 0.2261
+
+Accuracy : 
+IoU of Sugar = 0.4522 is NOT a true positive
+IoU of Mustard = 0.0000 is NOT a true positive
+
+../data/006_mustard_bottle/labels//6_0008_001625-box.txt Metrics : 
+
+MIoU = 0.3993
+
+Accuracy : 
+IoU of Mustard = 0.3993 is NOT a true positive
+
+../data/006_mustard_bottle/labels//6_0008_002747-box.txt Metrics : 
+
+MIoU = 0.0000
+
+Accuracy : 
+IoU of Mustard = 0.0000 is NOT a true positive
+
+../data/006_mustard_bottle/labels//6_0026_000077-box.txt Metrics : 
+
+MIoU = 0.4642
+
+Accuracy : 
+IoU of Mustard = 0.4642 is NOT a true positive
+
+../data/006_mustard_bottle/labels//6_0030_000130-box.txt Metrics : 
+
+MIoU = 0.5886
+
+Accuracy : 
+IoU of Mustard = 0.5485 is true positive
+IoU of Power Drill = 0.6287 is true positive
+
+../data/006_mustard_bottle/labels//6_0030_001027-box.txt Metrics : 
+
+MIoU = 0.2173
+
+Accuracy : 
+IoU of Mustard = 0.3704 is NOT a true positive
+IoU of Power Drill = 0.0642 is NOT a true positive
+
+../data/006_mustard_bottle/labels//6_0046_000002-box.txt Metrics : 
+
+MIoU = 0.3133
+
+Accuracy : 
+IoU of Mustard = 0.3133 is NOT a true positive
+
+../data/006_mustard_bottle/labels//6_0069_000681-box.txt Metrics : 
+
+MIoU = 0.4506
+
+Accuracy : 
+IoU of Mustard = 0.4506 is NOT a true positive
+
+../data/006_mustard_bottle/labels//6_0087_000029-box.txt Metrics : 
+
+MIoU = 0.0000
+
+Accuracy : 
+IoU of Mustard = 0.0000 is NOT a true positive
+
+../data/006_mustard_bottle/labels//6_0001_000121-box.txt Metrics : 
+
+MIoU = 0.0601
+
+Accuracy : 
+IoU of Sugar = 0.1202 is NOT a true positive
+IoU of Mustard = 0.0000 is NOT a true positive
+
+../data/006_mustard_bottle/labels//6_0001_000952-box.txt Metrics : 
+
+MIoU = 0.2261
+
+Accuracy : 
+IoU of Sugar = 0.4522 is NOT a true positive
+IoU of Mustard = 0.0000 is NOT a true positive
+
+../data/006_mustard_bottle/labels//6_0008_001625-box.txt Metrics : 
+
+MIoU = 0.3993
+
+Accuracy : 
+IoU of Mustard = 0.3993 is NOT a true positive
+
+../data/006_mustard_bottle/labels//6_0008_002747-box.txt Metrics : 
+
+MIoU = 0.0000
+
+Accuracy : 
+IoU of Mustard = 0.0000 is NOT a true positive
+
+../data/006_mustard_bottle/labels//6_0026_000077-box.txt Metrics : 
+
+MIoU = 0.4642
+
+Accuracy : 
+IoU of Mustard = 0.4642 is NOT a true positive
+
+../data/006_mustard_bottle/labels//6_0030_000130-box.txt Metrics : 
+
+MIoU = 0.5886
+
+Accuracy : 
+IoU of Mustard = 0.5485 is true positive
+IoU of Power Drill = 0.6287 is true positive
+
+../data/006_mustard_bottle/labels//6_0030_001027-box.txt Metrics : 
+
+MIoU = 0.2173
+
+Accuracy : 
+IoU of Mustard = 0.3704 is NOT a true positive
+IoU of Power Drill = 0.0642 is NOT a true positive
+
+../data/006_mustard_bottle/labels//6_0046_000002-box.txt Metrics : 
+
+MIoU = 0.3133
+
+Accuracy : 
+IoU of Mustard = 0.3133 is NOT a true positive
+
+../data/006_mustard_bottle/labels//6_0069_000681-box.txt Metrics : 
+
+MIoU = 0.4506
+
+Accuracy : 
+IoU of Mustard = 0.4506 is NOT a true positive
+
+../data/006_mustard_bottle/labels//6_0087_000029-box.txt Metrics : 
+
+MIoU = 0.0000
+
+Accuracy : 
+IoU of Mustard = 0.0000 is NOT a true positive
+
+../data/006_mustard_bottle/labels//6_0001_000121-box.txt Metrics : 
+
+MIoU = 0.0866
+
+Accuracy : 
+IoU of Sugar = 0.1525 is NOT a true positive
+IoU of Mustard = 0.0208 is NOT a true positive
+
+../data/006_mustard_bottle/labels//6_0001_000952-box.txt Metrics : 
+
+MIoU = 0.2233
+
+Accuracy : 
+IoU of Sugar = 0.4467 is NOT a true positive
+IoU of Mustard = 0.0000 is NOT a true positive
+
+../data/006_mustard_bottle/labels//6_0008_001625-box.txt Metrics : 
+
+MIoU = 0.4575
+
+Accuracy : 
+IoU of Mustard = 0.4575 is NOT a true positive
+
+../data/006_mustard_bottle/labels//6_0008_002747-box.txt Metrics : 
+
+MIoU = 0.0144
+
+Accuracy : 
+IoU of Mustard = 0.0144 is NOT a true positive
+
+../data/006_mustard_bottle/labels//6_0026_000077-box.txt Metrics : 
+
+MIoU = 0.0373
+
+Accuracy : 
+IoU of Mustard = 0.0373 is NOT a true positive
+
+../data/006_mustard_bottle/labels//6_0030_000130-box.txt Metrics : 
+
+MIoU = 0.5550
+
+Accuracy : 
+IoU of Mustard = 0.3609 is NOT a true positive
+IoU of Power Drill = 0.7492 is true positive
+
+../data/006_mustard_bottle/labels//6_0030_001027-box.txt Metrics : 
+
+MIoU = 0.1846
+
+Accuracy : 
+IoU of Mustard = 0.3392 is NOT a true positive
+IoU of Power Drill = 0.0301 is NOT a true positive
+
+../data/006_mustard_bottle/labels//6_0046_000002-box.txt Metrics : 
+
+MIoU = 0.2572
+
+Accuracy : 
+IoU of Mustard = 0.2572 is NOT a true positive
+
+../data/006_mustard_bottle/labels//6_0069_000681-box.txt Metrics : 
+
+MIoU = 0.4537
+
+Accuracy : 
+IoU of Mustard = 0.4537 is NOT a true positive
+
+../data/006_mustard_bottle/labels//6_0087_000029-box.txt Metrics : 
+
+MIoU = 0.0000
+
+Accuracy : 
+IoU of Mustard = 0.0000 is NOT a true positive
+
