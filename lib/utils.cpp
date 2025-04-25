@@ -6,7 +6,9 @@
 
 #include "../include/utils.h"
 
-std::pair<cv::Point2i, cv::Point2i> draw_box(cv::Mat& image, const std::vector<cv::Point2i>& points, const std::vector<cv::KeyPoint>& keypoints, const cv::Scalar& color){
+std::pair<cv::Point2i, cv::Point2i> draw_box(cv::Mat& image, 
+    const std::vector<cv::Point2i>& points, const std::vector<cv::KeyPoint>& keypoints,
+     const cv::Scalar& color){
     cv::Point2i top_left(image.rows, image.cols);
     cv::Point2i bottom_right(0, 0);
     for (const cv::Point2i& pt : points) {
@@ -32,7 +34,8 @@ void lowe_filter(const std::vector<std::vector<cv::DMatch>>& matches,  float thr
     }
 }
 
-void max_distance_filter(float max_distance, const std::vector<cv::Point2i>& points, cv::Point2f center, std::vector<cv::Point2i>& filtered_points){
+void max_distance_filter(float max_distance, const std::vector<cv::Point2i>& points, 
+    cv::Point2f center, std::vector<cv::Point2i>& filtered_points){
     for (const cv::Point2i& pt : points) {
         float distance = sqrt(pow(pt.x - center.x, 2) + pow(pt.y - center.y, 2));
         if (distance <= max_distance) {
@@ -58,7 +61,8 @@ void kernel_filter(int max_kernel_size, int min_match,
 
 
 
-cv::Point2d compute_com(const std::vector<cv::Point2i>& points, const std::vector<cv::KeyPoint>& keypoints){
+cv::Point2d compute_com(const std::vector<cv::Point2i>& points, 
+    const std::vector<cv::KeyPoint>& keypoints){
     if (points.empty()) {
         return {-1, -1};
     }
@@ -79,12 +83,14 @@ cv::Point2d compute_com(const std::vector<cv::Point2i>& points, const std::vecto
     return com;
 }
 
-void store_label(const std::string& file_name, const std::string& object_name, const cv::Point2i& min, const cv::Point2i& max){
+void store_label(const std::string& file_name, const std::string& object_name, 
+    const cv::Point2i& min, const cv::Point2i& max){
     std::ofstream outfile;
     outfile.open(file_name, std::ios_base::app);
 
     if (outfile.is_open()) {
-        outfile << object_name << " " << min.x << " " << min.y << " " << max.x << " " << max.y << std::endl;
+        outfile << object_name << " " << min.x << " " << min.y << " " << max.x 
+            << " " << max.y << std::endl;
         outfile.close();
     } else {
         std::cerr << "Unable to open file: " << file_name << std::endl;
