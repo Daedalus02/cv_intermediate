@@ -1,8 +1,6 @@
 #include "../include/performance_metrics.h"
 
 
-const std::array<const char *, 3> class_names = {"Sugar", "Mustard", "Power Drill"};
-
 // FUNCTION MEMBERS
 void PerformanceMetrics:: compute_IoU(){
 
@@ -10,13 +8,6 @@ void PerformanceMetrics:: compute_IoU(){
     parser(this->path_pred_labels, this->sugar_p, this->mustard_p, this->power_drill_p);
     // Parser for true labels
     parser(this->path_true_labels, this->sugar_t, this->mustard_t, this->power_drill_t);
-
-    std::cout<<"Predicted labels:\n\n"; // SOLO PER DEBUG
-    print_value(this->sugar_p, this->mustard_p, this->power_drill_p);
-
-    std::cout<<"\nTrue labels:\n\n"; // SOLO PER DEBUG
-    print_value(this->sugar_t, this->mustard_t, this->power_drill_t);
-    std::cout<<"\n";
 
     // Initialize 2 vectors for the rectangle of our Algo dectector prediction, and for the true label of the dataset
     // In each cell of each vector we find the coordinates of the top left and bottom right corners
@@ -35,7 +26,6 @@ void PerformanceMetrics:: compute_IoU(){
     rect_t[2] = cv::Rect(power_drill_t[0], power_drill_t[1]);
 
     // Compute and storage IoU array in the data member: IoU =  Area of overlap / Area of union
-
     // Define the variable to store the areas of intersection, union and the respective IoU
     double areas_int[3];
     double areas_union[3];
@@ -46,18 +36,14 @@ void PerformanceMetrics:: compute_IoU(){
         {
             cv::Rect intersect = rect_p[i] & rect_t[i];
             areas_int[i] = intersect.area();
-            std::cout << "Intersection A (" << class_names[i] << "): " << areas_int[i] << std::endl; // QUesto serve solo in fase di debug
-
             areas_union[i] = rect_p[i].area() + rect_t[i].area() - areas_int[i];
-            std::cout << "Union A (" << class_names[i] << "): " << areas_union[i] << std::endl; // QUesto serve solo in fase di debug
 
             this->IoU[i] = areas_int[i] / areas_union[i];
-            std::cout << "IoU (" << class_names[i] << "): " << this->IoU[i] << "\n\n"; // QUesto serve solo in fase di debug
         }
     }
 }
 
-double PerformanceMetrics:: print_metrics(){
+void PerformanceMetrics:: print_metrics(){
 
     this->compute_IoU();
    
@@ -68,32 +54,55 @@ double PerformanceMetrics:: print_metrics(){
     // MIoU
     int m = 0;
     double sum = 0;
-    for (int i = 0; i < std::size(this->IoU); i++)
-    {
-        if (!this->miss[i])
-        {
+    for (int i = 0; i < std::size(this->IoU); i++){
+        if (!this->miss[i]){
             m++;
             sum += this->IoU[i];
         }
     }
     double MIoU = sum / m;
-    std::cout << "MIoU " << MIoU << "\n\n";
-    // STAMPA IN UN FILE
 
-    // Accuracy 
-    std::cout<<"Accuracy : \n";
-    for (int i = 0; i < std::size(this->IoU); i++){
-        if(!this->miss[i]){
-            if(this->IoU[i] > 0.5){
-                std::cout << "IoU for " << class_names[i] << " is true positive" << std::endl;
-            }else{
-                std::cout << "IoU for " << class_names[i] << " is NOT a true positive" << std::endl;
+    // To read the corrispective names of object, we adopt a mapping for wich sugar is on the first position
+    // mustard second and power drill in third position
+    const std::array<const char *, 3> class_names = {"Sugar", "Mustard", "Power Drill"};
+
+    // Print in a file and in the terminal
+    std::ofstream outfile("metrics.txt", std::ios::app);
+    if (outfile.is_open())
+    {
+        std::cout << this->path_true_labels << "Metrics : \n\n";
+        std::cout << "MIoU = " << std::fixed << std::setprecision(4) << MIoU << "\n\n";
+
+        outfile << this->path_true_labels << " Metrics : \n\n";
+        outfile << "MIoU = " << std::fixed << std::setprecision(4) << MIoU << "\n\n";
+
+        std::cout << "Accuracy : \n";
+        outfile << "Accuracy : \n";
+        for (int i = 0; i < std::size(this->IoU); i++)
+        {
+            if (!this->miss[i])
+            {
+                outfile << "IoU of " << class_names[i] << " = " << std::fixed << std::setprecision(4) << this->IoU[i] << " is ";
+                std::cout << "IoU of " << class_names[i] << " = " << std::fixed << std::setprecision(4) << this->IoU[i] << " is ";
+                if (this->IoU[i] > 0.5)
+                {
+                    outfile << "true positive" << std::endl;
+                    std::cout << "true positive" << std::endl;
+                }
+                else
+                {
+                    outfile << "NOT a true positive" << std::endl;
+                    std::cout <<"NOT a true positive" << std::endl;
+                }
             }
         }
+        outfile << "\n";
+        outfile.close();
     }
-    // STAMPA IN UN FILE
-
-    return MIoU; // LA FUNZIONE SARA VOID
+    else
+    {
+        std::cerr << "Impossibile aprire il file ../out/metrics.txt per la scrittura.\n";
+    }
 }
 
 // HELPER FUCNTIONS
@@ -140,7 +149,7 @@ double PerformanceMetrics:: print_metrics(){
     }
 
 }
-
+// Only for debug
 void print_value(std::vector<cv::Point2f> v1, std::vector<cv::Point2f> v2, std::vector<cv::Point2f> v3) {
 
     auto print_coords = [](const std::string& label, const std::vector<cv::Point2f>& vec) {
@@ -158,29 +167,3 @@ void print_value(std::vector<cv::Point2f> v1, std::vector<cv::Point2f> v2, std::
     print_coords("Mustard Coord", v2);
     print_coords("Power Drill Coord", v3);
 }
-
-/*
- void printValue(std::vector<cv:: Point2f> v1, std::vector<cv:: Point2f> v2, std::vector<cv:: Point2f> v3){
-
-    
-    
-    std::cout << "Sugar Coord:" << std::endl;
-    for (const auto& p : v1) {
-        std::cout << "(" << p.x << ", " << p.y << ") ";
-    }
-    std::cout << std::endl;
-
-    std::cout << "Mustard Coord:" << std::endl;
-    for (const auto& p : v2) {
-        std::cout << "(" << p.x << ", " << p.y << ") ";
-    }
-    std::cout << std::endl;
-
-    std::cout << "Power Drill Coord:" << std::endl;
-    for (const auto& p : v3) {
-        std::cout << "(" << p.x << ", " << p.y << ")";
-    }
-    std::cout << "\n\n";
-
-}
-*/
