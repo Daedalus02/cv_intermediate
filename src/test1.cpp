@@ -106,15 +106,25 @@ int main(int argc, char* argv[]) {
         std::vector<cv::DMatch> good_matches;
         lowe_filter(knn_matches, ratio_thresh, good_matches);
 
+        // Converting the vector of good_matches into a vector of Point2f in the scene.
+        std::vector<cv::Point2i> good_points;
+        for(const auto& match : good_matches){
+            cv::Point2i pt = keypoints_scene[match.trainIdx].pt;
+            if(std::find(good_points.begin(), good_points.end(), pt) == good_points.end()){
+                good_points.push_back(pt);
+            }
+        }
+        std::cout<<"The number of points is: "<<good_points.size()<<" the number of matches is "<<good_matches.size()<<std::endl;
+
 
         //-- STEP 3: Filter matches based on distance to the center of mass.
         // Calculate the total center of mass from all good matches.
-        cv::Point2i com = compute_com(good_matches, keypoints_scene);
+        cv::Point2i com = compute_com(good_points, keypoints_scene);
 
         // Adjust this threshold as needed.
         float max_distance_threshold = 140; 
-        std::vector<cv::DMatch> filtered_matches;
-        max_distance_filter(max_distance_threshold, good_matches, keypoints_scene, com, filtered_matches);
+        std::vector<cv::Point2i> filtered_matches;
+        max_distance_filter(max_distance_threshold, good_points, keypoints_scene, com, filtered_matches);
 
         if (filtered_matches.empty()) {
             std::cout << "No matches survived the max distance filter..." << std::endl;
@@ -128,38 +138,41 @@ int main(int argc, char* argv[]) {
 
 
         int max_kernel_size = 10;
-        std::vector<cv::DMatch> final_matches;
-        for(const auto& match : filtered_matches){
-            std::vector<cv::DMatch> kernel_matches;
-
-            std::vector<cv::DMatch> dup_matches;
-            cv::Point2i pt = keypoints_scene[match.trainIdx].pt;
-            max_distance_filter(max_kernel_size, filtered_matches, keypoints_scene, pt, kernel_matches);
-            max_distance_filter(1, filtered_matches, keypoints_scene, pt, dup_matches);
-            if(dup_matches.size() > 1){
-                //std::cout<<"Detected dupes."<<std::endl;
-            }
-            if(kernel_matches.size() - dup_matches.size() > 1){
-                final_matches.push_back(match);
+        std::vector<cv::Point2i> final_points;
+        for(const auto& pt : filtered_matches){
+            std::vector<cv::Point2i> kernel_points;
+            max_distance_filter(max_kernel_size, filtered_matches, keypoints_scene, pt, kernel_points);
+            if(kernel_points.size()> 1){
+                final_points.push_back(pt);
             }
         }
+/*
+        filtered_matches = final_points;
+        max_kernel_size = 50;
+        final_points = {};
+        for(const auto& pt : filtered_matches){
+            std::vector<cv::Point2i> kernel_points;
+            max_distance_filter(max_kernel_size, filtered_matches, keypoints_scene, pt, kernel_points);
+            if(kernel_points.size()> 10){
+                final_points.push_back(pt);
+            }
+        }*/
 
         // Printing the dimensione of the matches.
-        std::cout<<"Size of filtered AFTER: "<<final_matches.size()<<std::endl<<std::endl;
+        std::cout<<"Size of filtered AFTER: "<<final_points.size()<<std::endl<<std::endl;
 
         // Draw the filtered matches.
-        for (const auto& match : final_matches) {
-            cv::Point2i pt2 = keypoints_scene[match.trainIdx].pt;
-            cv::circle(out_scene, pt2, 3, boxes_color[models_path.first], 2);
+        for (const auto& pt : final_points) {
+            cv::circle(out_scene, pt, 3, boxes_color[models_path.first], 2);
         }
 
         // Recalculate the center of mass with the filtered matches.
-        cv::Point2i new_com = compute_com(final_matches, keypoints_scene);
+        cv::Point2i new_com = compute_com(final_points, keypoints_scene);
         // Draw the center of mass.
         cv::circle(out_scene, new_com, 5, cv::Scalar(0, 255, 255), 2);
 
         // Last step draw the rectangle around all the matches.
-        std::pair<cv::Point2i, cv::Point2i> label = draw_box(out_scene, final_matches, keypoints_scene, boxes_color[models_path.first]);
+        std::pair<cv::Point2i, cv::Point2i> label = draw_box(out_scene, final_points, keypoints_scene, boxes_color[models_path.first]);
 
         // Store the found label.
         store_label("output_label.txt", models_path.first, label.first, label.second);
