@@ -9,7 +9,7 @@ class FeaturesMatcher{
     public:
         // CONSTRUCTORS:
         // This constructor builds the internal matcher.
-        FeaturesMatcher() {matcher = cv::DescriptorMatcher::create(cv::DescriptorMatcher::BRUTEFORCE);}
+        FeaturesMatcher() {matcher = cv::DescriptorMatcher::create(cv::DescriptorMatcher::FLANNBASED);}
 
 
         // FUNCTION MEMBERS:

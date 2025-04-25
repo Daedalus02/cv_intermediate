@@ -1,3 +1,4 @@
+#include <fstream>
 #include <iostream>
 #include <unistd.h>
 #include <dirent.h>
@@ -5,7 +6,7 @@
 
 #include "../include/utils.h"
 
-void draw_box(cv::Mat& image, const std::vector<cv::DMatch>& matches, const std::vector<cv::KeyPoint>& keypoints, const cv::Scalar& color){
+std::pair<cv::Point2f, cv::Point2f> draw_box(cv::Mat& image, const std::vector<cv::DMatch>& matches, const std::vector<cv::KeyPoint>& keypoints, const cv::Scalar& color){
     cv::Point2f top_left(image.rows, image.cols);
     cv::Point2f bottom_right(0, 0);
     for (const cv::DMatch& match : matches) {
@@ -20,6 +21,7 @@ void draw_box(cv::Mat& image, const std::vector<cv::DMatch>& matches, const std:
             bottom_right.x = pt.x;
     }
     rectangle(image, top_left, bottom_right, color, 2, cv::LINE_8); 
+    return {top_left, bottom_right};
 }
 
 void lowe_filter(std::vector<std::vector<cv::DMatch>>& matches,  float threshold, 
@@ -64,8 +66,16 @@ cv::Point2f compute_com(const std::vector<cv::DMatch>& matches, std::vector<cv::
     return com;
 }
 
-void store_label(std::string file_name, std::string object_name, cv::Point min, cv::Point max){
+void store_label(const std::string& file_name, const std::string& object_name, const cv::Point& min, const cv::Point& max){
+    std::ofstream outfile;
+    outfile.open(file_name, std::ios_base::app);
 
+    if (outfile.is_open()) {
+        outfile << object_name << " " << min.x << " " << min.y << " " << max.x << " " << max.y << std::endl;
+        outfile.close();
+    } else {
+        std::cerr << "Unable to open file: " << file_name << std::endl;
+    }
 }
 
 void get_all_filenames(const std::string& dir_path, std::vector<std::string>& filenames) {
@@ -90,9 +100,10 @@ void get_all_filenames(const std::string& dir_path, std::vector<std::string>& fi
 }
 
 void parse_command_line(int argc, char* argv[], std::string& pd_dir, 
-        std::string& mb_dir, std::string& sb_dir, std::string& scene) {
+        std::string& mb_dir, std::string& sb_dir, std::string& scene,
+        std::string& label) {
     int opt;
-    while ((opt = getopt(argc, argv, "s:p:m:i:")) != -1) {
+    while ((opt = getopt(argc, argv, "s:p:m:i:l:")) != -1) {
         switch (opt) {
             case 'p':
                 pd_dir = optarg;
@@ -106,13 +117,17 @@ void parse_command_line(int argc, char* argv[], std::string& pd_dir,
             case 'i':
                 scene = optarg;
                 break;
+            case 'l':
+                label = optarg;
+                break;
             case '?':
-                std::cerr << "Usage: " << argv[0] << " -p <path> -m <path> -s <path> -i <path>" << std::endl
+                std::cerr << "Usage: " << argv[0] << " -p <path> -m <path> -s <path> -i <path> -l <path>" << std::endl
                     << "  Where:" << std::endl
                     << "    -p is the power drill models dir path" << std::endl
                     << "    -m is the mustard bottle models dir path" << std::endl
                     << "    -s is the sugar box models dir path" << std::endl
-                    << "    -i is the input scene image path" << std::endl;
+                    << "    -i is the input scene image path" << std::endl
+                    << "    -l is the label path associated with the scene" << std::endl;
                 break;
         }
     }
