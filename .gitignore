@@ -34,6 +34,4 @@ src/test3.cpp
 src/metrics.txt
 src/output_label.txt
 .vscode/
-metrics.txt
-output_label.txt
 build
