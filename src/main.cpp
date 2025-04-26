@@ -70,12 +70,12 @@ int main(int argc, char* argv[]) {
     params_map[sb_obj_name] = sb_params;
 
     // Define the output scene image (the one with the boxes plotted).
-    cv::Mat out_scene = cv::imread(scene_image_path, cv::IMREAD_GRAYSCALE);
+    cv::Mat out_scene = cv::imread(scene_image_path, cv::IMREAD_COLOR);
     if(out_scene.empty()) {
         std::cerr << "Error: the image of the scene was not loaded correctly!" << std::endl;
         return -1;
     }
-    cv::cvtColor(out_scene, out_scene, cv::COLOR_GRAY2BGR);
+    //cv::cvtColor(out_scene, out_scene, cv::COLOR_GRAY2BGR);
 
     // Define the feature extractor that will be used to detect the objects.
     FeaturesExctractor extractor = FeaturesExctractor();
@@ -95,7 +95,7 @@ int main(int argc, char* argv[]) {
         // Define a vector containing all the models images of the current object.
         std::vector<cv::Mat> models;
         for (const std::string& p : models_path.second) {
-            cv::Mat model = cv::imread(p, cv::IMREAD_GRAYSCALE);
+            cv::Mat model = cv::imread(p, cv::IMREAD_COLOR);
             if(model.empty()){
                 std::cerr<<"Error: the model image " << p << "was not loaded correctly!"<<std::endl;
                 return -1;
