@@ -1,4 +1,6 @@
-// Include guards.
+// Authors: Chinello Alessandro, Piai Luca, Scantamburlo Mattia
+// (Read the report)
+
 #ifndef FEATURES_MATCHER_H
 #define FEATURES_MATCHER_H
 

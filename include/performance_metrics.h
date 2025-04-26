@@ -1,4 +1,6 @@
-// Include guards.
+// Authors: Chinello Alessandro, Piai Luca, Scantamburlo Mattia
+// (Read the report)
+
 #ifndef PERFORMANCE_METRICS_H
 #define PERFORMANCE_METRICS_H
 

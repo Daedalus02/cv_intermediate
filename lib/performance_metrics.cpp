@@ -1,3 +1,6 @@
+// Authors: Chinello Alessandro, Piai Luca, Scantamburlo Mattia
+// (Read the report)
+
 #include "../include/performance_metrics.h"
 
 

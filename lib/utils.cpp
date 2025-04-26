@@ -1,3 +1,6 @@
+// Authors: Chinello Alessandro, Piai Luca, Scantamburlo Mattia
+// (Read the report)
+
 #include <fstream>
 #include <iostream>
 #include <unistd.h>
@@ -63,7 +66,7 @@ void max_distance_filter(float max_distance, const std::vector<cv::Point2i>& poi
     }
 }
 
-void kernel_filter(int max_kernel_size, int min_match, 
+void neighbor_filter(int max_kernel_size, int min_match, 
         const std::vector<cv::Point2i>&  points, 
         std::vector<cv::Point2i>& final_points){
     for(const auto& pt : points){

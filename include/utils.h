@@ -1,3 +1,6 @@
+// Authors: Chinello Alessandro, Piai Luca, Scantamburlo Mattia
+// (Read the report)
+
 #ifndef UTILS_H
 #define UTILS_H
 
@@ -20,7 +23,7 @@ void lowe_filter(const std::vector<std::vector<cv::DMatch>>& matches,  float thr
 void max_distance_filter(float max_distance, const std::vector<cv::Point2i>& points, cv::Point2f center, std::vector<cv::Point2i>& filtered_points);
 
 // Compute the vector or points that have at least min_match points within a window of ray max kernel_size.
-void kernel_filter(int max_kernel_size, int min_match,
+void neighbor_filter(int max_kernel_size, int min_match,
         const std::vector<cv::Point2i>&  filtered_points, 
         std::vector<cv::Point2i>& final_points);
 

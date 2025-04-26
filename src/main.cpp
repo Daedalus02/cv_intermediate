@@ -1,3 +1,6 @@
+// Authors: Chinello Alessandro, Piai Luca, Scantamburlo Mattia
+// (Read the report)
+
 #include <iostream>
 #include <map>
 
@@ -12,12 +15,25 @@
 #include "../include/performance_metrics.h"
 
 
+// Used to normalize the density of matches inside the colored box.
 const double scale_factor = 1000;
 
+// Parameters associated to each object class.
+// The value below are not magic numbers, they were determinated
+// during the tuning phase.
+//
+// The values of the vectors below are used for: 
+//      - Lowe's threshold value, 
+//      - Distance from center of mass, 
+//      - Ray of the min number of point in ray, 
+//      - Min number of point in ray,
+//      - Density of points in the rectangle (multiplied by scale factor),
+//      - Min number of matches to consider the object detected. 
 const std::vector<float> pd_params = {0.8, 152, 50, 10, 1.0, 35};
 const std::vector<float> mb_params = {0.8, 150, 80, 15, 0.8, 50};
 const std::vector<float> sb_params = {0.75, 160, 80, 20, 1.25, 40};
 
+// Id associated to each object class.
 const std::string pd_obj_name = "035_power_drill";
 const std::string mb_obj_name = "006_mustard_bottle";
 const std::string sb_obj_name = "004_sugar_box";
@@ -61,10 +77,6 @@ int main(int argc, char* argv[]) {
 
     // Define the parameters associated to each object class.
     std::map<std::string, std::vector<float>> params_map;
-    // The values of this vector are: Lowe's threshold value, distance from center of mass, 
-    // ray of the min number of point in ray, min number of point in ray, density of points in the 
-    // rectangle (multiplied by scale factor), min number of matches to consider the object 
-    // detected. 
     params_map[pd_obj_name] = pd_params;
     params_map[mb_obj_name] = mb_params;
     params_map[sb_obj_name] = sb_params;
@@ -164,15 +176,15 @@ int main(int argc, char* argv[]) {
         }
 
         // Third filter: remove the isolated points.
-        // All the points whose neighbor is so far from them are removed.
-        // The threshold on the distance is 
-        std::vector<cv::Point2i> final_points = {};
-        int max_kernel_size = params_map[models_path.first][2]; // Third parameter.
-        kernel_filter(max_kernel_size, params_map[models_path.first][3], filtered_points, final_points);
+        // If a point has a distance from his nearest neighbor that is bigger 
+        // than 'max_dist_from_neighbor' => is filtered out.
+        std::vector<cv::Point2i> final_points;
+        int max_dist_from_neighbor = params_map[models_path.first][2]; // Third parameter.
+        neighbor_filter(max_dist_from_neighbor, params_map[models_path.first][3], filtered_points, final_points);
 
         // Printing the dimensione of the matches.
         int num_points = final_points.size();
-        std::cout<<"Final points survived: " << num_points << std::endl;
+        std::cout << "Final points survived: " << num_points << std::endl;
 
         // Draw the filtered matches.
         //for (const auto& pt : final_points) {
@@ -185,19 +197,25 @@ int main(int argc, char* argv[]) {
         // Draw the center of mass.
         //cv::circle(out_scene, new_com, 5, cv::Scalar(0, 255, 255), 2);
 
-        // Last step draw the rectangle around all the matches.
-        std::pair<cv::Point2i, cv::Point2i> label = bounding_box_coord(out_scene, final_points, keypoints_scene, 0.1);
-        
+        // Get the value of top left corner and bottom right bottom of the box.
+        const float expansion_ratio = 0.1; // Used to expand the box.
+        std::pair<cv::Point2i, cv::Point2i> label = bounding_box_coord(out_scene, final_points, keypoints_scene, expansion_ratio);
         cv::Point2i top_left = label.first;
         cv::Point2i bottom_right = label.second;
         
+        // Compute the are inside the box.
         double x_dim = label.first.x - label.second.x;
         double y_dim = label.first.y - label.second.y;
-        double area = (x_dim * y_dim)/ scale_factor;
-        if(area != 0){
+        double area = (x_dim * y_dim) / scale_factor; // Scale the area.
+
+        // Draw the box, if necessary.
+        if (area != 0) {
+            // Compute the density.
             double density  = num_points / area;
-            std::cout<<"The precision is "<< density <<std::endl;
-            if(density > params_map[models_path.first][4] && num_points >= params_map[models_path.first][5]){
+            std::cout<<"Density value is " << density <<std::endl;
+
+            // If density and number of points are high enough, then draw the box.
+            if (density > params_map[models_path.first][4] && num_points >= params_map[models_path.first][5]) {
                 rectangle(out_scene, top_left, bottom_right, boxes_color[models_path.first], 2, cv::LINE_8);  
                 // Store the found label.
                 store_label("output_label.txt", models_path.first, label.first, label.second);
@@ -205,7 +223,6 @@ int main(int argc, char* argv[]) {
         }
 
     }
-
 
     // Compute the metrics.
     PerformanceMetrics metrics = PerformanceMetrics("output_label.txt", label_scene_path);

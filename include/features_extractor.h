@@ -1,4 +1,6 @@
-// Include guards.
+// Authors: Chinello Alessandro, Piai Luca, Scantamburlo Mattia
+// (Read the report)
+
 #ifndef FEATURES_EXTRACTOR_H
 #define FEATURES_EXTRACTOR_H
 
