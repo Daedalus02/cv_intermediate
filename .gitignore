@@ -36,3 +36,4 @@ src/output_label.txt
 .vscode/
 metrics.txt
 output_label.txt
+build
