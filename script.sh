@@ -7,7 +7,7 @@ PROJECT_ROOT=$(dirname "$0")
 EXECUTABLE_DIR="."
 
 # Define the executable name
-EXECUTABLE_NAME="cv_intermediate_app"
+EXECUTABLE_NAME="obj_detector"
 
 # Define the directory containing the input files (now one level above 'build')
 INPUT_DIR="$PROJECT_ROOT/../data/006_mustard_bottle/test_images"

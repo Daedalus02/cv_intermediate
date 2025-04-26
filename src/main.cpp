@@ -12,6 +12,16 @@
 #include "../include/performance_metrics.h"
 
 
+const double scale_factor = 1000;
+
+const std::vector<float> pd_params = {0.8, 152, 50, 10, 0.8, 35};
+const std::vector<float> mb_params = {0.8, 150, 80, 15, 0.8, 50};
+const std::vector<float> sb_params = {0.75, 160, 80, 20, 1.25, 40};
+
+const std::string pd_obj_name = "035_power_drill";
+const std::string mb_obj_name = "006_mustard_bottle";
+const std::string sb_obj_name = "004_sugar_box";
+
 int main(int argc, char* argv[]) { 
     // Get the directories paths of the models.
     std::string scene_image_path{};  // Scene image path.
@@ -30,9 +40,9 @@ int main(int argc, char* argv[]) {
 
     // Get the path of each models inside the speficied directories.
     std::map<std::string, std::vector<std::string>> images_models_paths;
-    get_all_filenames(pd_models_dirpath, images_models_paths["035_power_drill"]);
-    get_all_filenames(mb_models_dirpath, images_models_paths["006_mustard_bottle"]);
-    get_all_filenames(sb_models_dirpath, images_models_paths["004_sugar_box"]);
+    get_all_filenames(pd_models_dirpath, images_models_paths[pd_obj_name]);
+    get_all_filenames(mb_models_dirpath, images_models_paths[mb_obj_name]);
+    get_all_filenames(sb_models_dirpath, images_models_paths[sb_obj_name]);
 
     // Check if one of the vector containing the paths of the models is empty.
     for (const auto& elem : images_models_paths) {
@@ -45,15 +55,19 @@ int main(int argc, char* argv[]) {
     // Define the box color associated to each object.
     cv::Scalar color = cv::Scalar(0, 255, 0);
     std::map<std::string, cv::Scalar> boxes_color;
-    boxes_color["035_power_drill"] = cv::Scalar(0, 0, 255);
-    boxes_color["006_mustard_bottle"] = cv::Scalar(255, 0, 0);
-    boxes_color["004_sugar_box"] = cv::Scalar(0, 255, 0);
+    boxes_color[pd_obj_name] = cv::Scalar(0, 0, 255);
+    boxes_color[mb_obj_name] = cv::Scalar(255, 0, 0);
+    boxes_color[sb_obj_name] = cv::Scalar(0, 255, 0);
 
     // Define the parameters associated to each object class.
     std::map<std::string, std::vector<float>> params_map;
-    params_map["035_power_drill"] = {0.8, 152, 50, 10, 0.8, 35};
-    params_map["006_mustard_bottle"] = {0.8, 150, 80, 15, 0.8, 50};
-    params_map["004_sugar_box"] = {0.75, 160, 80, 20, 1.25, 40};
+    // The values of this vector are: Lowe's threshold value, distance from center of mass, 
+    // ray of the min number of point in ray, min number of point in ray, density of points in the 
+    // rectangle (multiplied by scale factor), min number of matches to consider the object 
+    // detected. 
+    params_map[pd_obj_name] = pd_params;
+    params_map[mb_obj_name] = mb_params;
+    params_map[sb_obj_name] = sb_params;
 
     // Define the output scene image (the one with the boxes plotted).
     cv::Mat out_scene = cv::imread(scene_image_path, cv::IMREAD_GRAYSCALE);
@@ -178,7 +192,6 @@ int main(int argc, char* argv[]) {
         
         double x_dim = label.first.x - label.second.x;
         double y_dim = label.first.y - label.second.y;
-        double scale_factor = 1000;
         double area = (x_dim * y_dim)/ scale_factor;
         if(area != 0){
             double density  = num_points / area;
