@@ -6,9 +6,8 @@
 
 #include "../include/utils.h"
 
-std::pair<cv::Point2i, cv::Point2i> draw_box(cv::Mat& image, 
-    const std::vector<cv::Point2i>& points, const std::vector<cv::KeyPoint>& keypoints,
-     const cv::Scalar& color){
+std::pair<cv::Point2i, cv::Point2i> bounding_box_coord(const cv::Mat& image, 
+    const std::vector<cv::Point2i>& points, const std::vector<cv::KeyPoint>& keypoints, double expansion){
     cv::Point2i top_left(image.rows, image.cols);
     cv::Point2i bottom_right(0, 0);
     for (const cv::Point2i& pt : points) {
@@ -21,7 +20,27 @@ std::pair<cv::Point2i, cv::Point2i> draw_box(cv::Mat& image,
         if (pt.x > bottom_right.x)
             bottom_right.x = pt.x;
     }
-    rectangle(image, top_left, bottom_right, color, 2, cv::LINE_8); 
+
+    int x_dim = bottom_right.x - top_left.x;
+    int y_dim = bottom_right.y - top_left.y;
+
+    if((top_left.x - x_dim * expansion) > 0){
+        //std::cout<<"here1\n";
+        top_left.x = top_left.x - x_dim * expansion;
+    }
+    if((top_left.y - y_dim * expansion) > 0){
+        //std::cout<<"here2\n";
+        top_left.y = top_left.y - y_dim * expansion;
+    }
+
+    if((bottom_right.x + x_dim * expansion) < image.cols){
+        //std::cout<<"here3\n";
+        bottom_right.x = bottom_right.x + x_dim * expansion;
+    }
+    if((bottom_right.y + y_dim * expansion) < image.rows){
+        //std::cout<<"here4\n";
+        bottom_right.y = bottom_right.y + y_dim * expansion;
+    }
     return {top_left, bottom_right};
 }
 
@@ -56,8 +75,7 @@ void kernel_filter(int max_kernel_size, int min_match,
     }   
 }
 
-cv::Point2d compute_com(const std::vector<cv::Point2i>& points, 
-    const std::vector<cv::KeyPoint>& keypoints){
+cv::Point2d compute_com(const std::vector<cv::Point2i>& points){
     if (points.empty()) {
         return {-1, -1};
     }

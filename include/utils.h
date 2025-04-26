@@ -8,8 +8,8 @@
 // Draw a box in the input image. The box is computed starting from the detected
 // keypoints. The drawn box contains all the detected keypoints.
 // Returns the top left corner and the bottom right corner of the box.
-std::pair<cv::Point2i, cv::Point2i> draw_box(cv::Mat& image, const std::vector<cv::Point2i>& points, 
-        const std::vector<cv::KeyPoint>& keypoints, const cv::Scalar& color);
+std::pair<cv::Point2i, cv::Point2i> bounding_box_coord(const cv::Mat& image, 
+        const std::vector<cv::Point2i>& points, const std::vector<cv::KeyPoint>& keypoints, double expansion);
  
 
 // Filtering with Lowe filter.
@@ -25,11 +25,14 @@ void kernel_filter(int max_kernel_size, int min_match,
         std::vector<cv::Point2i>& final_points);
 
 // Compute center of mass.
-cv::Point2d compute_com(const std::vector<cv::Point2i>& points, const std::vector<cv::KeyPoint>& keypoints);
+cv::Point2d compute_com(const std::vector<cv::Point2i>& points);
+
 
 // Store in a file names file_name data in format:
 //    <object_id>_<object_name> <xmin> <ymin> <xmax> <ymax>
-void store_label(const std::string& file_name, const std::string& object_name, const cv::Point& min, const cv::Point& max);
+void store_label(const std::string& file_name, const std::string& object_name, const cv::Point2i& min, const cv::Point2i& max);
+
+
 
 // Reades all the file names inside the dirctory specified by dir_path and
 // stores all the names inside the vector filenames.

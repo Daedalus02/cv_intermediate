@@ -48,19 +48,7 @@ void PerformanceMetrics:: print_metrics(){
     this->compute_IoU();
    
     // Calculus of the metrics
-    // - MIoU = (IoU1 +  IoU2 + IoU3) / 3
     // - Accuracy : if IoU[i] > 0.5 ==> TRUE POSITIVE
-
-    // MIoU
-    int m = 0;
-    double sum = 0;
-    for (int i = 0; i < std::size(this->IoU); i++){
-        if (!this->miss[i]){
-            m++;
-            sum += this->IoU[i];
-        }
-    }
-    double MIoU = sum / m;
 
     // To read the corrispective names of object, we adopt a mapping for wich sugar is on the first position
     // mustard second and power drill in third position
@@ -71,10 +59,7 @@ void PerformanceMetrics:: print_metrics(){
     if (outfile.is_open())
     {
         //std::cout << this->path_true_labels << "Metrics : \n\n";
-        std::cout << "MIoU = " << std::fixed << std::setprecision(4) << MIoU << "\n";
-
-        outfile << this->path_true_labels << " Metrics : \n";
-        outfile << "MIoU = " << std::fixed << std::setprecision(4) << MIoU << "\n";
+        //outfile << this->path_true_labels << " Metrics : \n";
 
         std::cout << "Accuracy : \n";
         outfile << "Accuracy : \n";
@@ -101,7 +86,7 @@ void PerformanceMetrics:: print_metrics(){
     }
     else
     {
-        std::cerr << "Impossibile to open the file.\n";
+        std::cerr << "Impossibile to open the file\n";
     }
 }
 
