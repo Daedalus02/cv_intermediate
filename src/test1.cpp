@@ -79,6 +79,7 @@ int main(int argc, char* argv[]) {
             cv::Mat model = cv::imread(p, cv::IMREAD_GRAYSCALE);
             if(model.empty()){
                 std::cerr<<"Error: the image of the model was not loaded correctly!"<<std::endl;
+                std::cout<<p<<std::endl;
                 return -1;
             }
             models.push_back(model);

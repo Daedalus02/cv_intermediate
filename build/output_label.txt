@@ -1,0 +1,16 @@
+004_sugar_box 297 165 499 410
+035_power_drill 233 92 472 335
+004_sugar_box 157 129 367 361
+006_mustard_bottle 374 187 514 387
+004_sugar_box 297 165 499 410
+035_power_drill 233 92 472 335
+004_sugar_box 157 129 367 361
+006_mustard_bottle 374 187 514 387
+035_power_drill 222 185 409 398
+004_sugar_box 183 167 439 335
+006_mustard_bottle 317 127 390 314
+035_power_drill 259 62 449 329
+004_sugar_box 159 146 349 283
+006_mustard_bottle 207 66 401 274
+004_sugar_box 297 165 499 410
+035_power_drill 233 92 472 335

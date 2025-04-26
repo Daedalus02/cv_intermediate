@@ -1,0 +1,2 @@
+/Library/Developer/CommandLineTools/usr/bin/ar qc libmylib.a CMakeFiles/mylib.dir/features_extractor.cpp.o CMakeFiles/mylib.dir/performance_metrics.cpp.o CMakeFiles/mylib.dir/utils.cpp.o
+/Library/Developer/CommandLineTools/usr/bin/ranlib libmylib.a
