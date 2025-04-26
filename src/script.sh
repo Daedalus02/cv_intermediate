@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # Define the directory containing the input files
-INPUT_DIR="../data/035_power_drill/test_images/"
-INPUT_DIR2="../data/035_power_drill/labels/"
+INPUT_DIR="../data/006_mustard_bottle/test_images/"
+INPUT_DIR2="../data/006_mustard_bottle/labels/"
 
 # Loop through each matching file
 for filepath in "$INPUT_DIR"/*-color.jpg; do
