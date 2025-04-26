@@ -14,7 +14,7 @@
 
 const double scale_factor = 1000;
 
-const std::vector<float> pd_params = {0.8, 152, 50, 10, 0.8, 35};
+const std::vector<float> pd_params = {0.8, 152, 50, 10, 1.0, 35};
 const std::vector<float> mb_params = {0.8, 150, 80, 15, 0.8, 50};
 const std::vector<float> sb_params = {0.75, 160, 80, 20, 1.25, 40};
 
@@ -75,7 +75,8 @@ int main(int argc, char* argv[]) {
         std::cerr << "Error: the image of the scene was not loaded correctly!" << std::endl;
         return -1;
     }
-    //cv::cvtColor(out_scene, out_scene, cv::COLOR_GRAY2BGR);
+    cv::Mat out_scene_gray;
+    cv::cvtColor(out_scene, out_scene_gray, cv::COLOR_BGR2GRAY);
 
     // Define the feature extractor that will be used to detect the objects.
     FeaturesExctractor extractor = FeaturesExctractor();
@@ -83,7 +84,7 @@ int main(int argc, char* argv[]) {
     // Define the vectors containing the keypoints and the descriptors of the scene.
     std::vector<cv::KeyPoint> keypoints_scene;
     cv::Mat descriptors_scene;
-    extractor.extract_features(out_scene, keypoints_scene, descriptors_scene);
+    extractor.extract_features(out_scene_gray, keypoints_scene, descriptors_scene);
 
     // Define the feature matcher.
     FeaturesMatcher matcher = FeaturesMatcher();
@@ -95,7 +96,7 @@ int main(int argc, char* argv[]) {
         // Define a vector containing all the models images of the current object.
         std::vector<cv::Mat> models;
         for (const std::string& p : models_path.second) {
-            cv::Mat model = cv::imread(p, cv::IMREAD_COLOR);
+            cv::Mat model = cv::imread(p, cv::IMREAD_GRAYSCALE);
             if(model.empty()){
                 std::cerr<<"Error: the model image " << p << "was not loaded correctly!"<<std::endl;
                 return -1;
