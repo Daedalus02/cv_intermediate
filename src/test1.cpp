@@ -12,7 +12,6 @@
 #include "../include/performance_metrics.h"
 
 
-
 int main(int argc, char* argv[]) { 
     // Get the directories paths of the models.
     std::string scene_image_path{};  // Scene image path.
@@ -50,6 +49,12 @@ int main(int argc, char* argv[]) {
     boxes_color["006_mustard_bottle"] = cv::Scalar(255, 0, 0);
     boxes_color["004_sugar_box"] = cv::Scalar(0, 255, 0);
 
+    // Define the parameters associated to each object class.
+    std::map<std::string, std::vector<float>> params_map;
+    params_map["035_power_drill"] = {0.8, 152, 50, 10};
+    params_map["006_mustard_bottle"] = {0.8, 150, 80, 15};
+    params_map["004_sugar_box"] = {0.75, 160, 80, 20};
+
     // Define the output scene image (the one with the boxes plotted).
     cv::Mat out_scene = cv::imread(scene_image_path, cv::IMREAD_GRAYSCALE);
     if(out_scene.empty()) {
@@ -71,15 +76,14 @@ int main(int argc, char* argv[]) {
 
     // Define the models images.
     for(const auto& models_path : images_models_paths){
-
+ 
         std::cout << "Looking for " << models_path.first << " in the scene image..." << std::endl;
         // Define a vector containing all the models images of the current object.
         std::vector<cv::Mat> models;
         for (const std::string& p : models_path.second) {
             cv::Mat model = cv::imread(p, cv::IMREAD_GRAYSCALE);
             if(model.empty()){
-                std::cerr<<"Error: the image of the model was not loaded correctly!"<<std::endl;
-                std::cout<<p<<std::endl;
+                std::cerr<<"Error: the model image " << p << "was not loaded correctly!"<<std::endl;
                 return -1;
             }
             models.push_back(model);
@@ -102,65 +106,57 @@ int main(int argc, char* argv[]) {
             knn_matches.insert(knn_matches.end(), tmp.begin(), tmp.end());
         }
 
-        // Filter matches using the Lowe's ratio test.
-        const float ratio_thresh = 0.8;
+        // Apply the first filter to the matches found previousliy.
+        // The first filter is the lowe's filter.
+        const float ratio_thresh = params_map[models_path.first][0]; // First parameter.
         std::vector<cv::DMatch> good_matches;
         lowe_filter(knn_matches, ratio_thresh, good_matches);
 
-        // Converting the vector of good_matches into a vector of Point2f in the scene.
-        std::vector<cv::Point2i> good_points;
-        for(const auto& match : good_matches){
-            cv::Point2i pt = keypoints_scene[match.trainIdx].pt;
-            if(std::find(good_points.begin(), good_points.end(), pt) == good_points.end()){
-                good_points.push_back(pt);
-            }
-        }
-        std::cout<<"The number of points is: "<<good_points.size()<<" the number of matches is "<<good_matches.size()<<std::endl;
-
-
-        //-- STEP 3: Filter matches based on distance to the center of mass.
-        // Calculate the total center of mass from all good matches.
-        cv::Point2i com = compute_com(good_points, keypoints_scene);
-
-        // Adjust this threshold as needed.
-        float max_distance_threshold = 140; 
-        std::vector<cv::Point2i> filtered_matches;
-        max_distance_filter(max_distance_threshold, good_points, keypoints_scene, com, filtered_matches);
-
-        if (filtered_matches.empty()) {
-            std::cout << "No matches survived the max distance filter..." << std::endl;
+        // Check if anyone survived.
+        if (good_matches.empty()) {
+            std::cout << "No matches survived the Lowe's ratio filter..." << std::endl;
             continue;
         }
 
-
-
-        // Printing the dimensione of the matches.
-        //std::cout<<std::endl<<"Size of filtered BEFORE:  "<<filtered_matches.size()<<std::endl;
-
-
-        int max_kernel_size = 10;
-        std::vector<cv::Point2i> final_points;
-        for(const auto& pt : filtered_matches){
-            std::vector<cv::Point2i> kernel_points;
-            max_distance_filter(max_kernel_size, filtered_matches, keypoints_scene, pt, kernel_points);
-            if(kernel_points.size()> 1){
-                final_points.push_back(pt);
+        // Now we want to work only on the matched points found in the scene image.
+        // Therefore we convert the vector of DMatch into a vector of Point2i
+        // corresponding to the maches positions of the scene image.
+        std::vector<cv::Point2i> good_points;
+        for(const auto& match : good_matches) {
+            // Find the position of the match in the scene.
+            cv::Point2i pt = keypoints_scene[match.trainIdx].pt;
+            // Add the position only if it is not already present (aka remove duplicates).
+            if(std::find(good_points.begin(), good_points.end(), pt) == good_points.end()) {
+                good_points.push_back(pt);
             }
         }
-/*
-        filtered_matches = final_points;
-        max_kernel_size = 50;
-        final_points = {};
-        for(const auto& pt : filtered_matches){
-            std::vector<cv::Point2i> kernel_points;
-            max_distance_filter(max_kernel_size, filtered_matches, keypoints_scene, pt, kernel_points);
-            if(kernel_points.size()> 10){
-                final_points.push_back(pt);
-            }
-        }*/
+
+        // Compute the center of mass of the points that survived the first filter.
+        cv::Point2i com = compute_com(good_points, keypoints_scene);
+
+        // Apply the second filter based on the position of the center of mass
+        // (COM) of the remaining points.
+        // All the points that have a distance from the COM that is bigger than
+        // 'max_dist_from_com' are filtered out.
+        float max_dist_from_com = params_map[models_path.first][1]; // Second parameter.
+        std::vector<cv::Point2i> filtered_points;
+        max_distance_filter(max_dist_from_com, good_points, com, filtered_points);
+
+        // Check if anyone survived.
+        if (filtered_points.empty()) {
+            std::cout << "No matches survived the second filter (distance from COM)..." << std::endl;
+            continue;
+        }
+
+        // Third filter: remove the isolated points.
+        // All the points whose neighbor is so far from them are removed.
+        // The threshold on the distance is 
+        std::vector<cv::Point2i> final_points = {};
+        int max_kernel_size = params_map[models_path.first][2]; // Third parameter.
+        kernel_filter(max_kernel_size, params_map[models_path.first][3], filtered_points, final_points);
 
         // Printing the dimensione of the matches.
-        std::cout<<"Size of filtered AFTER: "<<final_points.size()<<std::endl<<std::endl;
+        std::cout<<"Final points survived: " << final_points.size() << std::endl;
 
         // Draw the filtered matches.
         for (const auto& pt : final_points) {
@@ -169,6 +165,7 @@ int main(int argc, char* argv[]) {
 
         // Recalculate the center of mass with the filtered matches.
         cv::Point2i new_com = compute_com(final_points, keypoints_scene);
+
         // Draw the center of mass.
         cv::circle(out_scene, new_com, 5, cv::Scalar(0, 255, 255), 2);
 

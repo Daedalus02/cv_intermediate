@@ -580,3 +580,615 @@ MIoU = 0.0000
 Accuracy : 
 IoU of Mustard = 0.0000 is NOT a true positive
 
+../data/035_power_drill/labels//35_0010_000001-box.txt Metrics : 
+
+MIoU = 0.5984
+
+Accuracy : 
+IoU of Power Drill = 0.5984 is true positive
+
+../data/035_power_drill/labels//35_0010_000491-box.txt Metrics : 
+
+MIoU = 0.5222
+
+Accuracy : 
+IoU of Power Drill = 0.5222 is true positive
+
+../data/035_power_drill/labels//35_0010_000868-box.txt Metrics : 
+
+MIoU = 0.1945
+
+Accuracy : 
+IoU of Power Drill = 0.1945 is NOT a true positive
+
+../data/035_power_drill/labels//35_0010_001462-box.txt Metrics : 
+
+MIoU = 0.7788
+
+Accuracy : 
+IoU of Power Drill = 0.7788 is true positive
+
+../data/035_power_drill/labels//35_0010_001853-box.txt Metrics : 
+
+MIoU = 0.4130
+
+Accuracy : 
+IoU of Power Drill = 0.4130 is NOT a true positive
+
+../data/035_power_drill/labels//35_0030_000046-box.txt Metrics : 
+
+MIoU = 0.6208
+
+Accuracy : 
+IoU of Mustard = 0.4496 is NOT a true positive
+IoU of Power Drill = 0.7921 is true positive
+
+../data/035_power_drill/labels//35_0030_001009-box.txt Metrics : 
+
+MIoU = 0.2261
+
+Accuracy : 
+IoU of Mustard = 0.3098 is NOT a true positive
+IoU of Power Drill = 0.1424 is NOT a true positive
+
+../data/035_power_drill/labels//35_0038_002606-box.txt Metrics : 
+
+MIoU = 0.7139
+
+Accuracy : 
+IoU of Power Drill = 0.7139 is true positive
+
+../data/035_power_drill/labels//35_0054_001329-box.txt Metrics : 
+
+MIoU = 0.5003
+
+Accuracy : 
+IoU of Sugar = 0.5452 is true positive
+IoU of Power Drill = 0.4555 is NOT a true positive
+
+../data/035_power_drill/labels//35_0077_000519-box.txt Metrics : 
+
+MIoU = 0.1953
+
+Accuracy : 
+IoU of Sugar = 0.3758 is NOT a true positive
+IoU of Power Drill = 0.0147 is NOT a true positive
+
+../data/035_power_drill/labels//35_0010_000001-box.txt Metrics : 
+
+MIoU = 0.5984
+
+Accuracy : 
+IoU of Power Drill = 0.5984 is true positive
+
+../data/035_power_drill/labels//35_0010_000491-box.txt Metrics : 
+
+MIoU = 0.5222
+
+Accuracy : 
+IoU of Power Drill = 0.5222 is true positive
+
+../data/035_power_drill/labels//35_0010_000001-box.txt Metrics : 
+
+MIoU = 0.5984
+
+Accuracy : 
+IoU of Power Drill = 0.5984 is true positive
+
+../data/035_power_drill/labels//35_0010_000491-box.txt Metrics : 
+
+MIoU = 0.5222
+
+Accuracy : 
+IoU of Power Drill = 0.5222 is true positive
+
+../data/035_power_drill/labels//35_0010_000868-box.txt Metrics : 
+
+MIoU = 0.1945
+
+Accuracy : 
+IoU of Power Drill = 0.1945 is NOT a true positive
+
+../data/035_power_drill/labels//35_0010_001462-box.txt Metrics : 
+
+MIoU = 0.7788
+
+Accuracy : 
+IoU of Power Drill = 0.7788 is true positive
+
+../data/035_power_drill/labels//35_0010_001853-box.txt Metrics : 
+
+MIoU = 0.4130
+
+Accuracy : 
+IoU of Power Drill = 0.4130 is NOT a true positive
+
+../data/035_power_drill/labels//35_0030_000046-box.txt Metrics : 
+
+MIoU = 0.6208
+
+Accuracy : 
+IoU of Mustard = 0.4496 is NOT a true positive
+IoU of Power Drill = 0.7921 is true positive
+
+../data/035_power_drill/labels//35_0030_001009-box.txt Metrics : 
+
+MIoU = 0.2261
+
+Accuracy : 
+IoU of Mustard = 0.3098 is NOT a true positive
+IoU of Power Drill = 0.1424 is NOT a true positive
+
+../data/035_power_drill/labels//35_0038_002606-box.txt Metrics : 
+
+MIoU = 0.7139
+
+Accuracy : 
+IoU of Power Drill = 0.7139 is true positive
+
+../data/035_power_drill/labels//35_0054_001329-box.txt Metrics : 
+
+MIoU = 0.5003
+
+Accuracy : 
+IoU of Sugar = 0.5452 is true positive
+IoU of Power Drill = 0.4555 is NOT a true positive
+
+../data/035_power_drill/labels//35_0077_000519-box.txt Metrics : 
+
+MIoU = 0.1953
+
+Accuracy : 
+IoU of Sugar = 0.3758 is NOT a true positive
+IoU of Power Drill = 0.0147 is NOT a true positive
+
+../data/035_power_drill/labels//35_0010_000001-box.txt Metrics : 
+
+MIoU = 0.5984
+
+Accuracy : 
+IoU of Power Drill = 0.5984 is true positive
+
+../data/035_power_drill/labels//35_0010_000491-box.txt Metrics : 
+
+MIoU = 0.5222
+
+Accuracy : 
+IoU of Power Drill = 0.5222 is true positive
+
+../data/035_power_drill/labels//35_0010_000868-box.txt Metrics : 
+
+MIoU = 0.1945
+
+Accuracy : 
+IoU of Power Drill = 0.1945 is NOT a true positive
+
+../data/035_power_drill/labels//35_0010_001462-box.txt Metrics : 
+
+MIoU = 0.7788
+
+Accuracy : 
+IoU of Power Drill = 0.7788 is true positive
+
+../data/035_power_drill/labels//35_0010_001853-box.txt Metrics : 
+
+MIoU = 0.4130
+
+Accuracy : 
+IoU of Power Drill = 0.4130 is NOT a true positive
+
+../data/035_power_drill/labels//35_0030_000046-box.txt Metrics : 
+
+MIoU = 0.6208
+
+Accuracy : 
+IoU of Mustard = 0.4496 is NOT a true positive
+IoU of Power Drill = 0.7921 is true positive
+
+../data/035_power_drill/labels//35_0030_001009-box.txt Metrics : 
+
+MIoU = 0.2261
+
+Accuracy : 
+IoU of Mustard = 0.3098 is NOT a true positive
+IoU of Power Drill = 0.1424 is NOT a true positive
+
+../data/035_power_drill/labels//35_0038_002606-box.txt Metrics : 
+
+MIoU = 0.7139
+
+Accuracy : 
+IoU of Power Drill = 0.7139 is true positive
+
+../data/035_power_drill/labels//35_0054_001329-box.txt Metrics : 
+
+MIoU = 0.5003
+
+Accuracy : 
+IoU of Sugar = 0.5452 is true positive
+IoU of Power Drill = 0.4555 is NOT a true positive
+
+../data/035_power_drill/labels//35_0077_000519-box.txt Metrics : 
+
+MIoU = 0.1953
+
+Accuracy : 
+IoU of Sugar = 0.3758 is NOT a true positive
+IoU of Power Drill = 0.0147 is NOT a true positive
+
+../data/035_power_drill/labels//35_0010_000001-box.txt Metrics : 
+
+MIoU = 0.5835
+
+Accuracy : 
+IoU of Power Drill = 0.5835 is true positive
+
+../data/035_power_drill/labels//35_0010_000491-box.txt Metrics : 
+
+MIoU = 0.5126
+
+Accuracy : 
+IoU of Power Drill = 0.5126 is true positive
+
+../data/035_power_drill/labels//35_0010_000001-box.txt Metrics : 
+
+MIoU = 0.5180
+
+Accuracy : 
+IoU of Power Drill = 0.5180 is true positive
+
+../data/035_power_drill/labels//35_0010_000491-box.txt Metrics : 
+
+MIoU = 0.3982
+
+Accuracy : 
+IoU of Power Drill = 0.3982 is NOT a true positive
+
+../data/035_power_drill/labels//35_0010_000868-box.txt Metrics : 
+
+MIoU = 0.5380
+
+Accuracy : 
+IoU of Power Drill = 0.5380 is true positive
+
+../data/035_power_drill/labels//35_0010_001462-box.txt Metrics : 
+
+MIoU = 0.6043
+
+Accuracy : 
+IoU of Power Drill = 0.6043 is true positive
+
+../data/035_power_drill/labels//35_0010_001853-box.txt Metrics : 
+
+MIoU = 0.2447
+
+Accuracy : 
+IoU of Power Drill = 0.2447 is NOT a true positive
+
+../data/035_power_drill/labels//35_0030_000046-box.txt Metrics : 
+
+MIoU = 0.6050
+
+Accuracy : 
+IoU of Mustard = 0.4496 is NOT a true positive
+IoU of Power Drill = 0.7605 is true positive
+
+../data/035_power_drill/labels//35_0030_001009-box.txt Metrics : 
+
+MIoU = 0.2367
+
+Accuracy : 
+IoU of Mustard = 0.3098 is NOT a true positive
+IoU of Power Drill = 0.1635 is NOT a true positive
+
+../data/035_power_drill/labels//35_0038_002606-box.txt Metrics : 
+
+MIoU = 0.7505
+
+Accuracy : 
+IoU of Power Drill = 0.7505 is true positive
+
+../data/035_power_drill/labels//35_0054_001329-box.txt Metrics : 
+
+MIoU = 0.5017
+
+Accuracy : 
+IoU of Sugar = 0.5452 is true positive
+IoU of Power Drill = 0.4582 is NOT a true positive
+
+../data/035_power_drill/labels//35_0077_000519-box.txt Metrics : 
+
+MIoU = 0.2802
+
+Accuracy : 
+IoU of Sugar = 0.3758 is NOT a true positive
+IoU of Power Drill = 0.1846 is NOT a true positive
+
+../data/035_power_drill/labels//35_0010_000001-box.txt Metrics : 
+
+MIoU = 0.5835
+
+Accuracy : 
+IoU of Power Drill = 0.5835 is true positive
+
+../data/035_power_drill/labels//35_0010_000491-box.txt Metrics : 
+
+MIoU = 0.5126
+
+Accuracy : 
+IoU of Power Drill = 0.5126 is true positive
+
+../data/035_power_drill/labels//35_0010_000868-box.txt Metrics : 
+
+MIoU = 0.3393
+
+Accuracy : 
+IoU of Power Drill = 0.3393 is NOT a true positive
+
+../data/035_power_drill/labels//35_0010_001462-box.txt Metrics : 
+
+MIoU = 0.8609
+
+Accuracy : 
+IoU of Power Drill = 0.8609 is true positive
+
+../data/035_power_drill/labels//35_0010_001853-box.txt Metrics : 
+
+MIoU = 0.2631
+
+Accuracy : 
+IoU of Power Drill = 0.2631 is NOT a true positive
+
+../data/035_power_drill/labels//35_0030_000046-box.txt Metrics : 
+
+MIoU = 0.6010
+
+Accuracy : 
+IoU of Mustard = 0.4496 is NOT a true positive
+IoU of Power Drill = 0.7523 is true positive
+
+../data/035_power_drill/labels//35_0030_001009-box.txt Metrics : 
+
+MIoU = 0.1983
+
+Accuracy : 
+IoU of Mustard = 0.3098 is NOT a true positive
+IoU of Power Drill = 0.0867 is NOT a true positive
+
+../data/035_power_drill/labels//35_0038_002606-box.txt Metrics : 
+
+MIoU = 0.7838
+
+Accuracy : 
+IoU of Power Drill = 0.7838 is true positive
+
+../data/035_power_drill/labels//35_0054_001329-box.txt Metrics : 
+
+MIoU = 0.4859
+
+Accuracy : 
+IoU of Sugar = 0.5452 is true positive
+IoU of Power Drill = 0.4265 is NOT a true positive
+
+../data/035_power_drill/labels//35_0077_000519-box.txt Metrics : 
+
+MIoU = 0.1993
+
+Accuracy : 
+IoU of Sugar = 0.3758 is NOT a true positive
+IoU of Power Drill = 0.0227 is NOT a true positive
+
+../data/035_power_drill/labels//35_0010_000001-box.txt Metrics : 
+
+MIoU = 0.6289
+
+Accuracy : 
+IoU of Power Drill = 0.6289 is true positive
+
+../data/035_power_drill/labels//35_0010_000491-box.txt Metrics : 
+
+MIoU = 0.5848
+
+Accuracy : 
+IoU of Power Drill = 0.5848 is true positive
+
+../data/035_power_drill/labels//35_0010_000868-box.txt Metrics : 
+
+MIoU = 0.1886
+
+Accuracy : 
+IoU of Power Drill = 0.1886 is NOT a true positive
+
+../data/035_power_drill/labels//35_0010_001462-box.txt Metrics : 
+
+MIoU = 0.8265
+
+Accuracy : 
+IoU of Power Drill = 0.8265 is true positive
+
+../data/035_power_drill/labels//35_0010_001853-box.txt Metrics : 
+
+MIoU = 0.2811
+
+Accuracy : 
+IoU of Power Drill = 0.2811 is NOT a true positive
+
+../data/035_power_drill/labels//35_0030_000046-box.txt Metrics : 
+
+MIoU = 0.6101
+
+Accuracy : 
+IoU of Mustard = 0.4496 is NOT a true positive
+IoU of Power Drill = 0.7705 is true positive
+
+../data/035_power_drill/labels//35_0030_001009-box.txt Metrics : 
+
+MIoU = 0.1984
+
+Accuracy : 
+IoU of Mustard = 0.3098 is NOT a true positive
+IoU of Power Drill = 0.0869 is NOT a true positive
+
+../data/035_power_drill/labels//35_0038_002606-box.txt Metrics : 
+
+MIoU = 0.7621
+
+Accuracy : 
+IoU of Power Drill = 0.7621 is true positive
+
+../data/035_power_drill/labels//35_0054_001329-box.txt Metrics : 
+
+MIoU = 0.4934
+
+Accuracy : 
+IoU of Sugar = 0.5452 is true positive
+IoU of Power Drill = 0.4417 is NOT a true positive
+
+../data/035_power_drill/labels//35_0077_000519-box.txt Metrics : 
+
+MIoU = 0.1962
+
+Accuracy : 
+IoU of Sugar = 0.3758 is NOT a true positive
+IoU of Power Drill = 0.0166 is NOT a true positive
+
+../data/035_power_drill/labels//35_0010_000001-box.txt Metrics : 
+
+MIoU = 0.5984
+
+Accuracy : 
+IoU of Power Drill = 0.5984 is true positive
+
+../data/035_power_drill/labels//35_0010_000491-box.txt Metrics : 
+
+MIoU = 0.5222
+
+Accuracy : 
+IoU of Power Drill = 0.5222 is true positive
+
+../data/035_power_drill/labels//35_0010_000868-box.txt Metrics : 
+
+MIoU = 0.1945
+
+Accuracy : 
+IoU of Power Drill = 0.1945 is NOT a true positive
+
+../data/035_power_drill/labels//35_0010_001462-box.txt Metrics : 
+
+MIoU = 0.7788
+
+Accuracy : 
+IoU of Power Drill = 0.7788 is true positive
+
+../data/035_power_drill/labels//35_0010_001853-box.txt Metrics : 
+
+MIoU = 0.4130
+
+Accuracy : 
+IoU of Power Drill = 0.4130 is NOT a true positive
+
+../data/035_power_drill/labels//35_0030_000046-box.txt Metrics : 
+
+MIoU = 0.6208
+
+Accuracy : 
+IoU of Mustard = 0.4496 is NOT a true positive
+IoU of Power Drill = 0.7921 is true positive
+
+../data/035_power_drill/labels//35_0030_001009-box.txt Metrics : 
+
+MIoU = 0.2261
+
+Accuracy : 
+IoU of Mustard = 0.3098 is NOT a true positive
+IoU of Power Drill = 0.1424 is NOT a true positive
+
+../data/035_power_drill/labels//35_0038_002606-box.txt Metrics : 
+
+MIoU = 0.7139
+
+Accuracy : 
+IoU of Power Drill = 0.7139 is true positive
+
+../data/035_power_drill/labels//35_0054_001329-box.txt Metrics : 
+
+MIoU = 0.5003
+
+Accuracy : 
+IoU of Sugar = 0.5452 is true positive
+IoU of Power Drill = 0.4555 is NOT a true positive
+
+../data/035_power_drill/labels//35_0077_000519-box.txt Metrics : 
+
+MIoU = 0.1953
+
+Accuracy : 
+IoU of Sugar = 0.3758 is NOT a true positive
+IoU of Power Drill = 0.0147 is NOT a true positive
+
+../data/035_power_drill/labels//35_0010_000001-box.txt Metrics : 
+
+MIoU = 0.5984
+
+Accuracy : 
+IoU of Power Drill = 0.5984 is true positive
+
+../data/035_power_drill/labels//35_0010_000001-box.txt Metrics : 
+MIoU = 0.5984
+Accuracy : 
+IoU of Power Drill = 0.5984 is true positive
+
+../data/035_power_drill/labels//35_0010_000001-box.txt Metrics : 
+MIoU = 0.5984
+Accuracy : 
+IoU of Power Drill = 0.5984 is true positive
+
+../data/035_power_drill/labels//35_0010_000491-box.txt Metrics : 
+MIoU = 0.5222
+Accuracy : 
+IoU of Power Drill = 0.5222 is true positive
+
+../data/035_power_drill/labels//35_0010_000868-box.txt Metrics : 
+MIoU = 0.1945
+Accuracy : 
+IoU of Power Drill = 0.1945 is NOT a true positive
+
+../data/035_power_drill/labels//35_0010_001462-box.txt Metrics : 
+MIoU = 0.7788
+Accuracy : 
+IoU of Power Drill = 0.7788 is true positive
+
+../data/035_power_drill/labels//35_0010_001853-box.txt Metrics : 
+MIoU = 0.4130
+Accuracy : 
+IoU of Power Drill = 0.4130 is NOT a true positive
+
+../data/035_power_drill/labels//35_0030_000046-box.txt Metrics : 
+MIoU = 0.6208
+Accuracy : 
+IoU of Mustard = 0.4496 is NOT a true positive
+IoU of Power Drill = 0.7921 is true positive
+
+../data/035_power_drill/labels//35_0030_001009-box.txt Metrics : 
+MIoU = 0.2261
+Accuracy : 
+IoU of Mustard = 0.3098 is NOT a true positive
+IoU of Power Drill = 0.1424 is NOT a true positive
+
+../data/035_power_drill/labels//35_0038_002606-box.txt Metrics : 
+MIoU = 0.7139
+Accuracy : 
+IoU of Power Drill = 0.7139 is true positive
+
+../data/035_power_drill/labels//35_0054_001329-box.txt Metrics : 
+MIoU = 0.5003
+Accuracy : 
+IoU of Sugar = 0.5452 is true positive
+IoU of Power Drill = 0.4555 is NOT a true positive
+
+../data/035_power_drill/labels//35_0077_000519-box.txt Metrics : 
+MIoU = 0.1953
+Accuracy : 
+IoU of Sugar = 0.3758 is NOT a true positive
+IoU of Power Drill = 0.0147 is NOT a true positive
+

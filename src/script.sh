@@ -19,5 +19,5 @@ for filepath in "$INPUT_DIR"/*-color.jpg; do
     #echo $modify_path
 
     # Execute the command with constructed paths
-    ./a.out -p ../data/035_power_drill/models -m ../data/006_mustard_bottle/models -s ../data/004_sugar_box/models -i "$filepath" color.jpg -l "$INPUT_DIR2/$modify_path"
+    ./a.out -p ../data/035_power_drill/models -m ../data/006_mustard_bottle/models -s ../data/004_sugar_box/models -i "$filepath" -l "$INPUT_DIR2/$modify_path"
 done
