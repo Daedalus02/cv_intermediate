@@ -70,11 +70,11 @@ void PerformanceMetrics:: print_metrics(){
     std::ofstream outfile("metrics.txt", std::ios::app);
     if (outfile.is_open())
     {
-        std::cout << this->path_true_labels << "Metrics : \n\n";
-        std::cout << "MIoU = " << std::fixed << std::setprecision(4) << MIoU << "\n\n";
+        //std::cout << this->path_true_labels << "Metrics : \n\n";
+        std::cout << "MIoU = " << std::fixed << std::setprecision(4) << MIoU << "\n";
 
-        outfile << this->path_true_labels << " Metrics : \n\n";
-        outfile << "MIoU = " << std::fixed << std::setprecision(4) << MIoU << "\n\n";
+        outfile << this->path_true_labels << " Metrics : \n";
+        outfile << "MIoU = " << std::fixed << std::setprecision(4) << MIoU << "\n";
 
         std::cout << "Accuracy : \n";
         outfile << "Accuracy : \n";

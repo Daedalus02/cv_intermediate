@@ -33,7 +33,7 @@ void lowe_filter(const std::vector<std::vector<cv::DMatch>>& matches,  float thr
 }
 
 void max_distance_filter(float max_distance, const std::vector<cv::Point2i>& points, 
-        const std::vector<cv::KeyPoint>& keypoints, cv::Point2f center, std::vector<cv::Point2i>& filtered_points){
+    cv::Point2f center, std::vector<cv::Point2i>& filtered_points){
     for (const cv::Point2i& pt : points) {
         float distance = sqrt(pow(pt.x - center.x, 2) + pow(pt.y - center.y, 2));
         if (distance <= max_distance) {
@@ -42,9 +42,17 @@ void max_distance_filter(float max_distance, const std::vector<cv::Point2i>& poi
     }
 }
 
-
-
-
+void kernel_filter(int max_kernel_size, int min_match, 
+        const std::vector<cv::Point2i>&  points, 
+        std::vector<cv::Point2i>& final_points){
+    for(const auto& pt : points){
+        std::vector<cv::Point2i> kernel_points;
+        max_distance_filter(max_kernel_size, points, pt, kernel_points);
+        if(kernel_points.size()> min_match){
+            final_points.push_back(pt);
+        }
+    }   
+}
 
 cv::Point2d compute_com(const std::vector<cv::Point2i>& points, const std::vector<cv::KeyPoint>& keypoints){
     if (points.empty()) {
