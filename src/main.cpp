@@ -176,8 +176,9 @@ int main(int argc, char* argv[]) {
         }
 
         // Third filter: remove the isolated points.
-        // If a point has a distance from his nearest neighbor that is bigger 
-        // than 'max_dist_from_neighbor' => is filtered out.
+        // Compute the number of neighbor considering 'max_dist_from_neighbor'
+        // as max value. Then neglect the point if the number of 
+        // neighbors is less then 'params_map[models_path.first][3]'.
         std::vector<cv::Point2i> final_points;
         int max_dist_from_neighbor = params_map[models_path.first][2]; // Third parameter.
         neighbor_filter(max_dist_from_neighbor, params_map[models_path.first][3], filtered_points, final_points);
