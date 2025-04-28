@@ -59,7 +59,7 @@ project/
 - **Student 2** - [GitHub](https://github.com/luca037)  
 - **Student 3** - [GitHub](https://github.com/Daedalus02)  
 
-Report
+## Report
 
 The final report includes:
 
