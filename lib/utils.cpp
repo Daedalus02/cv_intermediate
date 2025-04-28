@@ -10,7 +10,8 @@
 #include "../include/utils.h"
 
 std::pair<cv::Point2i, cv::Point2i> bounding_box_coord(const cv::Mat& image, 
-    const std::vector<cv::Point2i>& points, const std::vector<cv::KeyPoint>& keypoints, double expansion){
+        const std::vector<cv::Point2i>& points, const std::vector<cv::KeyPoint>& keypoints, 
+        double expansion){
     cv::Point2i top_left(image.rows, image.cols);
     cv::Point2i bottom_right(0, 0);
     for (const cv::Point2i& pt : points) {
@@ -47,7 +48,7 @@ std::pair<cv::Point2i, cv::Point2i> bounding_box_coord(const cv::Mat& image,
     return {top_left, bottom_right};
 }
 
-void lowe_filter(const std::vector<std::vector<cv::DMatch>>& matches,  float threshold, 
+void lowe_filter(const std::vector<std::vector<cv::DMatch>>& matches, float threshold, 
         std::vector<cv::DMatch>& good_matches){
     for (size_t i = 0; i < matches.size(); i++) {
         if (matches[i][0].distance < threshold * matches[i][1].distance) {
@@ -57,7 +58,7 @@ void lowe_filter(const std::vector<std::vector<cv::DMatch>>& matches,  float thr
 }
 
 void max_distance_filter(float max_distance, const std::vector<cv::Point2i>& points, 
-    cv::Point2f center, std::vector<cv::Point2i>& filtered_points){
+        cv::Point2f center, std::vector<cv::Point2i>& filtered_points){
     for (const cv::Point2i& pt : points) {
         float distance = sqrt(pow(pt.x - center.x, 2) + pow(pt.y - center.y, 2));
         if (distance <= max_distance) {
@@ -66,14 +67,14 @@ void max_distance_filter(float max_distance, const std::vector<cv::Point2i>& poi
     }
 }
 
-void neighbor_filter(int max_kernel_size, int min_match, 
-        const std::vector<cv::Point2i>&  points, 
-        std::vector<cv::Point2i>& final_points){
+void neighbor_filter(int max_distance, int min_neighbors, 
+        const std::vector<cv::Point2i>& points, 
+        std::vector<cv::Point2i>& filtered_points){
     for(const auto& pt : points){
         std::vector<cv::Point2i> kernel_points;
-        max_distance_filter(max_kernel_size, points, pt, kernel_points);
-        if(kernel_points.size()> min_match){
-            final_points.push_back(pt);
+        max_distance_filter(max_distance, points, pt, kernel_points);
+        if(kernel_points.size()> min_neighbors){
+            filtered_points.push_back(pt);
         }
     }   
 }
@@ -100,7 +101,7 @@ cv::Point2d compute_com(const std::vector<cv::Point2i>& points){
 }
 
 void store_label(const std::string& file_name, const std::string& object_name, 
-    const cv::Point2i& min, const cv::Point2i& max){
+        const cv::Point2i& min, const cv::Point2i& max){
     std::ofstream outfile;
     outfile.open(file_name, std::ios_base::app);
 

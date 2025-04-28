@@ -1,8 +1,10 @@
 // Authors: Chinello Alessandro, Piai Luca, Scantamburlo Mattia
 // (Read the report)
 
+#include <iostream>
+#include <fstream>
+#include <array>
 #include "../include/performance_metrics.h"
-
 
 // FUNCTION MEMBERS
 void PerformanceMetrics:: compute_IoU(){
