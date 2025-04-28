@@ -49,7 +49,6 @@ project/
    ```bash
     mkdir build && cd build
     cmake .. && make
-    cd ..
 3. Run the executable:
       ```bash
    ./object_detector -s <path_to_sugar_box_models> -p <path_to_power_drill_models> -m <path_to_mustard_bottle_models>
