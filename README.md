@@ -1,12 +1,12 @@
 # Computer Vision Project: Object Detection and Feature Matching
 
 ## Project Overview
-The goal of this project is to develop an object detection system capable of locating known objects ("power drill", "mustard bottle", "sugar box") in an input image. The system uses synthetic views and binary masks to detect objects and highlights them with bounding boxes. The project is implemented in C++ using OpenCV, with a focus on robust feature matching or alternative approaches like template matching.
+The goal of this project is to develop an object detection system capable of locating known objects ("power drill", "mustard bottle", "sugar box") in an input image. The system uses synthetic views to detect objects and highlights them with bounding boxes. The project is implemented in C++ using OpenCV, with a focus on robust feature matching or alternative approaches like template matching.
 
 ## Dataset
 The dataset includes:
 - `test_images`: Images for testing the system.
-- `models`: 60 synthetic views of each object and corresponding binary masks.
+- `models`: 29 synthetic views of each object.
 - `labels`: Ground truth annotations for object positions in the images.
 
 Dataset link: [Google Drive](https://drive.google.com/drive/folders/1heXAbX4WKXf3-z2sl68Qg-cvbcVwosxO?usp=sharing)
