@@ -55,7 +55,8 @@ project/
       -i <path_to_test_images> -l <path_to_test_images_labels>
 - Example to run executable with provided data:
   ```bash
-  ./obj_detector -p ../data/035_power_drill/models -m ../data/006_mustard_bottle/models -s ../data/004_sugar_box/models -i ../data/004_sugar_box/test_images/4_0001_000121-    color.jpg -l ../data/004_sugar_box/labels/4_0001_000121-box.txt
+  ./obj_detector -p ../data/035_power_drill/models -m ../data/006_mustard_bottle/models -s ../data/004_sugar_box/models
+  -i ../data/004_sugar_box/test_images/4_0001_000121-    color.jpg -l ../data/004_sugar_box/labels/4_0001_000121-box.txt
 
 ## Authors
 
