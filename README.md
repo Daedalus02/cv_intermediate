@@ -41,15 +41,17 @@ project/
 ## Build Instructions
 1. Clone the repository:
    ```bash
-   git clone <repository-url>
-   cd project
+   git clone https://github.com/Daedalus02/cv_intermediate
+   cd cv_intermediate
 2. Compile the code:
    ```bash
     mkdir build && cd build
     cmake .. && make
+    cd ..
 3. Run the executable:
       ```bash
-   ./object_detector <path_to_input_image> <path_to_models> <output_directory>
+   ./object_detector -s <path_to_sugar_box_models> -p <path_to_power_drill_models> -m <path_to_mustard_bottle_models>
+      -i <path_to_test_images> -l <path_to_test_images_labels>
 
 ## Authors
 
