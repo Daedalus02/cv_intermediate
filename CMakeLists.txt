@@ -14,7 +14,6 @@ add_library(MiddleProject
     include/features_matcher.h
     include/performance_metrics.h
     lib/utils.cpp
-    lib/features_extractor.cpp
     lib/performance_metrics.cpp
     )
 
