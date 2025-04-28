@@ -32,6 +32,8 @@ project/
 
 ├── report/ Project report (PDF)
 
+├── CMakeLists.txt
+
 └── README.md This file
 
 ## Requirements
