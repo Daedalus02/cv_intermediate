@@ -1,6 +1,3 @@
-# cv_intermediate
-Object detection and Feature Matching project developed by three computer engineering master students.
-
 # Computer Vision Project: Object Detection and Feature Matching
 
 ## Project Overview
@@ -71,6 +68,3 @@ The final report includes:
     Output images for all test cases
 
     Contributions and working hours per member
-
-Notes
-
