@@ -25,15 +25,15 @@ Dataset link: [Google Drive](https://drive.google.com/drive/folders/1heXAbX4WKXf
 ## Project Structure
 project/
 
-├── src/ # Source code (C++ files)
+├── src/ #Source code (C++ files)
 
-├── data/ # Dataset (test_images, models, labels)
+├── data/ #Dataset (test_images, models, labels)
 
-├── output/ # Generated outputs (bounding box images and text files)
+├── output/ #Generated outputs (bounding box images and text files)
 
-├── report/ # Project report (PDF)
+├── report/ #Project report (PDF)
 
-└── README.md # This file
+└── README.md #This file
 
 ## Requirements
 - C++ compiler (supporting C++11 or later)
