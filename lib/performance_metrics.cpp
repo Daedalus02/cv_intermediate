@@ -4,6 +4,7 @@
 #include <iostream>
 #include <fstream>
 #include <array>
+#include <sstream>
 #include "../include/performance_metrics.h"
 
 // FUNCTION MEMBERS
